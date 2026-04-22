@@ -1,0 +1,242 @@
+{% load static i18n %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Ana səhifə - İstanbul Mebel </title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+  <!-- Favicons -->
+  <link href="{% static 'assets/img/icons/truck.png' %}" rel="icon">
+  <link href="{% static 'assets/img/apple-touch-icon.png' %}" rel="apple-touch-icon">
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+  <!-- Vendor CSS Files -->
+  <link href="{% static 'assets/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/vendor/aos/aos.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/vendor/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
+  <!-- Main CSS File -->
+  <link href="{% static 'assets/css/main.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/css/order.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/css/user.css' %}" rel="stylesheet">
+
+
+  <!-- =======================================================
+  * Template Name: iPortfolio
+  * Template URL: https://bootstrapmade.com/iportfolio-bootstrap-portfolio-websites-template/
+  * Updated: Jun 29 2024 with Bootstrap v5.3.3
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+</head>
+
+<body class="index-page">
+  <header id="header" class="header dark-background d-flex flex-column">
+    <i class="header-toggle d-xl-none bi bi-list"></i>
+    <!-- Index Phopto Start -->
+    <div class="profile-img">
+      <img src="{% static 'assets/img/my-profile-img.jpg' %}" alt="" class="img-fluid rounded-circle">
+    </div>
+    <!-- Index Phopto End -->
+    <a href="{% url 'index' %}" class="logo d-flex align-items-center justify-content-center">
+      <!-- Uncomment the line below if you also wish to use an image logo -->
+      <!-- <img src="assets/img/logo.png" alt=""> -->
+      <h1 class="sitename"> İstanbul Mebel <i class="bi bi-house navicon"></i></h1>
+    </a>
+    <!--=========================== SOSIAL SEBEKE LINKLERI ============================ -->
+    <div class="social-links text-center">
+      <!-- TikTok -->
+      <a href="https://www.tiktok.com/@metlebpiriyev" class="social-icon">
+        <img style="width: 20px; height: 20px;" src="{% static 'assets/img/icons/tik-tok.jpg' %}" alt="">
+      </a>
+      <!-- Instagram -->
+      <a href="https://www.instagram.com/samaxi_istanbul_mebel_" class="social-icon">
+        <img style="width: 18px; height: 18px;" src="{% static 'assets/img/icons/instagram.png' %}" alt="">
+      </a>
+      <!-- LANGUAGE DROPDOWN -->
+      <div class="lang-dropdown">
+        <button class="lang-toggle" id="langToggle">
+          🌐
+        </button>
+        <ul class="lang-menu" id="langMenu">
+          <li><a href="/az/">Azerbaycan</a></li>
+          <li><a href="/en/">English</a></li>
+          <li><a href="/ru/">Russian</a></li>
+          <!-- <li><a href="/spa/">Ispania</a></li> -->
+        </ul>
+      </div>
+    </div>
+    <!--=========================== SOSIAL SEBEKE LINKLERI ============================ -->
+    <hr>
+    <nav id="navmenu" class="navmenu">
+      <div class="search-container">
+        <form class="search" id="searchForm" onsubmit="return false;">
+          {% csrf_token %}
+          <input type="text" id="searchInput" placeholder="Axtar..." class="search__input" autocomplete="off"
+            value="{{ request.GET.q|default:'' }}">
+          <button type="button" id="searchButton" class="search__button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0,0,256,256">
+              <g fill="#124c97" fill-rule="nonzero">
+                <g transform="scale(5.12,5.12)">
+                  <path
+                    d="M21,3c-9.37891,0 -17,7.62109 -17,17c0,9.37891 7.62109,17 17,17c3.71094,0 7.14063,-1.19531 9.9375,-3.21875l13.15625,13.125l2.8125,-2.8125l-13,-13.03125c2.55469,-2.97656 4.09375,-6.83984 4.09375,-11.0625c0,-9.37891 -7.62109,-17 -17,-17zM21,5c8.29688,0 15,6.70313 15,15c0,8.29688 -6.70312,15 -15,15c-8.29687,0 -15,-6.70312 -15,-15c0,-8.29687 6.70313,-15 15,-15z">
+                  </path>
+                </g>
+              </g>
+            </svg>
+          </button>
+        </form>
+        <span class="search-text">{% translate 'Axtar' %}</span>
+      </div>
+      <hr>
+      <div class="dropdown-wrapper">
+          <!-- Wishlist Dropdown -->
+          <div style="right: 169px;" class="dropdown-container">
+              <button class="dropdown-icon" id="wishlistBtn">
+                  <i class="far fa-heart"></i>
+                  <span class="dropdown-badge">{{ wishlist_count }}</span>
+              </button>
+
+              <ul class="dropdown-menu scrollable-dropdown" id="wishlistDropdown">
+                  <li class="dropdown-header">
+                      <span>{% translate 'İstək Siyahısı' %}</span>
+                      <span class="header-count">{{ wishlist_count }} {% translate 'məhsul' %}</span>
+                  </li>
+
+                  <!-- 🔴 DƏYİŞDİRİLDİ: Boşdur yazısı üçün empty-placeholder class-ı əlavə edildi -->
+                  <div class="dropdown-items-container">
+                      {% if wishlist_items %}
+                          {% for item in wishlist_items %}
+                          <li class="dropdown-item" data-product-id="{{ item.product.id }}">
+                              {% if item.product.product_image %}
+                              <img src="{{ item.product.product_image.url }}" alt="{{ item.product.title }}"
+                                  style="width: 40px; height: 40px; object-fit: cover; border-radius: 5px;">
+                              {% else %}
+                              <img src="https://via.placeholder.com/40" alt="Product">
+                              {% endif %}
+                              <div class="item-details">
+                                  <div class="item-title">{{ item.product.title|truncatechars:20 }}</div>
+                                  <div style="color: white;" class="item-price">${{ item.price|floatformat:2 }}</div>
+                              </div>
+                          </li>
+                          {% endfor %}
+                      {% else %}
+                      <!-- 🔴 DƏYİŞDİRİLDİ: empty-placeholder class-ı əlavə edildi -->
+                      <li class="dropdown-item empty-placeholder" style="justify-content: center; color: #999; text-align: center; padding: 20px;">
+                          <i class="far fa-heart" style="font-size: 24px; margin-bottom: 8px; display: block;"></i>
+                          <span>{% translate 'Wishlist boşdur' %}</span>
+                      </li>
+                      {% endif %}
+                  </div>
+
+                  <li class="dropdown-footer">
+                      <a href="{% url 'all_list' %}" class="footer-btn">{% translate 'Hamısına bax' %}</a>
+                  </li>
+              </ul>
+          </div>
+
+          <!-- Cart Dropdown -->
+          <div style="right: 165px;" class="dropdown-container">
+              <button class="dropdown-icon" id="cartBtn">
+                  <i class="fas fa-shopping-cart"></i>
+                  <span class="dropdown-badge">{{ mini_cart_count }}</span>
+              </button>
+
+              <ul class="dropdown-menu scrollable-dropdown" id="cartDropdown">
+                  <li class="dropdown-header">
+                      <span>Səbətim</span>
+                      <span class="header-count">{{ mini_cart_count }} {% translate 'məhsul' %}</span>
+                  </li>
+
+                  <!-- 🔴 DƏYİŞDİRİLDİ: Boşdur yazısı üçün empty-placeholder class-ı əlavə edildi -->
+                  <div class="dropdown-items-container">
+                      {% if mini_cart_items %}
+                          {% for item in mini_cart_items %}
+                          <li class="dropdown-item" data-product-id="{{ item.product.id }}">
+                              {% if item.product.product_image %}
+                              <img src="{{ item.product.product_image.url }}" alt="{{ item.product.title }}"
+                                  style="width: 40px; height: 40px; object-fit: cover; border-radius: 5px;">
+                              {% else %}
+                              <img src="https://via.placeholder.com/40" alt="Product">
+                              {% endif %}
+                              <div class="item-details">
+                                  <div class="item-title">{{ item.product.title|truncatechars:20 }}</div>
+                                  <div style="color: white;" class="item-price">${{ item.price|floatformat:2 }} x {{ item.quantity }}</div>
+                              </div>
+                          </li>
+                          {% endfor %}
+                      {% else %}
+                      <!-- 🔴 DƏYİŞDİRİLDİ: empty-placeholder class-ı əlavə edildi -->
+                      <li class="dropdown-item empty-placeholder" style="justify-content: center; color: #999; text-align: center; padding: 20px;">
+                          <i class="fas fa-shopping-cart" style="font-size: 24px; margin-bottom: 8px; display: block;"></i>
+                          <span>{% translate 'Səbət boşdur' %}</span>
+                      </li>
+                      {% endif %}
+                  </div>
+
+                  <li class="dropdown-footer">
+                      <div class="total-row">
+                          <span>{% translate 'Cəmi' %}</span>
+                          <span class="total-amount">${{ mini_cart_total|floatformat:2 }}</span>
+                      </div>
+                      <a href="{% url 'all_carts' %}" class="footer-btn primary">{% translate 'Səbətə keç' %}</a>
+                  </li>
+              </ul>
+          </div>
+      </div>
+      <hr>
+      <ul>
+        <li><a href="{% url 'index' %}" class="active"><i class="bi bi-house navicon"></i>{% translate 'Ana səhifə' %}</a></li>
+        <li class="dropdown"><a href="{% url 'index' %}#portfolio"><i
+              class="bi bi-images navicon"></i><span>{% translate 'Məhsullar' %}</span> <i
+              class="bi bi-chevron-down toggle-dropdown"></i></a>
+          <ul>
+            <li><a href="{% url 'all_product' %}">{% translate 'Bütün Məhsullar' %}<img
+                  style="margin-left: 5px; width: 20px; height: 20px; padding-bottom: 2px;"
+                  src="{% static 'assets/img/icons/product.jpg' %}" alt=""></a></li>
+          </ul>
+        </li>
+        <li class="dropdown"><a><span><img style="width: 20px; height: 20px; position: relative; top: -3px;"
+                src="{% static 'assets/img/icons/truck.png' %}" alt=""><span
+                style="margin-left: 10px;">{% translate 'Sifarişlər' %}</span></span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+          <ul>
+            <li><a href="{% url 'all_list' %}">{% translate 'Sevimlilər' %} <img style="margin-left: 5px;"
+                  src="{% static 'assets/img/icons/wishlist.png' %}" alt=""></a></li>
+            <li><a href="{% url 'all_carts' %}">{% translate 'Səbətim' %} <img style="margin-left: 5px;"
+                  src="{% static 'assets/img/icons/shopping-cart.png' %}" alt=""></a></li>
+            <li><a href="{% url 'checkout' %}">{% translate 'Sifariş vermək' %} <img style="margin-left: 5px;"
+                  src="{% static 'assets/img/icons/checklist.png' %}" alt=""></a></li>
+          </ul>
+        </li>
+        <li><a href="{% url 'index' %}#services"><i class="bi bi-hdd-stack navicon"></i> {% translate 'Servislər' %}</a></li>
+        <li><a href="{% url 'contact' %}"><i class="bi bi-envelope navicon"></i> {% translate 'Əlaqə saxla' %}</a></li>
+        <li class="dropdown"><a><span style="margin-left: 3px;"><img
+                style="width: 15px; height: 15px; position: relative; top: -2px;"
+                src="{% static 'assets/img/icons/my-account.jpg' %}" alt=""><span
+                style="margin-left: 7px;">{% translate 'Qeydiyyat' %}</span></span> <i
+              class="bi bi-chevron-down toggle-dropdown"></i></a>
+          <ul>
+            <li><a href="{% url 'register' %}">{% translate 'Qeydiyyatdan Keçin' %} <img style="margin-left: 7px; height: 15px; width: 15px;"
+                  src="{% static 'assets/img/icons/register.png' %}" alt=""></a></li>
+            <li><a href="{% url 'login' %}">{% translate 'Daxil olun' %} <img style="margin-left: 7px; height: 15px; width: 15px;"
+                  src="{% static 'assets/img/icons/login.png' %}" alt=""></a></li>
+            <li><a href="{% url 'account' %}">{% translate 'Hesabım' %} <img style="margin-left: 7px; height: 15px; width: 15px;"
+                  src="{% static 'assets/img/icons/my-account.jpg' %}" alt=""></a></li>
+            <li><a href="{% url 'account' %}">{% translate 'Çıxış et' %} <img style="width: 15px; height: 15px; margin-left: 10px;"
+                  src="{% static 'assets/img/icons/user-logout.jpg' %}" alt=""></a></li>
+          </ul>
+        </li>
+      </ul>
+      <hr>
+    </nav>
+  </header>

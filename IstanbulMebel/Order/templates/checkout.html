@@ -1,0 +1,372 @@
+{% extends "base.html" %}
+{% load static i18n %}
+{% block container %}
+<main class="main">
+    <div class="container">
+        <div class="checkout-wrapper">
+            <div class="checkout-header">
+                <h1>İstifadəçi Məlumatları👤</h1>
+            </div>
+
+            <!-- <div class="progress-steps">
+                <div class="step active" id="step1">
+                    <div class="step-number">1</div>
+                    <div class="step-label">Səbət</div>
+                </div>
+                <div class="step" id="step2">
+                    <div class="step-number">2</div>
+                    <div class="step-label">Ünvan</div>
+                </div>
+                <div class="step" id="step3">
+                    <div class="step-number">3</div>
+                    <div class="step-label">Təsdiq</div>
+                </div>
+            </div> -->
+
+            <div class="checkout-content">
+                <!-- ADDRESS FORM -->
+                <div class="form-section" id="addressForm">
+                    <div class="section-title">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Ünvan Məlumatları</span>
+                    </div>
+                    <form method="POST" action="{% url 'checkout' %}" id="checkoutForm">
+                        {% csrf_token %}
+
+                        <!-- Form xətaları (əgər varsa) -->
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}
+                            {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        <!-- Ad və Soyad -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-12 col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.first_name.id_for_label }}">{% translate 'Ad' %} <span
+                                            class="text-danger">*</span></label>
+                                    <div class="input-icon">
+                                        {{ form.first_name }}
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    {% if form.first_name.errors %}
+                                    <div class="error-message text-danger">{{ form.first_name.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.last_name.id_for_label }}">{% translate 'Soyad' %} <span
+                                            class="text-danger">*</span></label>
+                                    <div class="input-icon">
+                                        {{ form.last_name }}
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    {% if form.last_name.errors %}
+                                    <div class="error-message text-danger">{{ form.last_name.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="{{ form.email_address.id_for_label }}">{% translate 'E-poçt' %} <span
+                                            class="text-danger">*</span></label>
+                                    <div class="input-icon">
+                                        {{ form.email_address }}
+                                        <i class="fas fa-envelope"></i>
+                                    </div>
+                                    {% if form.email_address.errors %}
+                                    <div class="error-message text-danger">{{ form.email_address.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Ünvan -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="{{ form.address.id_for_label }}">{% translate 'Ünvan' %} <span
+                                            class="text-danger">*</span></label>
+                                    <div class="input-icon">
+                                        {{ form.address }}
+                                        <i class="fas fa-home"></i>
+                                    </div>
+                                    {% if form.address.errors %}
+                                    <div class="error-message text-danger">{{ form.address.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Şəhər (AZƏRBAYCANIN BÜTÜN ŞƏHƏRLƏRİ) -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="{{ form.city.id_for_label }}">{% translate 'Şəhər' %} <span
+                                            class="text-danger">*</span></label>
+                                    <div class="input-icon">
+                                        {{ form.city }}
+                                        <i class="fas fa-city"></i>
+                                    </div>
+                                    {% if form.city.errors %}
+                                    <div class="error-message text-danger">{{ form.city.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Rayon - MODELDƏ YOXDUR, ƏGƏR LAZIMDIRSA ƏLAVƏ EDİN -->
+                        <!-- <div class="row g-3 mb-3">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="province_name">Rayon <span class="text-danger">*</span></label>
+                                    <div class="input-icon">
+                                        <input type="text" class="form-control" id="province_name" name="province_name" required>
+                                        <i class="fas fa-map"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> -->
+
+                        <!-- Telefon -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="{{ form.tel_number.id_for_label }}">{% translate 'Telefon' %}</label>
+                                    <div class="input-icon">
+                                        {{ form.tel_number }}
+                                        <i class="fas fa-phone"></i>
+                                    </div>
+                                    {% if form.tel_number.errors %}
+                                    <div class="error-message text-danger">{{ form.tel_number.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fərqli ünvana göndər checkbox -->
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class="form-check">
+                                    {{ form.different_shipping }}
+                                    <label class="form-check-label" for="{{ form.different_shipping.id_for_label }}">
+                                        {% translate 'Fərqli ünvana göndər?' %}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fərqli ünvan məlumatları (əvvəlcə gizli) -->
+                        <div class="ship-box-info mb-4" id="shippingAddress" style="display: none;">
+                            <div class="section-title mt-3" style="font-size: 1.1em;">
+                                <i class="fas fa-truck"></i>
+                                <span>{% translate 'Göndəriləcək Ünvan' %}</span>
+                            </div>
+
+                            <!-- Ad və Soyad (Fərqli ünvan) -->
+                            <div class="row g-3 mb-3">
+                                <div class="col-12 col-md-6">
+                                    <div class="form-group">
+                                        <label for="{{ form.shipping_first_name.id_for_label }}">{% translate 'Ad' %} <span
+                                                class="text-danger">*</span></label>
+                                        <div class="input-icon">
+                                            {{ form.shipping_first_name }}
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                        {% if form.shipping_first_name.errors %}
+                                        <div class="error-message text-danger">{{ form.shipping_first_name.errors.0 }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="form-group">
+                                        <label for="{{ form.shipping_last_name.id_for_label }}">{% translate 'Soyad' %} <span
+                                                class="text-danger">*</span></label>
+                                        <div class="input-icon">
+                                            {{ form.shipping_last_name }}
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                        {% if form.shipping_last_name.errors %}
+                                        <div class="error-message text-danger">{{ form.shipping_last_name.errors.0 }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Email (Fərqli ünvan) -->
+                            <div class="row g-3 mb-3">
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label for="{{ form.shipping_email.id_for_label }}">{% translate 'E-poçt' %} <span
+                                                class="text-danger">*</span></label>
+                                        <div class="input-icon">
+                                            {{ form.shipping_email }}
+                                            <i class="fas fa-envelope"></i>
+                                        </div>
+                                        {% if form.shipping_email.errors %}
+                                        <div class="error-message text-danger">{{ form.shipping_email.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Phone Number (Ferqli Unvan) -->
+                            <div class="row g-3 mb-3">
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label for="{{ form.shipping_phone_number.id_for_label }}">{% translate 'Telefon' %}</label>
+                                        <div class="input-icon">
+                                            {{ form.shipping_phone_number }}
+                                            <i class="fas fa-phone"></i>
+                                        </div>
+                                        {% if form.shipping_phone_number.errors %}
+                                        <div class="error-message text-danger">{{ form.shipping_phone_number.errors.0 }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Şəhər (Fərqli ünvan üçün) -->
+                            <div class="row g-3 mb-3">
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label for="{{ form.shipping_city.id_for_label }}">{% translate 'Şəhər' %} <span
+                                                class="text-danger">*</span></label>
+                                        <div class="input-icon">
+                                            {{ form.shipping_city }}
+                                            <i class="fas fa-city"></i>
+                                        </div>
+                                        {% if form.shipping_city.errors %}
+                                        <div class="error-message text-danger">{{ form.shipping_city.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Ünvan (Fərqli ünvan) -->
+                            <div class="row g-3 mb-3">
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label for="{{ form.shipping_address.id_for_label }}">{% translate 'Ünvan' %} <span
+                                                class="text-danger">*</span></label>
+                                        <div class="input-icon">
+                                            {{ form.shipping_address }}
+                                            <i class="fas fa-home"></i>
+                                        </div>
+                                        {% if form.shipping_address.errors %}
+                                        <div class="error-message text-danger">{{ form.shipping_address.errors.0 }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sifariş qeydləri -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="{{ form.order_note.id_for_label }}">{% translate 'Sifariş Qeydləri' %}</label>
+                                    {{ form.order_note }}
+                                    {% if form.order_note.errors %}
+                                    <div class="error-message text-danger">{{ form.order_note.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="btn" type="submit" id="submitButton">
+                            <i class="fas fa-check" style="margin-right: 10px;"></i>
+                            {% translate 'Sifarişi Təsdiq Et' %}
+                        </button>
+                    </form>
+                </div>
+                <!-- UĞUR MESAJI -->
+                <div class="form-section hidden" id="successMessage">
+                    <div class="success-message">
+                        <i class="fas fa-check-circle"></i>
+                        <h3>{% translate 'Sifariş Uğurla Tamamlandı!' %}</h3>
+                        <p>{% translate 'Sifarişiniz qəbul edildi. Təşəkkür edirik!' %}</p>
+                        <!-- <p style="margin-top: 20px; font-size: 0.9em;">Sifariş nömrəniz<span
+                                id="orderNumber"></span></p> -->
+                        <button class="btn mt-4" onclick="resetForm()">
+                            <i class="fas fa-redo" style="margin-right: 10px;"></i>
+                            {% translate 'Yeni Sifariş' %}
+                        </button>
+                    </div>
+                </div>
+                <!--========================== SİPARİŞ XÜLASƏ ===============================-->
+                <div class="order-summary">
+                    <div class="section-title">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span>{% translate 'Sifarişiniz' %}</span>
+                    </div>
+
+                    {% if cart_items %}
+                    <!-- 🔴 YENİ: Scroll edilə bilən container -->
+                    <div class="order-items-container">
+                        {% for item in cart_items %}
+                        <div class="order-item">
+                            <div class="item-image">
+                                {% if item.product.product_image %}
+                                <img src="{{ item.product.product_image.url }}" alt="{{ item.product.title }}">
+                                {% else %}
+                                <i class="fas fa-box"></i>
+                                {% endif %}
+                            </div>
+                            <div class="item-details">
+                                <h4>{{ item.product.title }}</h4>
+                                <p>{% translate 'Miqdar' %} {{ item.quantity }}</p>
+                                {% if item.product.stock %}
+                                <small
+                                    class="stock-status {% if item.product.stock > 0 %}in-stock{% else %}out-stock{% endif %}">
+                                    {% if item.product.stock > 0 %}{% translate 'Stokda var' %}{% else %}{% translate 'Stokda yox' %}{% endif %}
+                                </small>
+                                {% endif %}
+                            </div>
+                            <div class="item-price">
+                                ${{ item.product.special_price|floatformat:2 }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="empty-cart-message">
+                        <i class="fas fa-shopping-cart"></i>
+                        <p>Səbətiniz boşdur</p>
+                        <a href="{% url 'all_product' %}" class="btn-primary">{% translate 'Məhsullara keç' %}</a>
+                    </div>
+                    {% endif %}
+
+                    <div class="price-details">
+                        <div class="price-row">
+                            <span>{% translate 'Çatdırılma:' %}</span>
+                            <span>
+                                {% if shipping == 0 %}
+                                Pulsuz
+                                {% else %}
+                                ${{ shipping|floatformat:2 }}
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="price-row total">
+                            <span>{% translate 'Ümumi:' %}</span>
+                            <span>${{ total_price|add:shipping|floatformat:2 }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

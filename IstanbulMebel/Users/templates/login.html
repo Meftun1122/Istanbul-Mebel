@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% load static i18n %}
+{% block container %}
+<div class="page-title dark-background">
+    <div class="container d-lg-flex justify-content-between align-items-center">
+        <h1 style="margin-left: 200px;" class="mb-2 mb-lg-0">Log in</h1>
+        <nav class="breadcrumbs">
+            <ol>
+                <li><a href="{% url 'index' %}">{% translate 'Ana səhifə' %}</a></li>
+                <li><a href="{% url 'account' %}">{% translate 'Hesabım' %}</a></li>
+                <li><a href="{% url 'register' %}">Qeydiyyat</a></li>
+                <li class="current">Daxil ol</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<main class="main">
+    <div class="login-wrapper">
+        <form class="login-card" method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+            <div class="container section-title">
+                <h2>{% translate 'Hesabənızı daxil edin' %}</h2>
+                <!-- <p class="subtitle">Join us today! It only takes a minute.</p> -->
+            </div>
+
+            <!-- Form xətaları -->
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {% for error in form.non_field_errors %}
+                {{ error }}
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Email field - DÜZƏLDİ: {{ form.username }} olmalıdır, {{ form.email }} deyil! -->
+            <div class="form-group">
+                <label for="{{ form.username.id_for_label }}">{% translate 'E-mail addresiniz' %}</label>
+                {{ form.username }}  <!-- 🔴 DƏYİŞDİ: form.email əvəzinə form.username -->
+                {% if form.username.errors %}  <!-- 🔴 DƏYİŞDİ: form.email.errors əvəzinə form.username.errors -->
+                <div class="error-message">{{ form.username.errors.0 }}</div>  <!-- 🔴 DƏYİŞDİ -->
+                {% endif %}
+            </div>
+            <br>
+
+            <!-- Password field -->
+            <div class="form-group">
+                <label for="{{ form.password.id_for_label }}">{% translate 'Parol' %}</label>
+                <div class="password-field">
+                    {{ form.password }}
+                    <button type="button" class="toggle-pass" id="toggleLoginPass" aria-label="Show password">
+                        <svg class="icon-eye" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" />
+                            <circle cx="12" cy="12" r="3" />
+                        </svg>
+                        <svg class="icon-eye-off" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" style="display: none;">
+                            <path d="M17.94 17.94A10.94 10.94 0 0 1 12 19C5 19 1 12 1 12a21.77 21.77 0 0 1 5.06-5.94" />
+                            <path d="M10.58 10.58A3 3 0 0 0 12 15a3 3 0 0 0 2.42-4.42" />
+                            <path d="M1 1l22 22" />
+                        </svg>
+                    </button>
+                </div>
+                {% if form.password.errors %}
+                <div class="error-message">{{ form.password.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Remember me and Forgot password -->
+            <div class="form-options">
+                <label class="remember-me">
+                    {{ form.remember_me }}
+                    <span class="checkmark"></span>
+                    Remember me
+                </label>
+                <a href="{% url 'password_reset' %}" class="forgot-link">Forgot password?</a>
+            </div>
+
+            <!-- Submit button -->
+            <button type="submit" class="btn-login">Login</button>
+            
+            <!-- Register link -->
+            <p class="register-link">
+                Don't have an account? <a href="{% url 'register' %}">Create Account</a>
+            </p>
+        </form>
+
+        <!-- Password toggle script -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const toggleBtn = document.getElementById('toggleLoginPass');
+                if (toggleBtn) {
+                    toggleBtn.addEventListener('click', function() {
+                        const passwordInput = document.getElementById('{{ form.password.id_for_label }}');
+                        const iconEye = this.querySelector('.icon-eye');
+                        const iconEyeOff = this.querySelector('.icon-eye-off');
+                        
+                        if (passwordInput) {
+                            if (passwordInput.type === 'password') {
+                                passwordInput.type = 'text';
+                                iconEye.style.display = 'none';
+                                iconEyeOff.style.display = 'block';
+                            } else {
+                                passwordInput.type = 'password';
+                                iconEye.style.display = 'block';
+                                iconEyeOff.style.display = 'none';
+                            }
+                        }
+                    });
+                }
+
+                // Auto-hide alerts after 5 seconds
+                const alerts = document.querySelectorAll('.alert');
+                alerts.forEach(function(alert) {
+                    setTimeout(function() {
+                        alert.style.transition = 'opacity 0.5s ease';
+                        alert.style.opacity = '0';
+                        setTimeout(function() {
+                            alert.style.display = 'none';
+                        }, 500);
+                    }, 5000);
+                });
+            });
+        </script>
+
+        <!-- Əgər formda remember_me field-i yoxdursa, bu alternativ -->
+        {% if not form.remember_me %}
+        <style>
+            .form-options {
+                justify-content: flex-end !important;
+            }
+            .remember-me {
+                display: none !important;
+            }
+        </style>
+        {% endif %}
+    </div>
+</main>
+<br><br>
+{% endblock %}

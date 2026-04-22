@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% load static i18n %}
+{% block container %}
+<main style="background-color: white;" class="main">
+  <div class="page-title dark-background">
+    <div class="container d-lg-flex justify-content-between align-items-center">
+      <h1 class="mb-2 mb-lg-0">{% translate 'Məhsul Səbətiniz' %}</h1>
+      <nav class="breadcrumbs">
+        <ol>
+          <li><a href="{% url 'index' %}">{% translate 'Ana Səhifə' %}</a></li>
+          <li><a href="{% url 'all_product' %}">{% translate 'Məhsullar' %}</a></li>
+          <li><a href="{% url 'all_list' %}">{% translate 'Sevimlilər' %}</a></li>
+          <li class="current">{% translate 'Məsul səbətiniz' %}</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+  <br>
+    <div class="cart-wrapper">
+        <!-- Header -->
+        <div class="cart-header">
+            <div class="header-left">
+                <i class="fas fa-shopping-cart"></i>
+                <h2>{% translate 'Alış-veriş səbəti' %}</h2>
+            </div>
+            <div class="header-right" style="display: flex; align-items: center; gap: 20px;">
+                <!-- Search box -->
+                <div class="cart-search" style="position: relative;">
+                    <i class="fas fa-search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #999; font-size: 14px; z-index: 1;"></i>
+                    <input type="text" 
+                        id="cartSearch" 
+                        placeholder="Səbətdə axtar..." 
+                        style="padding: 8px 35px 8px 35px; 
+                                border: 1px solid #e0e0e0; 
+                                border-radius: 30px; 
+                                width: 280px; 
+                                font-size: 14px; 
+                                outline: none; 
+                                transition: all 0.3s;
+                                background-color: white;">
+                </div>
+                <span class="item-count">{{ cart_items.count }} {% translate 'Əşyalar' %}</span>
+            </div>
+        </div>
+
+
+        <!-- Cart Table -->
+        <table class="cart-table" id="cartTable">
+            <thead>
+                <tr>
+                    <th>{% translate 'Məhsul' %}</th>
+                    <th>{% translate 'İstehsalçı' %}</th>
+                    <th>{% translate 'Miqdar' %}</th>
+                    <th>{% translate 'Vahid qiymet' %}</th>
+                    <th>{% translate 'Cəmi' %}</th>
+                    <th>Çıxarın</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart_items %}
+                <tr class="cart-row" data-item-id="{{ item.id }}" data-unit-price="{{ item.product.special_price|default:item.product.old_price }}">
+                    <td>
+                        <div class="product-cell">
+                            {% if item.product.product_image %}
+                            <img src="{{ item.product.product_image.url }}" alt="{{ item.product.title }}" style="cursor: pointer;" onclick="expandImage(this.src)">
+                            {% else %}
+                            <img src="{% static 'assets/img/portfolio/product-1.jpg' %}" alt="{{ item.product.title }}" style="cursor: pointer;" onclick="expandImage(this.src)">
+                            {% endif %}
+                            <div class="product-info">
+                                <span class="product-name">{{ item.product.title }}</span>
+                                <span class="product-sku">#{{ item.product.id }}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="manufacturer-info">
+                            <span class="manufacturer-name">{{ item.product.manufacturer.title|default:"Model X1" }}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <!-- UI Quantity Control -->
+                        <div class="quantity-control" data-item-id="{{ item.id }}">
+                            <button type="button" class="qty-btn minus" onclick="updateQuantityUI('{{ item.id }}', 'decrease')">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <input type="number" class="qty-input" id="ui-quantity-{{ item.id }}" value="{{ item.quantity }}" min="1" max="99" data-item-id="{{ item.id }}" onchange="updateQuantityUI('{{ item.id }}', 'input', this.value)">
+                            <button type="button" class="qty-btn plus" onclick="updateQuantityUI('{{ item.id }}', 'increase')">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Hidden Original Quantity (server-dan gələn) -->
+                        <input type="hidden" id="original-quantity-{{ item.id }}" value="{{ item.quantity }}">
+                        
+                        <!-- Hidden Current Quantity (UI-da dəyişən) -->
+                        <input type="hidden" id="current-quantity-{{ item.id }}" value="{{ item.quantity }}">
+                    </td>
+                    <td>
+                        <span class="unit-price" id="unitPrice-{{ item.id }}">${{ item.product.special_price|default:item.product.old_price|floatformat:2 }}</span>
+                    </td>
+                    <td>
+                        <span class="total-price" id="totalPrice-{{ item.id }}" data-total="{{ item.total_price|floatformat:2 }}">${{ item.total_price|floatformat:2 }}</span>
+                    </td>
+                    <td>
+                        <form action="{% url 'remove_from_cart' item.id %}" method="POST" style="display: inline;">
+                            {% csrf_token %}
+                            <button class="btn-remove">
+                                <i class="fas fa-trash-alt"></i>
+                                <span>{% translate 'Çıxarın' %}</span>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 40px;">
+                        <i class="fas fa-shopping-cart" style="font-size: 48px; color: #ccc; margin-bottom: 20px;"></i>
+                        <h3>{% translate 'Səbətiniz boşdur' %}</h3>
+                        <p>{% translate 'Məhsul əlavə etmək üçün' %} <a href="{% url 'all_product'%}">{% translate 'məhsullara' %}</a> {% translate 'keçin.' %} </p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <!-- Cart Summary -->
+        <div class="cart-summary">
+            <div class="summary-row">
+                <span class="summary-label">{% translate 'Cəm:' %}</span>
+                <span class="summary-value" id="subtotal">${{ sub_total|floatformat:2 }}</span>
+            </div>
+            <div class="summary-row">
+                <span class="summary-label">Shipping:</span>
+                <span class="summary-value" id="shipping">{% translate 'Pulsuz' %}</span>
+            </div>
+            <div class="summary-row total">
+                <span class="summary-label">{% translate 'Cəmi' %}:</span>
+                <span class="summary-value" id="total">${{ total|floatformat:2 }}</span>
+            </div>
+        </div>
+
+        <!-- Cart Actions -->
+        <div class="cart-actions">
+            <!-- Update Cart Button - BÜTÜN DƏYİŞİKLİKLƏRİ GÖNDƏRİR -->
+            <button type="submit" class="btn-update" id="updateCartBtn">
+                <i class="fas fa-sync-alt"></i>
+                {% translate 'Səbəti Güncəllə' %}
+            </button>
+            <a href="{% url 'checkout' %}" class="btn-checkout" style="text-decoration: none;">
+                <i class="fas fa-credit-card"></i>
+                <span style="color: white;">{% translate 'Sifariş verin' %}</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- BÜTÜN DƏYİŞİKLİKLƏRİ GÖNDƏRMƏK ÜÇÜN GİZLİ FORM -->
+    <form id="bulkUpdateForm" action="{% url 'update_cart' %}" method="POST" style="display: none;">
+        {% csrf_token %}
+        <div id="bulkUpdateFields"></div>
+    </form>
+
+    <!-- Image Overlay (Lightbox) -->
+    <div class="image-overlay" id="imageOverlay" onclick="closeImage()">
+        <div class="overlay-content">
+            <img src="" alt="Expanded Image" id="expandedImg">
+            <span class="close-btn" onclick="closeImage()">&times;</span>
+        </div>
+    </div>
+</main>
+
+{% endblock %}

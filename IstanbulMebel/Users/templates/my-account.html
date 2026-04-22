@@ -1,0 +1,434 @@
+{% extends "base.html" %}
+{% load static i18n %}
+{% block container %}
+<main class="main">
+  <div class="page-title dark-background">
+    <div class="container d-lg-flex justify-content-between align-items-center">
+      <h1 class="mb-2 mb-lg-0">{% translate 'Hesab Məlumatları' %}</h1>
+      <nav class="breadcrumbs">
+        <ol>
+          <li><a href="{% url 'index' %}">{% translate 'Ana sehifə' %}</a></li>
+          <li><a href="{% url 'login' %}">{% translate 'Daxil ol' %}</a></li>
+          <li><a href="{% url 'register' %}">{% translate 'Qeydiyyat' %}</a></li>
+          <li class="current">{% translate 'Hesabım' %}</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+  <br><br>
+    <div class="account-wrapper">
+        <!-- Main Content -->
+        <div class="account-content">
+            <!-- AJAX İLƏ GƏLƏN MESAJ ÜÇÜN -->
+            <div id="ajaxMessageContainer" style="display: none; margin-bottom: 20px;">
+                <div id="ajaxMessage" class="alert" style="padding: 12px 20px; border-radius: 8px; font-weight: 500;">
+                    <span id="ajaxMessageText"></span>
+                    <button type="button" class="btn-close" style="float: right; background: none; border: none; font-size: 20px; cursor: pointer;" onclick="this.parentElement.style.display='none';">&times;</button>
+                </div>
+            </div>
+            <!-- Sidebar -->
+            <div class="account-sidebar">
+                <div class="user-profile">
+                    <div class="profile-image">
+                        
+                        <!-- PROFILE IMAGE -->
+                        <img 
+                            src="{% if profile.profile_image %}{{ profile.profile_image.url }}{% else %}https://randomuser.me/api/portraits/men/32.jpg{% endif %}" 
+                            alt="{{ user.get_full_name }}" 
+                            id="sidebar-profile-image"
+                        >
+
+                        <!-- HIDDEN FILE INPUT (JS BUNA BAĞLANIR) -->
+                        <input 
+                            type="file"
+                            id="profile_image_input"
+                            name="profile_image"
+                            accept="image/jpeg,image/png,image/jpg,image/gif"
+                            style="display: none;"
+                        >
+
+                        <!-- UPLOAD BUTTON -->
+                        <button 
+                            class="edit-profile" 
+                            type="button" 
+                            onclick="document.getElementById('profile_image_input').click();"
+                        >
+                            <i class="fas fa-camera"></i>
+                        </button>
+                    </div>
+
+                    <!-- NAME -->
+                    <h3 id="sidebar-user-name">
+                        {{ user.get_full_name|default:user.username }}
+                    </h3>
+                    <!-- EMAIL -->
+                    <p class="user-email">{{ user.email }}</p>
+                    <!-- PHONE -->
+                    {% if profile.phone %}
+                        <p class="user-phone" id="sidebar-user-phone">
+                            <i class="fas fa-phone"></i> {{ profile.phone }}
+                        </p>
+                    {% else %}
+                        <p class="user-phone" id="sidebar-user-phone" style="display: none;">
+                            <i class="fas fa-phone"></i>
+                        </p>
+                    {% endif %}
+
+                </div>
+                
+                <!-- SIDEBAR TABS - DIV ilə -->
+                <div class="sidebar-menu">
+                    <ul>
+                        <li class="sidebar-tab {% if active_tab == 'wishlist' %}active{% endif %}" data-tab="wishlist">
+                            <a href="#"><i class="fas fa-heart"></i> {% translate 'Sevimlilər' %} 
+                                <span class="menu-badge">{{ wishlist_count }}</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-tab {% if active_tab == 'carts' %}active{% endif %}" data-tab="carts">
+                            <a href="#"><i class="fas fa-shopping-cart"></i> {% translate 'Səbət' %}
+                                <span class="menu-badge">{{ cart_count }}</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-tab {% if active_tab == 'profile' %}active{% endif %}" data-tab="profile">
+                            <a href="#"><i class="fas fa-user"></i> {% translate 'Profil' %}</a>
+                        </li>
+                        <li class="logout">
+                            <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> {% translate 'Cıxış' %}t</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Main Panel -->
+            <div class="account-main">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <!-- WISHLIST TAB -->
+                <div id="wishlist-tab" class="tab-content {% if active_tab == 'wishlist' or not active_tab %}active{% endif %}">
+                    <div class="section-header">
+                        <h2>{% translate 'Sevimli məhsullar' %}</h2>
+                        <div class="section-actions">
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="wishlist-search" placeholder="Search wishlist...">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="products-table-wrapper">
+                        <table class="products-table wishlist-table">
+                            <thead>
+                                <tr>
+                                    <th>{% translate 'Məhsul' %}</th>
+                                    <th>{% translate 'Qiymət' %}</th>
+                                    <th>{% translate 'Stok' %}</th>
+                                    <th>{% translate 'Tarix'%}</th>
+                                    <th>{% translate 'Hərəkət' %}</th>
+                                </tr>
+                            </thead>
+                            <tbody id="wishlist-table-body">
+                                {% for item in wishlist_items %}
+                                    <tr class="wishlist-item" data-product-id="{{ item.product.id }}">
+                                        <td>
+                                            <div class="product-cell">
+                                                {% if item.product.product_image %}
+                                                    <img src="{{ item.product.product_image.url }}" alt="{{ item.product.title }}">
+                                                {% else %}
+                                                    <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=100&h=100&fit=crop" alt="{{ item.product.title }}">
+                                                {% endif %}
+                                                <div class="product-info">
+                                                    <span class="product-name">{{ item.product.title }}</span>
+                                                    <span class="product-sku">{{ item.product.manufacturer }}</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="price">
+                                                {% if item.product.special_price %}
+                                                    ${{ item.product.special_price }}
+                                                    <span class="old-price">${{ item.product.price }}</span>
+                                                {% else %}
+                                                    ${{ item.product.price }}
+                                                {% endif %}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            {% if item.product.stock > 0 %}
+                                                <span class="stock in">{% translate 'Stokda var' %} ({{ item.product.stock }})</span>
+                                            {% else %}
+                                                <span class="stock out">{% translate 'Stokda yoxdur' %}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td><span class="added-date">{{ item.created|date:"M d, Y" }}</span></td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <button type="button" 
+                                                    class="btn-action cart" 
+                                                    onclick="addToCart('{{ item.product.id }}', this)"
+                                                    {% if item.product.stock == 0 %}disabled{% endif %}
+                                                    title="Add to Cart">
+                                                    <i class="fas fa-shopping-cart"></i>
+                                                </button>
+                                                <button type="button" 
+                                                    class="btn-action delete" 
+                                                    onclick="removeFromWishlist('{{ item.product.id }}', this)"
+                                                    title="Remove">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="5" class="text-center">
+                                            <div class="empty-state">
+                                                <i class="fas fa-heart"></i>
+                                                <p>{% translate 'Sevimlilər siyahınız boşdur' %}</p>
+                                                <a href="{% url 'all_product' %}" class="btn btn-primary">{% translate 'Alış-verişə dəvam edin' %}</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- CARTS TAB -->
+                <div id="carts-tab" class="tab-content {% if active_tab == 'carts' %}active{% endif %}">
+                    <div class="section-header">
+                        <h2>{% translate 'Məhsul səbəti' %}</h2>
+                        <div class="section-actions">
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="cart-search" placeholder="Search in cart...">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="products-table-wrapper">
+                        <table class="products-table cart-table">
+                            <thead>
+                                <tr>
+                                    <th>{% translate 'Məhsul' %}</th>
+                                    <th>{% translate 'Qiymət' %}</th>
+                                    <th>{% translate 'Miqdar' %}</th>
+                                    <th>{% translate 'Cəmi' %}</th>
+                                    <th>{% translate 'Hərəkət' %}</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cart-table-body">
+                                {% for item in cart_items %}
+                                    <tr class="cart-item" data-product-id="{{ item.product.id }}">
+                                        <td>
+                                            <div class="product-cell">
+                                                {% if item.product.product_image %}
+                                                    <img src="{{ item.product.product_image.url }}" alt="{{ item.product.name }}">
+                                                {% else %}
+                                                    <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=100&h=100&fit=crop" alt="{{ item.product.name }}">
+                                                {% endif %}
+                                                <div class="product-info">
+                                                    <span class="product-name">{{ item.product.title }}</span>
+                                                    <span class="product-sku">{{ item.product.manufacturer }}</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="price" data-price="{{ item.product.special_price|default:item.product.old_price }}">
+                                                {% if item.product.special_price %}
+                                                    ${{ item.product.special_price }}
+                                                {% else %}
+                                                    ${{ item.product.price }}
+                                                {% endif %}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="quantity-control">
+                                                <button type="button" class="qty-btn minus" onclick="updateQuantity(this, -1, '{{ item.product.id }}')">
+                                                    <i class="fas fa-minus"></i>
+                                                </button>
+                                                <span class="qty-value">{{ item.quantity }}</span>
+                                                <button type="button" class="qty-btn plus" onclick="updateQuantity(this, 1, '{{ item.product.id }}')">
+                                                    <i class="fas fa-plus"></i>
+                                                </button>
+                                                <input type="hidden" class="quantity-input" value="{{ item.quantity }}">
+                                                <input type="hidden" name="product_id" value="{{ item.product.id }}">
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="total-price">${{ item.total_price|floatformat:2 }}</span>
+                                        </td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <button type="button" 
+                                                    class="btn-action delete" 
+                                                    onclick="removeFromCart('{{ item.product.id }}', this)"
+                                                    title="Remove">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="5" class="text-center">
+                                            <div class="empty-state">
+                                                <i class="fas fa-shopping-cart"></i>
+                                                <p>{% translate 'Səbətiniz boşdur' %}</p>
+                                                <a href="{% url 'all_product' %}" class="btn btn-primary">{% translate 'Alış-verişə dəvam edin' %}</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                            {% if cart_items %}
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="3" class="text-left"><strong id="cart-subtotal">{% translate 'Cəmi:' %} ${{ cart_total|floatformat:2 }}</strong></td>
+                                        <td><strong></strong></td>
+                                    </tr>
+                                </tfoot>
+                            {% endif %}
+                        </table>
+                    </div>
+
+                    {% if cart_items %}
+                        <div class="cart-actions">
+                            <a href="{% url 'checkout' %}" class="btn btn-primary">{% translate 'Sifariş verin' %}</a>
+                            <a href="{% url 'all_product' %}" class="btn btn-outline">{% translate 'Alış-verişə davam edin' %}</a>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- PROFILE TAB -->
+                <div id="profile-tab" class="tab-content {% if active_tab == 'profile' %}active{% endif %}">
+                    <div class="profile-section">
+                        <h2>{% translate 'Profili Redakde et' %}</h2>
+                        <p class="profile-subtitle">{% translate 'İstifadəçi məlumatlarınızı güncəlləyin' %}</p>
+
+                        <form method="POST" enctype="multipart/form-data" id="profile-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="update_profile" value="1">
+
+                            <!-- Profile Photo Upload -->
+                            <div class="profile-upload">
+                                <div class="profile-upload-image">
+                                    {% if profile.profile_image %}
+                                        <img src="{{ profile.profile_image.url }}" alt="{{ user.get_full_name|default:'Profile' }}" id="profile-image-preview">
+                                    {% else %}
+                                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Default Profile" id="profile-image-preview">
+                                    {% endif %}
+                                    
+                                    <button type="button" class="upload-btn" onclick="document.getElementById('profile_image_input').click();">
+                                        <i class="fas fa-camera"></i>
+                                    </button>
+                                </div>
+                                
+                                <div class="upload-info">
+                                    <h4>{% translate 'Profil şəkili' %}</h4>
+                                    
+                                    <div class="upload-actions">
+                                        <button type="button" class="btn-outline" onclick="document.getElementById('profile_image_input').click();">
+                                            <i class="fas fa-upload"></i>{% translate 'Yeni Şəkili yüklə' %} 
+                                        </button>
+                                        
+                                        {% if profile.profile_image %}
+                                        <button type="button" class="btn-outline delete-btn" onclick="confirmDeleteImage();">
+                                            <i class="fas fa-trash"></i> {% translate 'Şəkili sil' %}
+                                        </button>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Profile Form Fields -->
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label><i class="fas fa-user"></i> {% translate 'Ad' %}</label>
+                                    <input type="text" name="first_name" id="first_name" value="{{ user.first_name|default:'' }}" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-user"></i> {% translate 'Soyad' %}</label>
+                                    <input type="text" name="last_name" id="last_name" value="{{ user.last_name|default:'' }}" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label><i class="fas fa-envelope"></i> {% translate 'E-mail' %}</label>
+                                    <input type="email" value="{{ user.email }}" class="form-control disabled-input" readonly disabled>
+                                    <small class="field-note">{% translate 'E-poçt dəyişdirilə bilməz' %}</small>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label><i class="fas fa-phone"></i> {% translate 'Telefon' %}</label>
+                                    <input type="tel" name="phone" id="phone" value="{{ profile.phone|default:'' }}" placeholder="+994 XX XXX XX XX" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label><i class="fas fa-calendar"></i> {% translate 'Doğum tarixi' %}</label>
+                                    <input type="date" name="birthdate" id="birthdate" value="{{ profile.birthdate|date:'Y-m-d' }}" class="form-control">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label><i class="fas fa-venus-mars"></i> {% translate 'Cinsiyyəy' %}</label>
+                                    <select name="gender" id="gender" class="form-control">
+                                        <option value="1" {% if profile.gender == 1 %}selected{% endif %}>{% translate 'Male' %}</option>
+                                        <option value="2" {% if profile.gender == 2 %}selected{% endif %}>{% translate 'Female' %}</option>
+                                        <option value="3" {% if profile.gender == 3 %}selected{% endif %}>{% translate 'Other' %}</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group checkbox-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="subscribe_newsletter" id="subscribe_newsletter" {% if profile.subscribe_newsletter %}checked{% endif %}>
+                                        <span class="checkbox-custom"></span>
+                                        {% translate 'Xəbər büllentinə abonə olun' %}
+                                    </label>
+                                    <small class="checkbox-note">{% translate 'Yeni məhsullar və kampaniyalar haqqında yeniləmələr alın' %}</small>
+                                </div>
+                                
+                                <div class="form-group checkbox-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="receive_offers" id="receive_offers" {% if profile.receive_offers %}checked{% endif %}>
+                                        <span class="checkbox-custom"></span>
+                                        {% translate 'Təkliflər və promosyonlar almaq' %}
+                                    </label>
+                                    <small class="checkbox-note">{% translate 'E-poçt vasitəsilə xüsusi təkliflər və endirimlər əldə edin' %}</small>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="button" class="btn-secondary" onclick="resetProfileForm()">
+                                    <i class="fas fa-undo"></i> {% translate 'Ləğv et' %}
+                                </button>
+                                <button type="submit" class="btn-register" id="updateProfileBtn">
+                                    <i class="fas fa-save"></i> {% translate 'Profil məlumatlarını yenilə' %}
+                                </button>
+                            </div>
+                        </form>
+
+                        {% if profile.profile_image %}
+                        <form method="POST" id="delete-image-form" style="display: none;">
+                            {% csrf_token %}
+                            <input type="hidden" name="delete_profile_image" value="1">
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

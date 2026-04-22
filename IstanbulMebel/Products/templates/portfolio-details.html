@@ -1,0 +1,362 @@
+{% extends "base.html" %}
+{% load static i18n %}
+{% block container %}
+
+<main style="background-color: white;" class="main">
+  <!-- Page Title -->
+  <div class="page-title dark-background">
+    <div class="container d-lg-flex justify-content-between align-items-center">
+      <h1 class="mb-2 mb-lg-0">{% translate 'Məhsul detayları' %}</h1>
+      <nav class="breadcrumbs">
+        <ol>
+          <li><a href="{% url 'index' %}">{% translate 'Ana səhifə' %}</a></li>
+          <li class="current">{% translate 'Məhsulun detallı səhifəsi' %}</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+  <!-- End Page Title -->
+
+  <!-- Portfolio Details Section -->
+<section id="portfolio-details" class="portfolio-details section">
+    <div class="container" data-aos="fade-up" data-aos-delay="100">
+      <div class="row gy-4">
+        <div class="col-lg-8">
+          <div class="portfolio-details-slider swiper init-swiper">
+            <div class="swiper-wrapper align-items-center">
+              <!-- Ana şəkil -->
+              {% if product_details.product_image %}
+              <div class="swiper-slide">
+                <a href="{% url 'all_product' %}"><img src="{{ product_details.product_image.url }}"
+                    alt="{{ product_details.title }}"></a>
+              </div>
+              {% endif %}
+              <!-- Detallı şəkil 1 -->
+              {% if product_details.product_detail_imge1 %}
+              <div class="swiper-slide">
+                <a href="{% url 'all_product' %}"><img src="{{ product_details.product_detail_imge1.url }}"
+                    alt="{{ product_details.title }} - 1"></a>
+              </div>
+              {% endif %}
+              <!-- Detallı şəkil 2 -->
+              {% if product_details.product_detail_imge2 %}
+              <div class="swiper-slide">
+                <a href="{% url 'all_product' %}"><img src="{{ product_details.product_detail_imge2.url }}"
+                    alt="{{ product_details.title }} - 2"></a>
+              </div>
+              {% endif %}
+              <!-- Detallı şəkil 3 -->
+              {% if product_details.product_detail_imge3 %}
+              <div class="swiper-slide">
+                <a href="{% url 'all_product' %}"><img src="{{ product_details.product_detail_imge3.url }}"
+                    alt="{{ product_details.title }} - 3"></a>
+              </div>
+              {% endif %}
+              <!-- Detallı şəkil 4 -->
+              {% if product_details.product_detail_imge4 %}
+              <div class="swiper-slide">
+                <a href="{% url 'all_product' %}"><img src="{{ product_details.product_detail_imge4.url }}"
+                    alt="{{ product_details.title }} - 4"></a>
+              </div>
+              {% endif %}
+              <!-- Detallı şəkil 5 -->
+              {% if product_details.product_detail_imge5 %}
+              <div class="swiper-slide">
+                <a href="{% url 'all_product' %}"><img src="{{ product_details.product_detail_imge5.url }}"
+                    alt="{{ product_details.title }} - 5"></a>
+              </div>
+              {% endif %}
+            </div>
+            <!-- Swiper navigation (əgər lazımdırsa) -->
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="portfolio-info" data-aos="fade-up" data-aos-delay="200">
+            <!-- Product Information Başlıq -->
+            <h3 class="product-title">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0d6efd" stroke-width="2">
+                <rect x="3" y="7" width="18" height="14" rx="2" ry="2" />
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+              </svg>
+              {% translate 'Məhsul haqqinda Məlumat' %}
+            </h3>
+            <!-- Məlumat listi -->
+            <ul class="info-list">
+              <li>
+                <span class="info-label">{% translate 'Kateqoriya' %}</span>
+                <span class="info-value">{{ product_details.category }}</span>
+              </li>
+              <li>
+                  <span class="info-label">{% translate 'Rəng' %}</span>
+                  <span class="info-value">
+                      {% if product_details.color %}
+                      <div class="color-wrapper">
+                          <span class="color-box color-circle {{ product_details.color.title|slugify|lower }}"></span>
+                      </div>
+                      {% else %}
+                      <div class="color-wrapper">
+                          <span class="color-text">{% translate 'Rəng yoxdur!' %}</span>
+                          <span class="color-box color-circle gray"></span>
+                      </div>
+                      {% endif %}
+                  </span>
+              </li>
+              <li>
+                <span class="info-label">{% translate 'İstehsalçı' %}</span>
+                <span class="info-value">
+                  {% if product_details.manufacturer %}
+                  <a href="{% url 'all_product' %}?manufacturer={{ product_details.manufacturer.id }}"
+                    class="manufacturer-link">
+                    {{ product_details.manufacturer.title }}
+                  </a>
+                  {% else %}
+                  <span class="text-muted">{% translate 'Göstərilməyib' %}</span>
+                  {% endif %}
+                </span>
+              </li>
+              <li>
+                  <span class="info-label">{% translate 'Miqdar' %}</span>
+                  <span class="info-value">
+                      <div class="quantity-control">
+                          <button class="qty-btn minus" onclick="decreaseQuantity()">−</button>
+                          <input type="number" id="productQuantity" class="qty-input" value="1" min="1" max="99" readonly>
+                          <button class="qty-btn plus" onclick="increaseQuantity()">+</button>
+                      </div>
+                  </span>
+              </li>
+            </ul>
+            <!-- SPECIAL PRICE - AYRI BÖLMƏ -->
+            <div class="special-price-section">
+                <div class="special-price-header">
+                    <span class="special-price-label">{% translate 'Xüsusi qiymət' %}</span>
+                    {% if product_details.discount and product_details.discount > 0 %}
+                        <!-- Endirim varsa - Save X% göstər -->
+                        <span class="discount-badge-large">Save {{ product_details.discount }}%</span>
+                    {% else %}
+                        <!-- Endirim yoxdursa - PREMIUM göstər -->
+                        <span style="font-size: 20px;" class="premium-badge product-badge">{% translate 'PREMIUM' %}</span>
+                    {% endif %}
+                </div>
+                <div class="special-price-value">
+                    ${{ product_details.special_price }}
+                </div>
+                <div class="original-price-reference">
+                    <span>{% translate 'Köhnə qiymət:' %} <span class="was-price">${{ product_details.old_price }}</span></span>
+                </div>
+            </div>
+            <div class="product-info-bottom">
+              <div class="action-buttons">
+                <!-- ADD TO CART -->
+                 <form method="POST" action="{% url 'ajax_add_to_cart' %}" class="add-to-cart-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="product_id" value="{{ product_details.id }}">
+                    <input type="hidden" name="quantity" id="hiddenQuantity" value="1">
+                    <button type="submit" class="btn-add-cart">
+                        <span>{% translate 'Səbətə at' %}</span>
+                        <div class="cart-icon-wrapper">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                <path d="M6 6h15l-1.5 8h-13L6 6z" />
+                                <circle cx="9" cy="20" r="2" />
+                                <circle cx="18" cy="20" r="2" />
+                            </svg>
+                            <span class="icon-cross"></span>
+                        </div>
+                    </button>
+                </form>
+                <!-- WISHLIST (əgər varsa) -->
+                <form method="POST" action="{% url 'ajax_add_to_wishlist' %}" class="add-to-wishlist-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="product_id" value="{{ product_details.id }}">
+                    <button class="btn-wishlist">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                        </svg>
+                    </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="portfolio-description" data-aos="fade-up" data-aos-delay="300">
+          <h2>{% translate 'Exercitationem repudiandae officiis neque suscipit' %}</h2>
+          <p>
+            {{ product_details.text }}
+          </p>
+        </div>
+      </div>
+    </div>
+    <form method="POST" action="" id="commentForm">
+      {% csrf_token %}
+      <div class="forum-container">
+        <!-- FORUM HEADER -->
+        <div class="forum-header">
+          <div class="forum-title">
+            <div class="forum-title-icon">
+              <i class="fas fa-comments"></i>
+            </div>
+            <div class="forum-title-text">
+              <h2>{% translate 'Kommentariya' %}</h2>
+              <!-- SƏHV OLAN BOŞ TRANSLATE SİLİNDİ -->
+              <p>{% translate 'Fikirlərinizi paylaşın' %}</p>
+            </div>
+          </div>
+          <!-- Commentariya sayi  -->
+          <div class="forum-stats">
+            <div class="stat-item">
+              <span class="stat-number" id="commentCount">{{ reviews_count|default:0 }}</span>
+              <span class="stat-label">{% translate 'Rəylər' %}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- HIDDEN INPUTS -->
+        <input type="hidden" name="action" id="actionInput" value="add_review">
+        <input type="hidden" name="parent_id" id="parentId" value="">
+        <input type="hidden" name="reply_to_name" id="replyToName" value="">
+
+        <div class="comment-form-section">
+          <div class="comment-form-header">
+            <div class="comment-form-title">
+              {% translate 'Müzakirə əlavə edin' %}
+              <span>— {% translate 'Fikirlərinizi paylaşın :)' %}</span>
+            </div>
+          </div>
+
+          <!-- AD VƏ SOYAD INPUTLARI -->
+          <div class="name-group">
+            <div class="name-input-wrapper">
+              <div class="name-icon">
+                <i class="fas fa-user"></i>
+              </div>
+              <input type="text" 
+                    class="name-input first-name" 
+                    id="firstName" 
+                    name="name" 
+                    placeholder="Adınız" 
+                    value="{{ form.name.value|default:'' }}"
+                    required>
+            </div>
+            <div class="name-input-wrapper">
+              <div class="name-icon">
+                <i class="fas fa-user-tag"></i>
+              </div>
+              <input type="text" 
+                    class="name-input last-name" 
+                    id="lastName" 
+                    name="surname" 
+                    placeholder="Soyadınız" 
+                    value="{{ form.surname.value|default:'' }}"
+                    required>
+            </div>
+          </div>
+
+          <!-- ===== 5 ULDZUZ REY SİSTEMİ - YALNIZ REVIEW ÜÇÜN ===== -->
+          <div id="ratingSection" class="rating-section">
+            <div class="rating-label">
+              <i class="fas fa-star" style="color: #ffc107;"></i>
+              <span>{% translate 'Reytinqiniz:' %}</span>
+            </div>
+            <div class="rating-stars">
+              <div class="star-rating">
+                <!-- 1 ulduz (ən sol) -->
+                <input type="radio" id="star1" name="rating" value="1">
+                <label for="star1" title="1 star">
+                  <i class="fas fa-star"></i>
+                </label>
+                <!-- 2 ulduz -->
+                <input type="radio" id="star2" name="rating" value="2">
+                <label for="star2" title="2 stars">
+                  <i class="fas fa-star"></i>
+                </label>
+                <!-- 3 ulduz -->
+                <input type="radio" id="star3" name="rating" value="3">
+                <label for="star3" title="3 stars">
+                  <i class="fas fa-star"></i>
+                </label>
+                <!-- 4 ulduz -->
+                <input type="radio" id="star4" name="rating" value="4">
+                <label for="star4" title="4 stars">
+                  <i class="fas fa-star"></i>
+                </label>
+                <!-- 5 ulduz (ən sağ) -->
+                <input type="radio" id="star5" name="rating" value="5">
+                <label for="star5" title="5 stars">
+                  <i class="fas fa-star"></i>
+                </label>
+              </div>
+              <span class="rating-text" id="ratingText">0/5</span>
+            </div>
+          </div>
+
+          <!-- REPLY INFO (GIZLI) -->
+          <div id="replyInfo" style="display: none; margin-bottom: 15px; padding: 12px 16px; background: #e8f4fd; border-radius: 12px; align-items: center; justify-content: space-between;">
+            <div>
+              <i class="fas fa-reply" style="color: #149ddd; margin-right: 8px;"></i>
+              <span>{% translate 'Cavab yazırsınız' %} <span id="replyToDisplayName" style="color: #149ddd; font-weight: 600;"></span></span>
+            </div>
+            <button type="button" id="cancelReply" style="background: none; border: none; color: #ff6b6b; cursor: pointer; font-weight: 600; font-size: 14px;">✕ {% translate 'Ləğv et' %}</button>
+          </div>
+
+          <div class="input-group">
+            <textarea class="comment-input" 
+                      id="commentText" 
+                      name="text" 
+                      placeholder="Şərhinizi bura yazın..." 
+                      required>{{ form.text.value|default:'' }}</textarea>
+          </div>
+          
+          <div class="form-actions">
+            <button type="submit" class="submit-comment" id="submitBtn">
+              <span>{% translate 'Tətbiq et' %}</span>
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- COMMENTARIA LİSTİ -->
+        <div class="comments-section">
+          <div class="comments-header">
+            <div class="comments-header-left">
+              <h3>{% translate 'Rəylər' %}</h3>
+              <span class="comment-count" id="commentCountDisplay">{{ reviews_count|default:0 }}</span>
+            </div>
+            <div class="sort-filter">
+              <i class="fas fa-arrow-down-wide-short"></i>
+              <span>{% translate 'Ən yeni' %}</span>
+            </div>
+          </div>
+
+          <!-- COMMENTS LIST -->
+          <div class="comments-list" id="commentsList">
+            {% for review in reviews %}
+              {% include "includes/comment_item.html" with review=review %}
+            {% empty %}
+              <!-- EMPTY STATE -->
+              <div class="empty-comments" id="emptyComments">
+                <i class="fas fa-comments"></i>
+                <h3>{% translate 'Hələ şərh yoxdur' %}</h3>
+                <p>{% translate 'İlk şərh yazan siz olun!' %}</p>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- LOAD MORE BUTTON -->
+        <div class="load-more">
+          <button type="button" class="btn-load-more" id="loadMoreBtn">
+            <span>{% translate 'Daha çox şərh yükləyin' %}</span>
+            <i class="fas fa-rotate-right"></i>
+          </button>
+        </div>
+      </div>
+    </form>
+  </section>
+
+  <!-- ========================================= COMMENT FORMM SAHESI ==========================================-->
+
+</main>
+
+{% endblock %}

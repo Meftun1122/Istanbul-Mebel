@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% load static i18n %}
+{% block container %}
+<main style="background-color: white;" class="main">
+    <div class="page-title dark-background">
+        <div class="container d-lg-flex justify-content-between align-items-center">
+            <h1 class="mb-2 mb-lg-0">{% translate 'Qeydiyyatdan keçin' %}</h1>
+            <nav class="breadcrumbs">
+                <ol>
+                    <li><a href="{% url 'index' %}">{% translate 'Ana sehifə' %}</a></li>
+                    <li><a href="{% url 'account' %}">{% translate 'Hesabım' %}</a></li>
+                    <li><a href="{% url 'login' %}">{% translate 'Daxil ol' %}</a></li>
+                    <li class="current">{% translate 'Qeydiyyat' %}</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <br>
+    <div class="register-wrapper">
+        <form method="POST" action="{% url 'register' %}" class="register-card">
+            {% csrf_token %}
+            <h2>{% translate 'Hesab yaradın' %}</h2>
+            <p class="subtitle">{% translate 'Bu gün bizə qoşulun! Yalnız bir dəqiqə çəkir.' %}</p>
+
+            <!-- Form xətaları -->
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {% for error in form.non_field_errors %}
+                {{ error }}
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- First Name & Last Name -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="{{ form.first_name.id_for_label }}">{% translate 'Ad' %}</label>
+                    {{ form.first_name }}
+                    {% if form.first_name.errors %}
+                    <div class="error-message">{{ form.first_name.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.last_name.id_for_label }}">{% translate 'Soyad' %}</label>
+                    {{ form.last_name }}
+                    {% if form.last_name.errors %}
+                    <div class="error-message">{{ form.last_name.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Email -->
+            <div class="form-row">
+                <div class="form-group full">
+                    <label for="{{ form.email.id_for_label }}">{% translate 'Email Ünvaniniz' %}</label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                    <div class="error-message">{{ form.email.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Password & Confirm Password -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="{{ form.current_password.id_for_label }}">{% translate 'Parol' %}</label>
+                    {{ form.current_password }}
+                    {% if form.current_password.errors %}
+                    <div class="error-message">{{ form.current_password.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.confirm_password.id_for_label }}">{% translate 'Parolu Testiqlə' %}</label>
+                    {{ form.confirm_password }}
+                    {% if form.confirm_password.errors %}
+                    <div class="error-message">{{ form.confirm_password.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Phone & Birth Date -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="{{ form.phone.id_for_label }}">{% translate 'Telefon' %}</label>
+                    {{ form.phone }}
+                    {% if form.phone.errors %}
+                    <div class="error-message">{{ form.phone.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.birthdate.id_for_label }}">{% translate 'Doğum Tarixi' %}</label>
+                    {{ form.birthdate }}
+                    {% if form.birthdate.errors %}
+                    <div class="error-message">{{ form.birthdate.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Gender Radio Buttons -->
+            <div class="form-row">
+                <div class="form-group full">
+                    <label>{% translate 'Cinsiyyət' %}</label>
+                    <div class="radio-group">
+                        {% for radio in form.gender %}
+                        <label class="radio-option">
+                            {{ radio.tag }}
+                            <span class="gender-label">{{ radio.choice_label }}</span>
+                        </label>
+                        {% endfor %}
+                    </div>
+                    {% if form.gender.errors %}
+                    <div class="error-message">{{ form.gender.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            <button type="submit" class="btn-register">
+                {% translate 'Hesabı yarat' %}
+            </button>
+            <p class="login-link">{% translate 'Hesabınız mövcuddur?' %} <a href="{% url 'login' %}">{% translate 'Daxil ol' %}</a></p>
+        </form>
+    </div>
+</main>
+
+{% endblock %}

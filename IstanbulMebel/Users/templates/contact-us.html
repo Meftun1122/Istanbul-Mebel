@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+{% load static i18n %}
+{% block container %}
+<main class="main">
+  <div class="contact-us-page">
+    <div class="contact-page">
+      <div class="container">
+        <!-- Header -->
+        <div class="contact-header">
+          <h1>{% translate 'Bizimlə' %} <span>{% translate 'Əlaqə' %}</span></h1>
+          <p>{% translate 'Sual və ya təklifiniz varsa, bizə yazın. Ən qısa zamanda cavablandıracağıq.' %}</p>
+        </div>
+        <div class="contact-wrapper">
+          <!-- Sol tərəf - Contact Info (eyni qalır) -->
+          <div class="contact-info">
+            <div class="info-card">
+              <div class="info-icon">
+                <i class="fas fa-map-marker-alt"></i>
+              </div>
+              <div class="info-content">
+                <h3>{% translate 'Ünvan' %}</h3>
+                <p>{{ contact_info.address }}</p>
+              </div>
+            </div>
+            <div class="info-card">
+              <div class="info-icon">
+                <i class="fas fa-phone-alt"></i>
+              </div>
+              <div class="info-content">
+                <h3>{% translate 'Telefon' %}</h3>
+                <a href="tel:+994505556677">+994 {{ contact_info.call_us }}</a>
+              </div>
+            </div>
+            <div class="info-card">
+              <div class="info-icon">
+                <i class="fas fa-envelope"></i>
+              </div>
+              <div class="info-content">
+                <h3>{% translate 'E-poçt' %}</h3>
+                <a href="mailto:info@istanbulmebel.az">{{ contact_info.email_us }}</a>
+              </div>
+            </div>
+            <!-- Xəritə - İş saatları kartının altında -->
+            <div class="col-lg-12">
+              <div class="info-wrap">
+                <!-- Google Maps -->
+                <iframe src="https://www.google.com/maps?q=40.625111,48.648611&z=15&output=embed" frameborder="0"
+                  style="border:0; width: 100%; height: 270px;" allowfullscreen="" loading="lazy"
+                  referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+
+                <small class="text-muted mt-2 d-block">
+                  <i class="bi bi-info-circle"></i>
+                  {% translate 'Xəritəni böyütmək üçün ctrl + scroll düyməsindən istifadə edin' %}
+                </small>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sağ tərəf - Yenilənmiş Form -->
+          <div class="contact-form-wrapper">
+            <div class="form-header">
+              <h2>{% translate 'Bizə yazın' %}</h2>
+            </div>
+
+            <form method="post" id="contactForm" class="contact-form">
+              {% csrf_token %}
+
+              <!-- User field (hidden) -->
+              {{ form.user }}
+
+              <!-- İkili sütun - Ad və Soyad -->
+              <div class="form-row">
+                <div class="form-group floating">
+                  <input type="text" name="first_name" id="first_name" class="form-control" placeholder=""
+                    value="{{ form.first_name.value|default:'' }}" required>
+                  <label for="first_name">{% translate 'Adınız' %} <span>*</span></label>
+                  <div class="form-icon">
+                    <i class="fas fa-user"></i>
+                  </div>
+                  {% if form.first_name.errors %}
+                  <div class="error-message">
+                    {% for error in form.first_name.errors %}
+                    <small><i class="fas fa-exclamation-circle"></i> {{ error }}</small>
+                    {% endfor %}
+                  </div>
+                  {% endif %}
+                </div>
+
+                <div class="form-group floating">
+                  <input type="text" name="last_name" id="last_name" class="form-control" placeholder=""
+                    value="{{ form.last_name.value|default:'' }}" required>
+                  <label for="last_name">{% translate 'Soyadınız' %} <span>*</span></label>
+                  <div class="form-icon">
+                    <i class="fas fa-user"></i>
+                  </div>
+                  {% if form.last_name.errors %}
+                  <div class="error-message">
+                    {% for error in form.last_name.errors %}
+                    <small><i class="fas fa-exclamation-circle"></i> {{ error }}</small>
+                    {% endfor %}
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+
+              <!-- Email -->
+              <div class="form-group floating">
+                <input type="email" name="email_address" id="email_address" class="form-control" placeholder=""
+                  value="{{ form.email_address.value|default:'' }}" required>
+                <label for="email_address">{% translate 'E-poçt' %} <span>*</span></label>
+                <div class="form-icon">
+                  <i class="fas fa-envelope"></i>
+                </div>
+                {% if form.email_address.errors %}
+                <div class="error-message">
+                  {% for error in form.email_address.errors %}
+                  <small><i class="fas fa-exclamation-circle"></i> {{ error }}</small>
+                  {% endfor %}
+                </div>
+                {% endif %}
+              </div>
+
+              <!-- Subject (Mövzu) -->
+              <div class="form-group floating">
+                <input type="text" name="subject" id="subject" class="form-control" placeholder=""
+                  value="{{ form.subject.value|default:'' }}" required>
+                <label for="subject">{% translate 'Mövzu' %} <span>*</span></label>
+                <div class="form-icon">
+                  <i class="fas fa-tag"></i>
+                </div>
+                {% if form.subject.errors %}
+                <div class="error-message">
+                  {% for error in form.subject.errors %}
+                  <small><i class="fas fa-exclamation-circle"></i> {{ error }}</small>
+                  {% endfor %}
+                </div>
+                {% endif %}
+              </div>
+
+              <!-- Message -->
+              <div class="form-group floating">
+                <textarea name="message" id="message" class="form-control" placeholder="" rows="5"
+                  required>{{ form.message.value|default:'' }}</textarea>
+                <label for="message">{% translate 'Mesajınız' %} <span>*</span></label>
+                <div class="form-icon">
+                  <i class="fas fa-comment"></i>
+                </div>
+                {% if form.message.errors %}
+                <div class="error-message">
+                  {% for error in form.message.errors %}
+                  <small><i class="fas fa-exclamation-circle"></i> {{ error }}</small>
+                  {% endfor %}
+                </div>
+                {% endif %}
+              </div>
+
+              <!-- Non-field errors -->
+              {% if form.non_field_errors %}
+              <div class="non-field-errors">
+                {% for error in form.non_field_errors %}
+                <small><i class="fas fa-exclamation-circle"></i> {{ error }}</small>
+                {% endfor %}
+              </div>
+              {% endif %}
+
+              <!-- Buton -->
+              <button type="submit" class="submit-btn" id="submitBtn">
+                <span>{% translate 'Mesajı Göndər' %}</span>
+                <i class="fas fa-paper-plane"></i>
+              </button>
+
+              <!-- Güvən mesajı -->
+              <div class="form-footer">
+                <div class="trust-badge">
+                  <i class="fas fa-shield-alt"></i>
+                  <span>{% translate 'Məlumatlarınız təhlükəsizdir' %}</span>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal" id="successModal">
+      <div class="modal-content">
+        <div class="modal-icon">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <h3>{% translate 'Mesajınız Göndərildi!' %}</h3>
+        <button class="modal-btn" onclick="closeModal()">{% translate 'Bağla' %}</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+{% endblock %}

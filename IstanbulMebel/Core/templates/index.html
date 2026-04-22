@@ -1,0 +1,241 @@
+{% extends "base.html" %}
+{% load static i18n %}
+{% block container %}
+<main style="background-color: white;" class="main">
+  <!-- Hero Section -->
+  <section id="hero" class="hero section dark-background">
+    <img src="{% static 'assets/img/istabul-mebel.jpg' %}" alt="" data-aos="fade-in" class="">
+    <div style="position: relative; top: 200px;" class="container" data-aos="fade-up" data-aos-delay="100">
+      <h2> İstanbul Mebel </h2>
+      <p>{% translate 'Dizayın və Xoşbəxtliyin birləşdiyi nöqtə..)' %}<span class="typed"
+          data-typed-items="{% translate 'Daimi Xoşbəxtliyiniz üçün :), Yataq-Qonaq-Mətbəx, Ofis və Yumşaq Mebeller' %}"></span><span
+          class="typed-cursor typed-cursor--blink" aria-hidden="true"></span><span
+          class="typed-cursor typed-cursor--blink" aria-hidden="true"></span></p>
+    </div>
+  </section>
+  <!-- Products Section -->
+  <section id="portfolio" class="portfolio section light-background">
+    <!-- Section Title -->
+    <div class="container section-title" data-aos="fade-up">
+      <h2>Mebellər</h2>
+    </div>
+    <p class="container">
+      {% translate 'Araşdırmalara görə dolablar və vitrinlər o dövrün ən vacib mebel parçası hesab edilir, çünki onlar Neolit cəmiyyətində evlərdə simvolik əşyaların oyma sənət əsərlərinin nümayiş etdirilməsi üçün istifadə edilirdi. İllər ötdükcə insanlar Neolit dövründə olduğu kimi daha müasir mebelləri həm gündəlik həyatımız üçün funksional, həm də zövq oxşamaq üçün bir sənət əsəri kimi istifadə etməyə başladılar. Müasir həyatımızda daha çox rahatlığa və dəbdəbəyə diqqət yetirməklə, material və dayanıqlıq daha güclü və uzun ömürlü olsa da, əksər mebellərin əsas dizaynı eyni qaldı. Kreslolar sadəcə oturmaq üçün deyil, yellənmə funksiyaları əlavə olunaraq istirahət etmək üçün də bir vasitə kimi dizayn edilməyə başlanıldı. Mebeldəki dizayn dəyişikliyi bir növ cəmiyyətimizin sadə yaşam tərzindən lüks və imtiyazlı həyatlara doğru təkamülünü göstərir.' %}
+    </p>
+    <!-- End Section Title -->
+    <div class="showcase-container">
+      <div class="products-grid">
+        {% for product in core %}
+        <div class="product-card {% if product.discount %}sale{% endif %}">
+          {% if product.discount %}
+          <div class="card-badge sale-badge">-{{ product.discount }}%</div>
+          {% else %}
+          <div class="card-badge sale-badge">{% translate 'Premium' %}</div>
+          {% endif %}
+          <div class="card-image">
+            <a href="{% url 'product_details' product.pk %}">
+              <img
+                src="{% if product.product_image %}{{ product.product_image.url }}{% else %}{% static 'assets/img/product/product-4.jpg' %}{% endif %}"
+                alt="{{ product.title }}" class="product-img" id="productImg-{{ product.id }}">
+            </a>
+            <div class="card-actions">
+              <form method="post" action="{% url 'ajax_add_to_wishlist' %}" class="add-to-wishlist-form">
+                  {% csrf_token %}
+                  <input type="hidden" name="product_id" value="{{ product.id }}">
+                  <button type="submit" class="action-btn">
+                      <i class="far fa-heart"></i>
+                  </button>
+              </form>
+              <form method="post" action="{% url 'ajax_add_to_cart' %}" class="add-to-cart-form">
+                  {% csrf_token %}
+                  <input type="hidden" name="product_id" value="{{ product.id }}">
+                  <button type="submit" class="action-btn">
+                      <i class="fas fa-shopping-cart"></i>
+                  </button>
+              </form>
+            </div>
+          </div>
+          <div class="card-content">
+            <h3 class="card-title">{{ product.title }}</h3>
+            <div class="card-price">
+              <!-- Cari qiymət -->
+              <span class="current">₺{{ product.special_price }}</span>
+              <!-- Əgər old_price varsa və discount varsa göstər -->
+              {% if product.old_price and product.old_price > product.special_price %}
+              <span class="old">₺{{ product.old_price }}</span>
+              {% endif %}
+            </div>
+            {% if product.rating > 0 %}
+            <div class="product-rating">
+              {% for i in "12345" %}
+              {% if forloop.counter <= product.rating %} <i class="fas fa-star" style="color: #FFD700;"></i>
+                {% else %}
+                <i class="far fa-star" style="color: #ccc;"></i>
+                {% endif %}
+                {% endfor %}
+                <span>({{ product.reviews.count }})</span>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center">
+          <p>{% translate 'Hələ heç bir məhsul əlavə edilməyib.' %}</p>
+        </div>
+        {% endfor %}
+      </div>
+      <!-- Pagination hissəsi-->
+      {% if is_paginated %}
+      <div class="pagination-container">
+        <div class="pagination">
+          {% if page_obj.has_previous %}
+          <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.manufacturer %}&manufacturer={{ request.GET.manufacturer }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.color %}&color={{ request.GET.color }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}#portfolio"
+            class="page-link prev" title="Previous Page">
+            <i class="fas fa-chevron-left"></i>
+          </a>
+          {% else %}
+          <span class="page-link prev disabled">
+            <i class="fas fa-chevron-left"></i>
+          </span>
+          {% endif %}
+
+          <!-- Nömrələnmiş səhifələr -->
+          {% for i in paginator.page_range %}
+          {% if page_obj.number == i %}
+          <span class="page-link active">{{ i }}</span>
+          {% elif i > page_obj.number|add:'-3' and i < page_obj.number|add:'3' %} <a
+            href="?page={{ i }}{% if request.GET.manufacturer %}&manufacturer={{ request.GET.manufacturer }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.color %}&color={{ request.GET.color }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}#portfolio"
+            class="page-link">{{ i }}</a>
+            {% endif %}
+            {% endfor %}
+
+            <!-- Növbəti səhifə -->
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if request.GET.manufacturer %}&manufacturer={{ request.GET.manufacturer }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.color %}&color={{ request.GET.color }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}#portfolio"
+              class="page-link next" title="Next Page">
+              <i class="fas fa-chevron-right"></i>
+            </a>
+            {% else %}
+            <span class="page-link next disabled">
+              <i class="fas fa-chevron-right"></i>
+            </span>
+            {% endif %}
+        </div>
+
+        <!-- Məlumat paneli -->
+        <div class="pagination-info">
+          {% translate 'Göstərilir' %} <span class="highlight">{{ page_obj.start_index }}</span> -
+          <span class="highlight">{{ page_obj.end_index }}</span> of
+          <span class="highlight">{{ paginator.count }}</span> {% translate 'Məhsullar' %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </section>
+  <!-- /Products Section -->
+
+  <!--============================================== Services Section ===============================================-->
+  <section id="services" class="services section">
+    <div class="container section-title" data-aos="fade-up">
+      <h2>Services</h2>
+    </div>
+    <p class="container">
+      {% translate 'Araşdırmalara görə dolablar və vitrinlər o dövrün ən vacib mebel parçası hesab edilir, çünki onlar Neolit cəmiyyətində evlərdə simvolik əşyaların oyma sənət əsərlərinin nümayiş etdirilməsi üçün istifadə edilirdi. İllər ötdükcə insanlar Neolit dövründə olduğu kimi daha müasir mebelləri həm gündəlik həyatımız üçün funksional, həm də zövq oxşamaq üçün bir sənət əsəri kimi istifadə etməyə başladılar. Müasir həyatımızda daha çox rahatlığa və dəbdəbəyə diqqət yetirməklə, material və dayanıqlıq daha güclü və uzun ömürlü olsa da, əksər mebellərin əsas dizaynı eyni qaldı. Kreslolar sadəcə oturmaq üçün deyil, yellənmə funksiyaları əlavə olunaraq istirahət etmək üçün də bir vasitə kimi dizayn edilməyə başlanıldı. Mebeldəki dizayn dəyişikliyi bir növ cəmiyyətimizin sadə yaşam tərzindən lüks və imtiyazlı həyatlara doğru təkamülünü göstərir.' %}
+    </p>
+    <!-- End Section Title -->
+    <div class="container">
+      <div class="row gy-4">
+        {% for service in services %}
+        <div class="col-lg-4 col-md-6 service-item d-flex" data-aos="fade-up" data-aos-delay="100">
+          <div class="icon flex-shrink-0">
+            {% if service.icons %}
+            <img width="30px" height="30px" src="{{ service.icons.url }}" alt="{{ service.title }}">
+            {% endif %}
+          </div>
+          <div>
+            <h4 class="title">
+              <a href="{% url 'service_details' service.pk %}" class="stretched-link">{{ service.title }}</a>
+            </h4>
+            <p class="description">{{ service.descriptions }}</p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="image-overlay" id="imageOverlay" onclick="closeImage()">
+      <div class="overlay-content">
+        <img src="" alt="Böyük Şəkil" id="expandedImg">
+        <button class="close-btn" onclick="closeImage()"><i class="fas fa-times"></i></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================= Testimonials Section ===========================================-->
+  <section id="testimonials" class="testimonials section light-background">
+    <!-- End Section Title -->
+    <div class="container" data-aos="fade-up" data-aos-delay="100">
+      <div class="section-title">
+        <h2>{% translate 'Müştərilərimizin fikirləri' %}</h2>
+        
+      </div>
+      
+      <div class="swiper testimonials-slider">
+        <div class="swiper-wrapper">
+          {% for review in all_reviews %}
+            <div class="swiper-slide">
+              <div class="testimonial-item">
+                <p>
+                  <i class="bi bi-quote quote-icon-left"></i>
+                  <span>{{ review.text|truncatechars:200 }}</span>
+                  <i class="bi bi-quote quote-icon-right"></i>
+                </p>
+                
+                <!-- Məhsul adı -->
+                <div class="product-name" style="margin: 5px 0;">
+                  <small style="color: #149ddd;">{% translate 'Məhsul:' %} {{ review.product.title|truncatechars:50 }}</small>
+                </div>
+                
+                <!-- Rəy ulduzları -->
+                <div class="review-stars" style="margin: 10px 0;">
+                  {% for i in "12345"|make_list %}
+                    {% if forloop.counter <= review.rating %}
+                      <i class="fas fa-star" style="color: #ffc107;"></i>
+                    {% else %}
+                      <i class="far fa-star" style="color: #e2e8f0;"></i>
+                    {% endif %}
+                  {% endfor %}
+                  <span style="font-size: 14px; margin-left: 8px;">({{ review.rating }}/5)</span>
+                </div>
+                
+                <!-- İstifadəçi məlumatları -->
+                <h3>{{ review.full_name }}</h3>
+                <h4>{{ review.created|date:"d.m.Y" }}</h4>
+              </div>
+            </div>
+          {% empty %}
+            <div class="swiper-slide">
+              <div class="testimonial-item">
+                <p>
+                  <i class="bi bi-quote quote-icon-left"></i>
+                  <span>{% translate 'Hələ heç bir rəy yoxdur. İlk rəy yazan siz olun!' %}</span>
+                  <i class="bi bi-quote quote-icon-right"></i>
+                </p>
+                <h3>{% translate 'Rəy yoxdur' %}</h3>
+                <h4>{% translate 'İlk rəyi siz yazın' %}</h4>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+        
+        <!-- Pagination -->
+        <div class="swiper-pagination"></div>
+        
+        <!-- Navigation buttons (istəyə bağlı) -->
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+      </div>
+    </div>
+  </section>
+  <!-- /Testimonials Section -->
+</main>
+{% endblock %}

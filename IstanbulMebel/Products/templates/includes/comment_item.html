@@ -1,0 +1,107 @@
+{% load static %}
+<div class="comment-card" data-id="{{ review.id }}" data-name="{{ review.full_name }}">
+  <div class="comment-header">
+    <div class="comment-user">
+      <div class="comment-avatar avatar-blue">
+        {% if review.name %}
+          <span>{{ review.name|first|upper }}</span>
+        {% else %}
+          <i class="fas fa-user"></i>
+        {% endif %}
+      </div>
+      <div class="comment-user-info">
+        <div class="comment-user-name">{{ review.full_name }}</div>
+        <div class="comment-date">
+          <i class="far fa-clock"></i>
+          {{ review.created|timesince }} ago
+        </div>
+      </div>
+    </div>
+    <div class="comment-badge">
+      <i class="fas fa-crown"></i>
+      Contributor
+    </div>
+  </div>
+
+  <!-- ULDZUZ REY GÖSTERİCİSİ -->
+  {% if review.rating %}
+  <div class="comment-rating">
+    <div class="rating-display">
+      <div class="stars-display">
+        {% for i in "12345"|make_list %}
+          {% if forloop.counter <= review.rating %}
+            <i class="fas fa-star" style="color: #ffc107;"></i>
+          {% else %}
+            <i class="far fa-star" style="color: #e2e8f0;"></i>
+          {% endif %}
+        {% endfor %}
+      </div>
+      <span class="rating-score">{{ review.rating }}.0</span>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- COMMENT TEXT -->
+  <div class="comment-content">
+    <div class="comment-text">
+      {{ review.text|linebreaksbr }}
+    </div>
+  </div>
+
+  <!-- COMMENT ACTIONS -->
+  <div class="comment-actions">
+    <div class="comment-action action-like" data-id="{{ review.id }}">
+      <i class="far fa-heart"></i>
+      <span class="like-count">{{ review.likes }}</span>
+    </div>
+    <div class="comment-action action-dislike" data-id="{{ review.id }}">
+      <i class="far fa-thumbs-down"></i>
+      <span class="dislike-count">{{ review.dislikes }}</span>
+    </div>
+    <div class="comment-action action-reply" data-id="{{ review.id }}" data-name="{{ review.full_name }}">
+      <i class="far fa-comment"></i>
+      <span>Reply</span>
+    </div>
+  </div>
+
+  <!-- REPLIES SECTION -->
+  <div class="replies-section" id="replies-{{ review.id }}">
+    {% if review.get_replies %}
+      {% for reply in review.get_replies %}
+        <div class="reply-card" data-reply-id="{{ reply.id }}" data-comment-id="{{ review.id }}">
+          <div class="reply-avatar avatar-green">
+            {% if reply.name %}
+              <span>{{ reply.name|first|upper }}</span>
+            {% else %}
+              <i class="fas fa-user"></i>
+            {% endif %}
+          </div>
+          <div class="reply-content">
+            <div class="reply-header">
+              <span class="reply-name">{{ reply.full_name }}</span>
+              <span class="reply-date">{{ reply.created|timesince }} ago</span>
+            </div>
+            <div class="reply-text">
+              {% if reply.reply_to_name %}
+                <span class="reply-to">@{{ reply.reply_to_name }}</span>
+              {% endif %}
+              {{ reply.text|linebreaksbr }}
+            </div>
+            <div class="reply-actions">
+              <span class="reply-action reply-like" data-reply-id="{{ reply.id }}">
+                <i class="far fa-heart"></i> 
+                <span class="like-count">{{ reply.likes }}</span>
+              </span>
+              <span class="reply-action reply-to-reply" 
+                    data-reply-id="{{ reply.id }}" 
+                    data-reply-name="{{ reply.full_name }}" 
+                    data-comment-id="{{ review.id }}">
+                <i class="far fa-comment"></i> Reply
+              </span>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    {% endif %}
+  </div>
+</div>
