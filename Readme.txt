@@ -1,4 +1,3 @@
 Thanks for downloading this template!
-
-Template Name: IstanbulMebel
+Project Name: IstanbulMebel
 Author: Meftun Dadashov

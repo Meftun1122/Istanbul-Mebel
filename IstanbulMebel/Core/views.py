@@ -3,6 +3,7 @@ from .models import *
 from Products.models import ProductModel, ReviewModel
 from django.views.generic import TemplateView, DetailView, ListView 
 from django.db.models import Q, Avg, Count
+from django.http import HttpResponseRedirect
 # Create your views here.
 
 
@@ -68,3 +69,22 @@ class ServiceDetailsView(DetailView):
     pk_url_kwarg = 'pk'
 
 
+
+
+
+def change_language(request):
+    if request.GET.get ('lang') == 'az' or request.GET.get ('lang') == 'en' or request.GET.get ('lang') == 'ru' == 'default':
+        # print (request.META.get('HTTP_REFERER'))
+        path_list = request.META.get('HTTP_REFERER').split('/')
+        # print (path_list)
+
+        if request.GET.get ('lang') == 'default':
+            path_list.pop(4)
+        else:
+            path_list.insert(4, request.GET.get ('lang'))
+        path = '/'.join(path_list)
+        # print (path)
+    
+        response = HttpResponseRedirect(path)
+        response.set_cookie('django_language', request.GET.get ('lang'))
+        return response

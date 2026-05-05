@@ -1,10 +1,9 @@
 version: '3.1'
 
 services:
-
   postgres:
     container_name: postgres
-    image: postgres
+    image: postgres:13   # versiyanı aşağı saldım
     restart: "always"
     ports:
       - 5432:5432
