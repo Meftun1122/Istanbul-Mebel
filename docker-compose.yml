@@ -1,12 +1,14 @@
 version: '3.1'
-
+# Run All Services
 services:
+  # Run Service
   postgres:
     container_name: postgres
-    image: postgres:13   # versiyanı aşağı saldım
+    image: postgres
     restart: "always"
     ports:
       - 5432:5432
     volumes:
-      - ./postgres:/var/lib/postgresql/data
+      - ./postgres:/var/lib/postgresql/
     env_file: .env
+

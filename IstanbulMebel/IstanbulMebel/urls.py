@@ -22,13 +22,14 @@ from Core.views import IndexView
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views.i18n import set_language
+from Core.views import change_language
 
 
 
 urlpatterns = [
-    # Dil dəyişmə URL-i (i18n_patterns xaricində olmalıdır)
     path('i18n/', include('django.conf.urls.i18n')),
     path('set-language/', set_language, name='set_language'),
+    path('change_language/', change_language, name='change_language'),
 ]
 
 # Dil prefiksli URL-lər
@@ -39,6 +40,7 @@ urlpatterns += i18n_patterns(
     path('products/', include('Products.urls')),
     path('order/', include('Order.urls')),
     path('users/', include('Users.urls')),
+    prefix_default_language=False
 )
 
 

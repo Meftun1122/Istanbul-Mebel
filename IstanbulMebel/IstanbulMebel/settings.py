@@ -31,6 +31,10 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+
+    # Language translation app
+    'modeltranslation',
+
     # Django Apps 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -175,6 +179,5 @@ LOGOUT_REDIRECT_URL = '/'  # Əsas səhifəyə yönləndir
 LOGOUT_REDIRECT_URL = 'index'  # URL name ilə
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'index'
-
 
 

@@ -41,8 +41,8 @@ class ManufacturerModel(BaseModel):
 #  ========================================================  #
 
 class ColorModel(BaseModel):
-    title = models.CharField(max_length=50, verbose_name='Rəngin adı', help_text='Maximum 50 character')
-    product_color = models.CharField(max_length=50, verbose_name='Məhsulun Rəngi', help_text='Maximum 50 character')
+    title = models.CharField(max_length=50, verbose_name='Rəngin adı')
+    product_color = models.CharField(max_length=50, verbose_name='Məhsulun Rəngi')
     description = models.TextField(verbose_name='Rəng haqqında', blank=True, null=True)
 
     class Meta:
@@ -50,7 +50,15 @@ class ColorModel(BaseModel):
         verbose_name_plural = 'Rənglər'
 
     def __str__(self):
+        return self.get_display_title()
+    
+    def get_display_title(self):
+        """Həmişə Azərbaycanca adı qaytar"""
+        if hasattr(self, 'title_az') and self.title_az:
+            return self.title_az
         return self.title
+    
+    
 
 
 
@@ -61,7 +69,7 @@ class ColorModel(BaseModel):
 class ProductModel(BaseModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, verbose_name='User')
     title = models.CharField(max_length=100, verbose_name='Məhsul adı')
-    descriptions = models.TextField(verbose_name='Məhsul haqqında', blank=True, null=True)
+    description = models.TextField(verbose_name='Məhsul haqqında', blank=True, null=True)
     special_price = models.FloatField(default=0, verbose_name='Yeni qiymət')
     old_price = models.FloatField(default=0, verbose_name='Köhnə qiymət')
     discount = models.IntegerField(verbose_name='Endirim', blank=True, null=True)
@@ -95,6 +103,7 @@ class ProductModel(BaseModel):
         if reviews.exists():
             return sum(reviews.rating for review in reviews) / reviews.count()
         return 0 
+    
     
 
 

@@ -5,14 +5,22 @@
  * Author: BootstrapMade.com
  * License: https://bootstrapmade.com/license/
  * 
- * DÜZƏLDİLMİŞ VERSİYA - TAM AJAX DƏSTƏYİ (Səhifə yenilənmir)
- * FİKS: Profil ad və soyad dərhal dəyişir
- * FİKS: Telefon nömrəsi dərhal dəyişir
- * FİKS: BÜTÜN ALERTLAR SİLİNDİ
+ * DÜZƏLDİLMİŞ VERSİYA - TAM AJAX DƏSTƏYİ
+ * FİKS: Navbar fixed olduğu üçün scroll offset düzəldildi
  */
 
 (function () {
   "use strict";
+
+  // ============================================================
+  // FIX: Navbar fixed olduğu üçün scroll offset
+  // ============================================================
+  function getHeaderOffset() {
+    if (window.innerWidth <= 1199) {
+      return 60; // Mobil padding-top
+    }
+    return 300; // Desktop header eni
+  }
 
   // ========== HEADER TOGGLE ==========
   const headerToggleBtn = document.querySelector('.header-toggle');
@@ -184,15 +192,15 @@
   }
   window.addEventListener("load", initSwiper);
 
-  // ========== CORRECT SCROLLING FOR HASH LINKS ==========
+  // ========== FIXED: CORRECT SCROLLING FOR HASH LINKS ==========
   window.addEventListener('load', function () {
     if (window.location.hash) {
       let section = document.querySelector(window.location.hash);
       if (section) {
         setTimeout(() => {
-          let scrollMarginTop = getComputedStyle(section).scrollMarginTop;
+          let offset = getHeaderOffset();
           window.scrollTo({
-            top: section.offsetTop - parseInt(scrollMarginTop || 0),
+            top: section.offsetTop - offset,
             behavior: 'smooth'
           });
         }, 100);
@@ -200,15 +208,16 @@
     }
   });
 
-  // ========== NAVMENU SCROLLSPY ==========
+  // ========== FIXED: NAVMENU SCROLLSPY with offset ==========
   let navmenulinks = document.querySelectorAll('.navmenu a');
 
   function navmenuScrollspy() {
+    let offset = getHeaderOffset();
     navmenulinks.forEach(navmenulink => {
       if (!navmenulink.hash) return;
       let section = document.querySelector(navmenulink.hash);
       if (!section) return;
-      let position = window.scrollY + 200;
+      let position = window.scrollY + offset;
       if (position >= section.offsetTop && position <= (section.offsetTop + section.offsetHeight)) {
         document.querySelectorAll('.navmenu a.active').forEach(link => link.classList.remove('active'));
         navmenulink.classList.add('active');
@@ -226,8 +235,6 @@
     const contents = document.querySelectorAll('.tab-content');
     
     if (tabs.length === 0) return;
-    
-    console.log('🏷️ Account tabs found:', tabs.length);
     
     function switchTab(tabId) {
       tabs.forEach(tab => tab.classList.remove('active'));
@@ -283,19 +290,13 @@
 
   // ========== ACCOUNT AJAX FUNCTIONS ==========
   function initAccountAjax() {
-    // ========== ACCOUNT SƏHİFƏSİNİ YOXLA ==========
     const isAccountPage = window.location.pathname.includes('/account/') || 
                           window.location.pathname.includes('/users/account/') ||
                           document.querySelector('.account-sidebar') !== null;
     
-    if (isAccountPage) {
-      console.log('✅ initAccountAjax: Account page detected - ACTIVATING full AJAX support');
-    } else {
-      console.log('initAccountAjax: Non-account page, limited AJAX only');
-      return;
-    }
+    if (!isAccountPage) return;
     
-    // ========== CSS ANİMASİYALARI ==========
+    // CSS Animations
     if (!document.querySelector('#notification-styles')) {
       const style = document.createElement('style');
       style.id = 'notification-styles';
@@ -316,7 +317,6 @@
       document.head.appendChild(style);
     }
     
-    // ========== CSRF TOKEN ==========
     function getCSRFToken() {
       const token = document.querySelector('[name=csrfmiddlewaretoken]');
       if (token) return token.value;
@@ -326,12 +326,10 @@
       return cookie ? cookie.split('=')[1] : '';
     }
 
-    // ========== BİLDİRİŞ SİSTEMİ ==========
     let notificationTimeout = null;
     function showNotification(message, type = 'success') {
       const old = document.querySelector('.custom-notification');
       if (old) old.remove();
-      
       if (notificationTimeout) clearTimeout(notificationTimeout);
       
       const notif = document.createElement('div');
@@ -366,15 +364,10 @@
       }, 3000);
     }
 
-    // ========== AJAX SORĞUSU ==========
     async function sendAjaxRequest(action, data = {}) {
       const formData = new FormData();
       const csrfToken = getCSRFToken();
-      
-      if (csrfToken) {
-        formData.append('csrfmiddlewaretoken', csrfToken);
-      }
-      
+      if (csrfToken) formData.append('csrfmiddlewaretoken', csrfToken);
       formData.append(action, 'true');
       
       Object.keys(data).forEach(key => {
@@ -387,13 +380,9 @@
         const response = await fetch(window.location.href, {
           method: 'POST',
           body: formData,
-          headers: {
-            'X-Requested-With': 'XMLHttpRequest'
-          }
+          headers: { 'X-Requested-With': 'XMLHttpRequest' }
         });
-        
         const result = await response.json();
-        console.log(`📦 ${action} response:`, result);
         return result;
       } catch (error) {
         console.error(`❌ ${action} error:`, error);
@@ -401,7 +390,6 @@
       }
     }
 
-    // ========== BADGE VƏ CART TOTAL YENİLƏ ==========
     function updateSidebarBadges(cartCount, wishlistCount) {
       if (cartCount !== undefined) {
         const cartBadges = document.querySelectorAll('.sidebar-tab[data-tab="carts"] .menu-badge, .sidebar-menu li[data-tab="carts"] .menu-badge, .cart-count');
@@ -410,7 +398,6 @@
           badge.style.display = cartCount === 0 ? 'none' : 'inline-block';
         });
       }
-      
       if (wishlistCount !== undefined) {
         const wishlistBadges = document.querySelectorAll('.sidebar-tab[data-tab="wishlist"] .menu-badge, .sidebar-menu li[data-tab="wishlist"] .menu-badge, .wishlist-count');
         wishlistBadges.forEach(badge => {
@@ -423,7 +410,6 @@
     function updateCartTotal() {
       let total = 0;
       const rows = document.querySelectorAll('#cart-table-body tr');
-      
       rows.forEach(row => {
         if (row.style.display !== 'none' && !row.querySelector('.empty-state')) {
           const totalPriceEl = row.querySelector('.total-price');
@@ -433,22 +419,15 @@
           }
         }
       });
-      
       const cartSubtotal = document.getElementById('cart-subtotal');
       if (cartSubtotal) cartSubtotal.textContent = `Total: $${total.toFixed(2)}`;
-      
       const tfootTotal = document.querySelector('.cart-table tfoot td strong');
       if (tfootTotal) tfootTotal.textContent = `Total: $${total.toFixed(2)}`;
-      
       return total;
     }
 
-    // ========== BÜTÜN AD ELEMENTLƏRİNİ YENİLƏ ==========
     function updateAllNameElements(firstName, lastName) {
-      console.log('🔄 updateAllNameElements called with:', { firstName, lastName });
-      
       const fullName = `${firstName} ${lastName}`.trim();
-      
       const selectors = [
         '.sidebar-user-name', '.sidebar-menu .user-name', '.account-sidebar .user-name',
         '.profile-sidebar .user-name', '.sidebar .user-name', '.profile-name',
@@ -456,38 +435,26 @@
         '.user-fullname', '.display-name', '.welcome-text', '.greeting',
         '.user-greeting', '.navbar-user-name', '.header-user-name', '.nav-user-name',
         '.topbar-user-name', '#user-name', '#profile-name', '#sidebar-user-name',
-        '#account-user-name', '#display-name', '[data-user-name]', '[data-profile-name]',
-        'span.user-name', 'div.user-name', 'strong.user-name', '.account-username',
-        '.dashboard-user-name', '.profile-header-name', '.card-title.user-name'
+        '#account-user-name', '#display-name', '[data-user-name]', '[data-profile-name]'
       ];
-      
-      let updatedCount = 0;
       selectors.forEach(selector => {
-        const elements = document.querySelectorAll(selector);
-        elements.forEach(el => {
+        document.querySelectorAll(selector).forEach(el => {
           if (el && el.textContent !== fullName && fullName) {
             el.textContent = fullName;
-            updatedCount++;
           }
         });
       });
-      
-      console.log(`✅ Updated ${updatedCount} name elements to "${fullName}"`);
     }
 
-    // ========== PROFİL YENİLƏMƏ ==========
     window.updateProfileInfoAJAX = async function(submitBtn, event) {
       if (event && event.preventDefault) {
         event.preventDefault();
         event.stopPropagation();
       }
       
-      console.log('🟢 updateProfileInfoAJAX: STARTING - Page will NOT reload');
-      
       const firstNameInput = document.querySelector('#first_name, [name="first_name"], #id_first_name');
       const lastNameInput = document.querySelector('#last_name, [name="last_name"], #id_last_name');
       const phoneInput = document.querySelector('#phone, [name="phone"], #id_phone');
-      
       const firstName = firstNameInput?.value || '';
       const lastName = lastNameInput?.value || '';
       const phone = phoneInput?.value || '';
@@ -495,16 +462,11 @@
       
       let gender = '';
       const genderRadio = document.querySelector('input[name="gender"]:checked');
-      if (genderRadio) {
-        gender = genderRadio.value;
-      } else {
-        gender = document.querySelector('#gender, [name="gender"], select[name="gender"]')?.value || '';
-      }
+      if (genderRadio) gender = genderRadio.value;
+      else gender = document.querySelector('#gender, [name="gender"], select[name="gender"]')?.value || '';
       
       const receiveOffers = document.querySelector('#receive_offers, [name="receive_offers"]')?.checked || false;
       const subscribeNewsletter = document.querySelector('#subscribe_newsletter, [name="subscribe_newsletter"]')?.checked || false;
-      
-      console.log('📤 Sending profile data:', { firstName, lastName, phone, birthdate, gender });
       
       const btn = submitBtn || event?.target?.closest('button[type="submit"]');
       const originalHtml = btn?.innerHTML || 'Update';
@@ -523,108 +485,29 @@
         subscribe_newsletter: subscribeNewsletter ? 'on' : ''
       });
       
-      console.log('📥 Server response:', JSON.stringify(result, null, 2));
-      
       if (result.status === 'success') {
-        let newFirstName = firstName;
-        let newLastName = lastName;
-        let newPhone = phone;
-        
+        let newFirstName = firstName, newLastName = lastName, newPhone = phone;
         if (result.user && result.user.first_name) {
           newFirstName = result.user.first_name;
           newLastName = result.user.last_name || '';
         } else if (result.data && result.data.user) {
           newFirstName = result.data.user.first_name || '';
           newLastName = result.data.user.last_name || '';
-        } else if (result.profile && result.profile.first_name) {
-          newFirstName = result.profile.first_name;
-          newLastName = result.profile.last_name || '';
         } else if (result.first_name) {
           newFirstName = result.first_name;
           newLastName = result.last_name || '';
         }
-        
         if (result.profile?.phone) newPhone = result.profile.phone;
         else if (result.phone) newPhone = result.phone;
-        else if (result.data?.profile?.phone) newPhone = result.data.profile.phone;
-        else if (result.user?.phone) newPhone = result.user.phone;
         
-        console.log('📝 Extracted data:', { newFirstName, newLastName, newPhone });
+        if (firstNameInput && firstNameInput.value !== newFirstName) firstNameInput.value = newFirstName;
+        if (lastNameInput && lastNameInput.value !== newLastName) lastNameInput.value = newLastName;
+        if (phoneInput && phoneInput.value !== newPhone && newPhone) phoneInput.value = newPhone;
         
-        if (firstNameInput && firstNameInput.value !== newFirstName) {
-          firstNameInput.value = newFirstName;
-        }
-        if (lastNameInput && lastNameInput.value !== newLastName) {
-          lastNameInput.value = newLastName;
-        }
-        if (phoneInput && phoneInput.value !== newPhone && newPhone) {
-          phoneInput.value = newPhone;
-          console.log('✅ Phone input updated to:', newPhone);
-        }
-        
-        if (newPhone) {
-          const phoneDisplaySelectors = [
-            '.user-phone', '.profile-phone', '.phone-number', 
-            '.contact-phone', '.sidebar-phone', '#user-phone'
-          ];
-          phoneDisplaySelectors.forEach(selector => {
-            document.querySelectorAll(selector).forEach(el => {
-              if (el && el.textContent !== newPhone) {
-                el.textContent = newPhone;
-              }
-            });
-          });
-        }
-        
-        if (newFirstName || newLastName) {
-          updateAllNameElements(newFirstName, newLastName);
-        }
-        
-        let birthdateValue = '';
-        if (result.profile?.birthdate) birthdateValue = result.profile.birthdate;
-        else if (result.birthdate) birthdateValue = result.birthdate;
-        else if (result.data?.profile?.birthdate) birthdateValue = result.data.profile.birthdate;
-        
-        if (birthdateValue) {
-          document.querySelectorAll('#birthdate, [name="birthdate"], #id_birthdate, input[type="date"]').forEach(el => {
-            if (el) el.value = birthdateValue;
-          });
-        }
-        
-        let genderValue = '';
-        if (result.profile?.gender) genderValue = result.profile.gender;
-        else if (result.gender) genderValue = result.gender;
-        else if (result.data?.profile?.gender) genderValue = result.data.profile.gender;
-        
-        if (genderValue) {
-          document.querySelectorAll(`input[name="gender"][value="${genderValue}"]`).forEach(el => {
-            if (el) el.checked = true;
-          });
-        }
-        
-        if (result.profile) {
-          const offersCheckbox = document.querySelector('#receive_offers, [name="receive_offers"]');
-          if (offersCheckbox && result.profile.receive_offers !== undefined) {
-            offersCheckbox.checked = result.profile.receive_offers === true;
-          }
-          
-          const newsletterCheckbox = document.querySelector('#subscribe_newsletter, [name="subscribe_newsletter"]');
-          if (newsletterCheckbox && result.profile.subscribe_newsletter !== undefined) {
-            newsletterCheckbox.checked = result.profile.subscribe_newsletter === true;
-          }
-        }
-        
-        try {
-          localStorage.setItem('user_first_name', newFirstName);
-          localStorage.setItem('user_last_name', newLastName);
-          localStorage.setItem('user_phone', newPhone);
-        } catch(e) {}
+        if (newFirstName || newLastName) updateAllNameElements(newFirstName, newLastName);
         
         showNotification(result.message || '✅ Profil məlumatları yeniləndi!', 'success');
-        console.log('✅✅✅ PROFILE UPDATED WITHOUT PAGE REFRESH!');
-        
       } else {
-        console.error('❌ Server error:', result);
         showNotification(result.message || '❌ Xəta baş verdi!', 'error');
       }
       
@@ -634,27 +517,18 @@
       }
     };
 
-    // ========== PROFİL FORMU ==========
     const profileForm = document.getElementById('profile-form');
     if (profileForm) {
-      console.log('✅ Profile form found - attaching AJAX handler');
-      
       const newProfileForm = profileForm.cloneNode(true);
       profileForm.parentNode?.replaceChild(newProfileForm, profileForm);
-      
       newProfileForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         e.stopPropagation();
-        console.log('📝 Profile form submitted - PREVENTING page reload');
         const submitBtn = this.querySelector('button[type="submit"], .update-profile-btn, #update-profile-btn');
         await window.updateProfileInfoAJAX(submitBtn, e);
       });
-      console.log('✅ Profile form handler attached');
-    } else {
-      console.warn('⚠️ Profile form not found! Make sure form has id="profile-form"');
     }
-    
-    // ========== PROFİL BUTTONLARI ==========
+
     const profileBtns = document.querySelectorAll('#update-profile-btn, .update-profile-btn, .btn-save-profile, .save-profile-btn, [data-action="update-profile"]');
     profileBtns.forEach(btn => {
       if (!btn.dataset._ajaxAttached) {
@@ -666,16 +540,13 @@
           e.stopPropagation();
           await window.updateProfileInfoAJAX(newBtn, e);
         });
-        console.log('✅ Profile button attached');
       }
     });
 
-    // ========== PROFİL ŞƏKİL YÜKLƏ ==========
     const fileInput = document.getElementById('profile_image_input');
     if (fileInput) {
       const newFileInput = fileInput.cloneNode(true);
       fileInput.parentNode?.replaceChild(newFileInput, fileInput);
-      
       newFileInput.addEventListener('change', async function(e) {
         const file = this.files[0];
         if (!file) return;
@@ -724,17 +595,13 @@
             showNotification(data.message || 'Xəta baş verdi', 'error');
           }
         } catch (err) {
-          console.error(err);
           showNotification('Server xətası!', 'error');
         }
       });
     }
 
-    // ========== PROFİL ŞƏKİL SİL - ALERT SİLİNDİ ==========
     window.confirmDeleteImage = async function() {
-      // ALERT SİLİNDİ - birbaşa silir
       const result = await sendAjaxRequest('delete_profile_image', {});
-      
       if (result.status === 'success') {
         showNotification(result.message, 'success');
         const defaultImg = '/static/images/default-avatar.png';
@@ -747,27 +614,6 @@
       }
     };
 
-    // ========== LocalStorage-dan məlumatları yüklə ==========
-    try {
-      const savedFirstName = localStorage.getItem('user_first_name');
-      const savedLastName = localStorage.getItem('user_last_name');
-      const savedPhone = localStorage.getItem('user_phone');
-      if (savedFirstName || savedLastName) {
-        setTimeout(() => {
-          updateAllNameElements(savedFirstName || '', savedLastName || '');
-        }, 500);
-      }
-      if (savedPhone) {
-        setTimeout(() => {
-          const phoneInput = document.querySelector('#phone, [name="phone"], #id_phone');
-          if (phoneInput && !phoneInput.value) phoneInput.value = savedPhone;
-        }, 500);
-      }
-    } catch(e) {}
-
-    // ========== SƏBƏT VƏ WİSHİST FUNKSİYALARI - ALERTLAR SİLİNDİ ==========
-    
-    // CART-dən silmə - ALERT SİLİNDİ
     window.removeFromCart = async function(productId, element, skipConfirm = false) {
       const row = element?.closest('tr');
       const originalHtml = element?.innerHTML;
@@ -775,9 +621,7 @@
         element.disabled = true;
         element.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
       }
-      
       const result = await sendAjaxRequest('remove_from_cart', { product_id: productId });
-      
       if (result.status === 'success') {
         if (row) {
           row.style.transition = 'opacity 0.3s';
@@ -786,11 +630,6 @@
             row.remove();
             updateSidebarBadges(result.cart_count, result.wishlist_count);
             updateCartTotal();
-            const tbody = document.getElementById('cart-table-body');
-            if (tbody && tbody.children.length === 0) {
-              const emptyState = document.querySelector('#carts-tab .empty-state');
-              if (emptyState) emptyState.style.display = 'block';
-            }
             showNotification('✅ Məhsul səbətdən silindi!', 'success');
           }, 200);
         }
@@ -803,7 +642,6 @@
       }
     };
 
-    // Wishlist-dən silmə - ALERT SİLİNDİ
     window.removeFromWishlist = async function(productId, element) {
       const row = element?.closest('tr');
       const originalHtml = element?.innerHTML;
@@ -811,9 +649,7 @@
         element.disabled = true;
         element.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
       }
-      
       const result = await sendAjaxRequest('remove_from_wishlist', { product_id: productId });
-      
       if (result.status === 'success') {
         if (row) {
           row.style.transition = 'opacity 0.3s';
@@ -821,11 +657,6 @@
           setTimeout(() => {
             row.remove();
             updateSidebarBadges(result.cart_count, result.wishlist_count);
-            const tbody = document.getElementById('wishlist-table-body');
-            if (tbody && tbody.children.length === 0) {
-              const emptyState = document.querySelector('#wishlist-tab .empty-state');
-              if (emptyState) emptyState.style.display = 'block';
-            }
             showNotification('🗑️ Wishlist-dən silindi!', 'success');
           }, 200);
         }
@@ -839,43 +670,29 @@
     };
 
     window.updateQuantity = async function(btn, change, productId) {
-      console.log('🟢 updateQuantity called:', { productId, change });
-      
       const row = btn?.closest('tr');
       if (!row) return;
-      
       const qtySpan = row.querySelector('.qty-value, .quantity-value');
       if (!qtySpan) return;
-      
       let currentQty = parseInt(qtySpan.textContent) || 1;
       let newQty = currentQty + change;
-      
       if (newQty <= 0) {
         await window.removeFromCart(productId, btn, true);
         return;
       }
-      
       const originalHtml = btn.innerHTML;
       btn.disabled = true;
       btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-      
-      const result = await sendAjaxRequest('update_cart_quantity', {
-        product_id: productId,
-        quantity: newQty
-      });
-      
+      const result = await sendAjaxRequest('update_cart_quantity', { product_id: productId, quantity: newQty });
       if (result.status === 'success') {
         qtySpan.textContent = newQty;
-        
         const priceSpan = row.querySelector('.price, .unit-price');
         const totalSpan = row.querySelector('.total-price, .item-total');
-        
         if (priceSpan && totalSpan) {
           let price = parseFloat(priceSpan.textContent.replace(/[^0-9.-]/g, ''));
           if (isNaN(price)) price = 0;
           totalSpan.textContent = `$${(price * newQty).toFixed(2)}`;
         }
-        
         updateCartTotal();
         updateSidebarBadges(result.cart_count, result.wishlist_count);
         showNotification(`📦 Miqdar: ${newQty}`, 'success');
@@ -883,7 +700,6 @@
         showNotification(result.message || '❌ Xəta baş verdi!', 'error');
         qtySpan.textContent = currentQty;
       }
-      
       btn.disabled = false;
       btn.innerHTML = originalHtml;
     };
@@ -895,72 +711,49 @@
         btn.disabled = true;
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
       }
-      
       const result = await sendAjaxRequest('add_to_cart', { product_id: productId });
-      
       if (result.status === 'success') {
         const row = btn?.closest('tr');
         if (row && row.closest('#wishlist-table-body')) {
           row.style.transition = 'opacity 0.3s';
           row.style.opacity = '0';
-          setTimeout(() => {
-            row.remove();
-            updateSidebarBadges(result.cart_count, result.wishlist_count);
-            const tbody = document.getElementById('wishlist-table-body');
-            if (tbody && tbody.children.length === 0) {
-              const emptyState = document.querySelector('#wishlist-tab .empty-state');
-              if (emptyState) emptyState.style.display = 'block';
-            }
-          }, 200);
+          setTimeout(() => { row.remove(); }, 200);
         }
         updateSidebarBadges(result.cart_count, result.wishlist_count);
         showNotification('✅ Səbətə əlavə edildi!', 'success');
       } else {
         showNotification(result.message || '❌ Xəta baş verdi!', 'error');
       }
-      
       if (btn) {
         btn.disabled = false;
         btn.innerHTML = originalHtml;
       }
     };
-
-    setTimeout(() => {
-      if (typeof window.updateCartTotal === 'function') window.updateCartTotal();
-    }, 200);
   }
 
   // ========== SEARCH TOGGLE ==========
   const toggle = document.getElementById("searchToggle");
   const box = document.getElementById("searchBox");
-
   if (toggle && box) {
     toggle.addEventListener("click", (e) => {
       e.stopPropagation();
       box.classList.toggle("active");
     });
-
     document.addEventListener("click", (e) => {
-      if (!e.target.closest(".search-wrapper")) {
-        box.classList.remove("active");
-      }
+      if (!e.target.closest(".search-wrapper")) box.classList.remove("active");
     });
   }
 
   // ========== LANGUAGE TOGGLE ==========
   const langToggle = document.getElementById('langToggle');
   const langMenu = document.getElementById('langMenu');
-
   if (langToggle && langMenu) {
     langToggle.addEventListener('click', function (e) {
       e.stopPropagation();
       langMenu.classList.toggle('show');
     });
-
     document.addEventListener('click', function (e) {
-      if (!langToggle.contains(e.target) && !langMenu.contains(e.target)) {
-        langMenu.classList.remove('show');
-      }
+      if (!langToggle.contains(e.target) && !langMenu.contains(e.target)) langMenu.classList.remove('show');
     });
   }
 
@@ -974,29 +767,12 @@
           speed: 600,
           slidesPerView: 'auto',
           spaceBetween: 20,
-          autoplay: {
-            delay: 5000,
-            disableOnInteraction: false,
-            pauseOnMouseEnter: true,
-          },
-          pagination: {
-            el: '.swiper-pagination',
-            type: 'bullets',
-            clickable: true,
-          },
-          navigation: {
-            nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev',
-          },
-          breakpoints: {
-            320: { slidesPerView: 1, spaceBetween: 10 },
-            768: { slidesPerView: 2, spaceBetween: 15 },
-            1024: { slidesPerView: 'auto', spaceBetween: 20 },
-          },
+          autoplay: { delay: 5000, disableOnInteraction: false, pauseOnMouseEnter: true },
+          pagination: { el: '.swiper-pagination', type: 'bullets', clickable: true },
+          navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+          breakpoints: { 320: { slidesPerView: 1, spaceBetween: 10 }, 768: { slidesPerView: 2, spaceBetween: 15 }, 1024: { slidesPerView: 'auto', spaceBetween: 20 } }
         });
-      } catch (e) {
-        console.error('Swiper init error:', e);
-      }
+      } catch (e) { console.error('Swiper init error:', e); }
     }
   }
 
@@ -1023,16 +799,8 @@
 
     const lightbox = document.getElementById('unifiedLightbox');
     const closeBtn = document.getElementById('closeLightboxBtn');
-
-    if (closeBtn) {
-      closeBtn.addEventListener('click', () => window.closeLightbox());
-    }
-
-    if (lightbox) {
-      lightbox.addEventListener('click', (e) => {
-        if (e.target === lightbox) window.closeLightbox();
-      });
-    }
+    if (closeBtn) closeBtn.addEventListener('click', () => window.closeLightbox());
+    if (lightbox) lightbox.addEventListener('click', (e) => { if (e.target === lightbox) window.closeLightbox(); });
 
     window.openLightbox = function(imageSrc) {
       const img = document.getElementById('lightboxImage');
@@ -1045,10 +813,7 @@
 
     window.closeLightbox = function() {
       const lightbox = document.getElementById('unifiedLightbox');
-      if (lightbox) {
-        lightbox.style.display = 'none';
-        document.body.style.overflow = 'auto';
-      }
+      if (lightbox) { lightbox.style.display = 'none'; document.body.style.overflow = 'auto'; }
     };
   }
 
@@ -1065,9 +830,7 @@
   }
 
   document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape' && typeof window.closeLightbox === 'function') {
-      window.closeLightbox();
-    }
+    if (e.key === 'Escape' && typeof window.closeLightbox === 'function') window.closeLightbox();
   });
 
   createAnimatedLightbox();
@@ -1086,50 +849,24 @@
 
 })();
 
-console.log('✅ main.js tam yükləndi - TAM AJAX DƏSTƏYİ (Səhifə yenilənmir) - BÜTÜN ALERTLAR SİLİNDİ');
-
-
-
+console.log('✅ main.js tam yükləndi - FIXED SCROLL OFFSET');
 
 // Testimonial məlumatları
 const tmsData = [
-    {
-        text: "Maecen aliquam, risus at semper. Proin iaculis purus consequat sem cure dignissim.",
-        name: "Saul Goodman",
-        title: "Ceo & Founder"
-    },
-    {
-        text: "Ən yaxşı xidmət! Donec porttitora entum suscipit rhoncus. Çox tövsiyə edirəm.",
-        name: "Kim Wexler",
-        title: "Lead Attorney"
-    },
-    {
-        text: "Accusantium quam, ultricies eget id, aliquam eget nibh et. Mükəmməl komanda!",
-        name: "Mike Ehrmantraut",
-        title: "Security Consultant"
-    },
-    {
-        text: "Bu şirkətlə işləmək böyük zövq idi. Nəticələr gözləntilərimdən də yaxşı oldu.",
-        name: "Jesse Pinkman",
-        title: "Product Manager"
-    }
+    { text: "Maecen aliquam, risus at semper. Proin iaculis purus consequat sem cure dignissim.", name: "Saul Goodman", title: "Ceo & Founder" },
+    { text: "Ən yaxşı xidmət! Donec porttitora entum suscipit rhoncus. Çox tövsiyə edirəm.", name: "Kim Wexler", title: "Lead Attorney" },
+    { text: "Accusantium quam, ultricies eget id, aliquam eget nibh et. Mükəmməl komanda!", name: "Mike Ehrmantraut", title: "Security Consultant" },
+    { text: "Bu şirkətlə işləmək böyük zövq idi. Nəticələr gözləntilərimdən də yaxşı oldu.", name: "Jesse Pinkman", title: "Product Manager" }
 ];
 
-// HTML strukturunu yaradan funksiya
 function renderTestimonial(container) {
-    // HTML strukturunu yarat
     container.innerHTML = `
         <div class="tms-container">
             <div class="tms-header">
                 <h2 class="tms-title">Testimonials</h2>
-                <p class="tms-description">
-                    Proin iaculis purus consequat sem cure digni ssim donec porttitora entum suscipit rhoncus. 
-                    Accusantium quam, ultricies eget id, aliquam eget nibh et.
-                </p>
+                <p class="tms-description">Proin iaculis purus consequat sem cure digni ssim donec porttitora entum suscipit rhoncus. Accusantium quam, ultricies eget id, aliquam eget nibh et.</p>
             </div>
-            
             <div class="tms-divider"></div>
-            
             <div class="tms-wrapper">
                 <div class="tms-card" id="tmsCard">
                     <div class="tms-quote">“</div>
@@ -1137,24 +874,20 @@ function renderTestimonial(container) {
                     <h4 class="tms-customer-name" id="tmsCustomerName"></h4>
                     <p class="tms-customer-title" id="tmsCustomerTitle"></p>
                 </div>
-                
                 <div class="tms-dots" id="tmsDots"></div>
             </div>
         </div>
     `;
     
-    // Elementləri seç
     const reviewTextEl = document.getElementById('tmsReviewText');
     const customerNameEl = document.getElementById('tmsCustomerName');
     const customerTitleEl = document.getElementById('tmsCustomerTitle');
     const dotsContainer = document.getElementById('tmsDots');
     const card = document.getElementById('tmsCard');
-    
     let currentIndex = 0;
     let isAnimating = false;
     let autoSlideInterval;
     
-    // Nöqtələri yarat
     function createDots() {
         dotsContainer.innerHTML = '';
         tmsData.forEach((_, index) => {
@@ -1162,93 +895,43 @@ function renderTestimonial(container) {
             dot.className = 'tms-dot';
             if (index === currentIndex) dot.classList.add('tms-dot-active');
             dot.setAttribute('data-index', index);
-            dot.addEventListener('click', () => {
-                if (index !== currentIndex) {
-                    changeTestimonialWithAnimation(index);
-                    resetAutoSlide();
-                }
-            });
+            dot.addEventListener('click', () => { if (index !== currentIndex) { changeTestimonialWithAnimation(index); resetAutoSlide(); } });
             dotsContainer.appendChild(dot);
         });
     }
     
-    // Aktiv nöqtəni yenilə
     function updateActiveDot() {
         const dots = document.querySelectorAll('.tms-dot');
-        dots.forEach((dot, i) => {
-            if (i === currentIndex) {
-                dot.classList.add('tms-dot-active');
-            } else {
-                dot.classList.remove('tms-dot-active');
-            }
-        });
+        dots.forEach((dot, i) => { if (i === currentIndex) dot.classList.add('tms-dot-active'); else dot.classList.remove('tms-dot-active'); });
     }
     
-    // Animasiya ilə rəyi dəyiş
     function changeTestimonialWithAnimation(newIndex) {
-        if (isAnimating) return;
-        if (newIndex === currentIndex) return;
-        
+        if (isAnimating || newIndex === currentIndex) return;
         isAnimating = true;
         card.classList.add('tms-card-exit');
-        
         setTimeout(() => {
             currentIndex = newIndex;
             reviewTextEl.textContent = tmsData[currentIndex].text;
             customerNameEl.textContent = tmsData[currentIndex].name;
             customerTitleEl.textContent = tmsData[currentIndex].title;
-            
             updateActiveDot();
-            
             card.classList.remove('tms-card-exit');
             card.classList.add('tms-card-enter');
-            
-            setTimeout(() => {
-                card.classList.remove('tms-card-enter');
-                isAnimating = false;
-            }, 400);
+            setTimeout(() => { card.classList.remove('tms-card-enter'); isAnimating = false; }, 400);
         }, 250);
     }
     
-    // Avtomatik slider
-    function startAutoSlide() {
-        autoSlideInterval = setInterval(() => {
-            const nextIndex = (currentIndex + 1) % tmsData.length;
-            changeTestimonialWithAnimation(nextIndex);
-        }, 5000);
-    }
+    function startAutoSlide() { autoSlideInterval = setInterval(() => { const nextIndex = (currentIndex + 1) % tmsData.length; changeTestimonialWithAnimation(nextIndex); }, 5000); }
+    function resetAutoSlide() { clearInterval(autoSlideInterval); startAutoSlide(); }
     
-    function resetAutoSlide() {
-        clearInterval(autoSlideInterval);
-        startAutoSlide();
-    }
-    
-    // İlk məlumatları göstər
-    function init() {
-        createDots();
-        reviewTextEl.textContent = tmsData[0].text;
-        customerNameEl.textContent = tmsData[0].name;
-        customerTitleEl.textContent = tmsData[0].title;
-        startAutoSlide();
-    }
-    
-    init();
+    createDots();
+    reviewTextEl.textContent = tmsData[0].text;
+    customerNameEl.textContent = tmsData[0].name;
+    customerTitleEl.textContent = tmsData[0].title;
+    startAutoSlide();
 }
 
-// Səhifə yükləndikdə komponenti yerləşdir
 document.addEventListener('DOMContentLoaded', () => {
     const root = document.getElementById('testimonial-root');
-    if (root) {
-        renderTestimonial(root);
-    }
+    if (root) renderTestimonial(root);
 });
-
-
-
-
-
-
-
-
-
-

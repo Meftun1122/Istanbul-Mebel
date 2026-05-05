@@ -824,16 +824,16 @@ tr:hover .total-price {
 .wishlist-wrapper .product-cell {
   display: flex;
   align-items: center;
-  gap: 20px; /* 18px-dən 20px-ə */
+  gap: 20px;
 }
 
 .wishlist-wrapper .product-cell img {
-  width: 100px;  /* 85px-dən 100px-ə */
-  height: 100px; /* 85px-dən 100px-ə */
-  border-radius: 20px; /* 18px-dən 20px-ə */
+  width: 100px;
+  height: 100px;
+  border-radius: 20px;
   object-fit: cover;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12); /* Kölgə gücləndi */
-  border: 3px solid white; /* 2px-dən 3px-ə */
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+  border: 3px solid white;
   transition: all 0.3s ease;
   cursor: pointer;
 }
@@ -842,28 +842,6 @@ tr:hover .total-price {
   transform: scale(1.05) translateY(-3px);
   box-shadow: 0 18px 35px rgba(59, 130, 246, 0.3);
   border-color: #3b82f6;
-}
-
-/* Responsive düzəlişlər */
-@media (max-width: 900px) {
-  .wishlist-wrapper .product-cell img {
-    width: 85px;  /* 75px-dən 85px-ə */
-    height: 85px;
-  }
-}
-
-@media (max-width: 700px) {
-  .wishlist-wrapper .product-cell img {
-    width: 75px;  /* 65px-dən 75px-ə */
-    height: 75px;
-  }
-}
-
-@media (max-width: 480px) {
-  .wishlist-wrapper .product-cell img {
-    width: 65px;  /* 55px-dən 65px-ə */
-    height: 65px;
-  }
 }
 
 /* ===== BADGE (Model) ===== */
@@ -1475,7 +1453,7 @@ tr:hover .total-price {
 .ship-box-info {
     background: #ffffff;
     border: 1px solid #e5e5e5;
-    border-left: 4px solid #1774d7; /* açıq göy vurğu */
+    border-left: 4px solid #1774d7;
     border-radius: 6px;
     padding: 20px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
@@ -1490,7 +1468,7 @@ tr:hover .total-price {
 
 .new-account-info,
 .ship-box-info {
-    border-left: 4px solid #1774d7; /* sənin temadakı sarı rəng */
+    border-left: 4px solid #1774d7;
 }
 
 /* ===== CLEAN ORDER TABLE DESIGN (SMALL & EQUAL TEXT) ===== */
@@ -1515,7 +1493,7 @@ tr:hover .total-price {
 .order-col {
   flex: 1;
   padding: 16px 22px;
-  font-size: 15px;          /* 🔹 Hamısı eyni ölçüdə */
+  font-size: 15px;
 }
 
 .order-col.label {
@@ -1535,7 +1513,7 @@ tr:hover .total-price {
 .total-row .value {
   font-weight: 700;
   background: #f3f6fb;
-  color: #111827;           /* mavi rəngi ləğv etdik */
+  color: #111827;
 }
 
 .checkout-title {
@@ -1560,14 +1538,6 @@ tr:hover .total-price {
   background: linear-gradient(to right, #e5e7eb, #f3f4f6);
   border-radius: 2px;
 }
-
-
-
-
-
-
-
-
 
 
 /* =========================================== */
@@ -2156,7 +2126,7 @@ tr:hover .total-price {
 .overlay-content img {
   width: 100%;
   height: 100%;
-  object-fit: contain;  /* contain olaraq dəyişdirildi */
+  object-fit: contain;
   border-radius: 20px;
   box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
 }
@@ -2714,7 +2684,7 @@ select + .input-icon i {
     display: flex;
     flex-direction: column;
     height: fit-content;
-    max-height: 600px; /* Maksimum hündürlük */
+    max-height: 600px;
 }
 
 .order-summary::before {
@@ -2728,7 +2698,7 @@ select + .input-icon i {
     animation: rotate 30s linear infinite;
 }
 
-/* 🔴 YENİ: Scroll edilə bilən məhsul siyahısı */
+/* Scroll edilə bilən məhsul siyahısı */
 .order-items-container {
     max-height: 350px;
     overflow-y: auto;

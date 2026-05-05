@@ -1,1675 +1,1529 @@
-// ========== COMMENT SYSTEM WITH AJAX ==========
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('✅ Comment system with AJAX loaded');
+
+
+// ========== ACCOUNT PAGE - WISHLIST, CART & PROFILE (TƏMİZLƏNMİŞ VERSİYA - COMMENTS SİLİNDİ) ==========
+(function() {
+    'use strict';
     
-    // === Elementləri tap ===
-    const commentForm = document.getElementById('commentForm');
-    const submitBtn = document.getElementById('submitBtn');
-    const commentInput = document.getElementById('commentText');
-    const firstNameInput = document.getElementById('firstName');
-    const lastNameInput = document.getElementById('lastName');
-    const ratingInputs = document.querySelectorAll('.star-rating input');
-    const ratingSection = document.getElementById('ratingSection');
-    const commentsList = document.getElementById('commentsList');
-    const commentCount = document.getElementById('commentCount');
-    const commentCountDisplay = document.getElementById('commentCountDisplay');
-    const emptyComments = document.getElementById('emptyComments');
-    const cancelReplyBtn = document.getElementById('cancelReply');
-    const replyInfo = document.getElementById('replyInfo');
-    const parentId = document.getElementById('parentId');
-    const replyToName = document.getElementById('replyToName');
-    const replyToDisplayName = document.getElementById('replyToDisplayName');
-    const actionInput = document.getElementById('actionInput');
+    // ============================================================
+    // 1. SƏHİFƏNİN ACCOUNT SƏHİFƏSİ OLDUĞUNU YOXLA
+    // ============================================================
+    const isAccountPage = window.location.pathname.includes('/account') || 
+                          window.location.pathname.includes('/my-account') ||
+                          window.location.pathname.includes('/users/account') ||
+                          document.querySelector('.account-sidebar') !== null ||
+                          document.querySelector('.sidebar-menu') !== null ||
+                          document.getElementById('wishlist-tab') !== null;
     
-    // CSRF token
-    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
-    
-    // İstifadəçi məlumatları (əgər giriş edibsə)
-    const currentUser = {
-        id: document.body.dataset.userId || null,
-        name: document.body.dataset.userName || null
-    };
-    
-    // İstifadəçi like/dislike vəziyyətini saxlamaq üçün (sessionStorage)
-    const userInteractions = JSON.parse(sessionStorage.getItem('userInteractions') || '{}');
-    
-    function saveUserInteractions() {
-        sessionStorage.setItem('userInteractions', JSON.stringify(userInteractions));
+    if (!isAccountPage) {
+        console.log('Account JS: Not account page');
+        return;
     }
     
-    // === FORM SUBMIT (YENİ COMMENT VƏ YA REPLY) ===
-    if (commentForm) {
-        commentForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const name = firstNameInput?.value.trim() || '';
-            const surname = lastNameInput?.value.trim() || '';
-            const text = commentInput?.value.trim() || '';
-            const action = actionInput?.value || 'add_review';
-            
-            let rating = 0;
-            if (action === 'add_review') {
-                ratingInputs.forEach(input => {
-                    if (input.checked) {
-                        rating = parseInt(input.value);
-                    }
-                });
+    if (window._accountFinalized) {
+        console.log('Account JS: Already initialized');
+        return;
+    }
+    window._accountFinalized = true;
+    
+    console.log('✅ Account JS: CLEAN VERSION loaded (No comments)');
+    
+    // ============================================================
+    // 2. CSRF TOKEN
+    // ============================================================
+    function getCSRFToken() {
+        const token = document.querySelector('[name=csrfmiddlewaretoken]');
+        if (token && token.value) return token.value;
+        
+        const metaToken = document.querySelector('meta[name="csrf-token"]');
+        if (metaToken) return metaToken.getAttribute('content');
+        
+        const cookie = document.cookie.split('; ').find(row => row.startsWith('csrftoken='));
+        if (cookie) return cookie.split('=')[1];
+        
+        const allInputs = document.querySelectorAll('input[type=hidden]');
+        for (let input of allInputs) {
+            if (input.name && input.name.toLowerCase().includes('csrf')) {
+                return input.value;
             }
+        }
+        
+        return '';
+    }
+    
+    // ============================================================
+    // 3. BİLDİRİŞ SİSTEMİ
+    // ============================================================
+    function showMessage(message, type = 'success') {
+        const oldMsg = document.querySelector('.account-toast');
+        if (oldMsg) oldMsg.remove();
+        
+        const toast = document.createElement('div');
+        toast.className = 'account-toast';
+        
+        let bgColor, icon;
+        if (type === 'success') {
+            bgColor = '#10b981';
+            icon = 'fa-check-circle';
+        } else if (type === 'error') {
+            bgColor = '#ef4444';
+            icon = 'fa-exclamation-circle';
+        } else {
+            bgColor = '#f59e0b';
+            icon = 'fa-exclamation-triangle';
+        }
+        
+        toast.style.cssText = `
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 14px 24px;
+            background: ${bgColor};
+            color: white;
+            border-radius: 12px;
+            z-index: 999999;
+            font-size: 14px;
+            font-weight: 500;
+            font-family: system-ui, sans-serif;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2);
+            animation: slideInUp 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        `;
+        
+        toast.innerHTML = `<i class="fas ${icon}" style="font-size: 18px;"></i> <span>${message}</span>`;
+        document.body.appendChild(toast);
+        
+        toast.onclick = () => toast.remove();
+        
+        setTimeout(() => {
+            if (toast && toast.remove) toast.remove();
+        }, 3000);
+    }
+    
+    // ============================================================
+    // 4. ELEMENTİ YENİLƏ
+    // ============================================================
+    function updateElement(selector, value, isInput = false) {
+        if (!value && value !== 0) return false;
+        
+        try {
+            const elements = document.querySelectorAll(selector);
+            let updated = false;
             
-            if (!name || !surname) {
-                alert('Zəhmət olmasa ad və soyad daxil edin!');
-                return;
-            }
-            
-            if (action === 'add_review' && rating === 0) {
-                alert('Zəhmət olmasa ulduz reyi verin!');
-                return;
-            }
-            
-            if (!text) {
-                alert('Zəhmət olmasa comment yazın!');
-                return;
-            }
-            
-            const fullName = `${name} ${surname}`;
-            
-            const formData = new FormData();
-            formData.append('action', action);
-            formData.append('name', name);
-            formData.append('surname', surname);
-            formData.append('text', text);
-            
-            if (action === 'add_review') {
-                formData.append('rating', rating);
-            } else {
-                formData.append('parent_id', parentId?.value || '');
-                formData.append('reply_to_name', replyToName?.value || '');
-            }
-            
-            formData.append('csrfmiddlewaretoken', csrfToken);
-            
-            fetch(window.location.href, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    if (action === 'add_review') {
-                        const newComment = createCommentElement({
-                            id: data.review.id,
-                            name: fullName,
-                            text: text,
-                            rating: rating,
-                            likes: 0,
-                            dislikes: 0,
-                            created_at: new Date().toISOString(),
-                            user_id: currentUser.id
-                        });
-                        
-                        if (commentsList) {
-                            if (commentsList.firstChild) {
-                                commentsList.insertBefore(newComment, commentsList.firstChild);
-                            } else {
-                                commentsList.appendChild(newComment);
-                            }
+            elements.forEach(el => {
+                if (el) {
+                    if (isInput || el.tagName === 'INPUT' || el.tagName === 'SELECT' || el.tagName === 'TEXTAREA') {
+                        if (el.value !== String(value)) {
+                            el.value = value;
+                            updated = true;
+                            el.dispatchEvent(new Event('change', { bubbles: true }));
+                            el.dispatchEvent(new Event('input', { bubbles: true }));
                         }
-                        
-                        if (emptyComments) {
-                            emptyComments.style.display = 'none';
-                        }
-                        
-                        updateCommentCount(1);
-                        
                     } else {
-                        const targetComment = document.querySelector(`.comment-card[data-id="${parentId.value}"]`);
-                        if (targetComment) {
-                            const repliesSection = targetComment.querySelector('.replies-section');
-                            if (repliesSection) {
-                                const replyHtml = createReplyElement(data.reply, parentId.value);
-                                repliesSection.insertAdjacentHTML('beforeend', replyHtml);
-                            }
+                        if (el.textContent !== String(value)) {
+                            el.textContent = value;
+                            updated = true;
                         }
-                        
-                        cancelReply();
                     }
-                    
-                    clearCommentForm(action === 'add_reply');
-                    showMessage(data.message, 'success');
-                    
-                    // Event listener-ları yenidən əlavə et
-                    attachReplyListeners();
-                    attachLikeDislikeListeners();
-                    
-                } else {
-                    alert('Xəta baş verdi: ' + (data.message || 'Bilinməyən xəta'));
                 }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Xəta baş verdi!');
             });
-        });
-    }
-    
-    // === LIKE/DISLIKE SORĞUSU GÖNDƏR ===
-    window.sendLike = function(itemId, action, isReply = false) {
-        return new Promise((resolve, reject) => {
-            const formData = new FormData();
-            formData.append('action', action);
-            formData.append('review_id', itemId);
-            formData.append('is_reply', isReply);
-            formData.append('csrfmiddlewaretoken', csrfToken);
             
-            fetch(window.location.href, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            })
-            .then(response => response.json())
-            .then(data => resolve(data))
-            .catch(error => reject(error));
-        });
-    };
-    
-    // === LİKE BUTTONLARINA EVENT LİSTENER ƏLAVƏ ET ===
-    function attachLikeDislikeListeners() {
-        // === ƏSAS RƏY LİKE BUTTONLARI ===
-        document.querySelectorAll('.action-like').forEach(btn => {
-            // Köhnə event listener-ları təmizlə
-            const newBtn = btn.cloneNode(true);
-            btn.parentNode.replaceChild(newBtn, btn);
-            
-            const reviewId = newBtn.dataset.id;
-            const userName = newBtn.closest('.comment-card')?.dataset?.name;
-            
-            // İlkin vəziyyəti yoxla
-            if (userInteractions[`liked_${reviewId}`]) {
-                const icon = newBtn.querySelector('i');
-                icon.classList.remove('far', 'fa-heart');
-                icon.classList.add('fas', 'fa-heart');
-                icon.style.color = '#ff4d4d';
-                
-                const likeSpan = newBtn.querySelector('.like-count');
-                if (likeSpan && userInteractions[`likes_${reviewId}`] !== undefined) {
-                    likeSpan.textContent = userInteractions[`likes_${reviewId}`];
-                }
-            }
-            
-            newBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                const reviewId = this.dataset.id;
-                const likeSpan = this.querySelector('.like-count');
-                const icon = this.querySelector('i');
-                const commentCard = this.closest('.comment-card');
-                const commentUserName = commentCard?.querySelector('.comment-user-name')?.textContent;
-                
-                // İstifadəçi öz rəyini bəyənə bilməz
-                if (currentUser.name && commentUserName && commentUserName.includes(currentUser.name)) {
-                    showMessage('Öz rəyinizi bəyənə bilməzsiniz!', 'warning');
-                    return;
-                }
-                
-                // Artıq like edilibsə
-                if (userInteractions[`liked_${reviewId}`]) {
-                    showMessage('Siz artıq bu rəyi bəyənmisiniz!', 'info');
-                    return;
-                }
-                
-                // Animasiya
-                this.style.transform = 'scale(1.2)';
-                setTimeout(() => {
-                    this.style.transform = 'scale(1)';
-                }, 200);
-                
-                // Like sorğusu göndər
-                sendLike(reviewId, 'like_review', false)
-                    .then(data => {
-                        if (data.status === 'success') {
-                            // Like sayını yenilə
-                            if (likeSpan) {
-                                likeSpan.textContent = data.likes;
-                            }
-                            
-                            // İkonu dəyiş
-                            icon.classList.remove('far', 'fa-heart');
-                            icon.classList.add('fas', 'fa-heart');
-                            icon.style.color = '#ff4d4d';
-                            
-                            // Like edildi olaraq işarələ
-                            userInteractions[`liked_${reviewId}`] = true;
-                            userInteractions[`likes_${reviewId}`] = data.likes;
-                            
-                            // Əgər əvvəllər dislike edibsə, onu sil
-                            if (userInteractions[`disliked_${reviewId}`]) {
-                                delete userInteractions[`disliked_${reviewId}`];
-                                delete userInteractions[`dislikes_${reviewId}`];
-                                
-                                // Dislike button-unu yenilə
-                                const dislikeBtn = this.closest('.comment-actions').querySelector('.action-dislike');
-                                if (dislikeBtn) {
-                                    const dislikeIcon = dislikeBtn.querySelector('i');
-                                    dislikeIcon.classList.remove('fas', 'fa-thumbs-down');
-                                    dislikeIcon.classList.add('far', 'fa-thumbs-down');
-                                    dislikeIcon.style.color = '';
-                                    
-                                    const dislikeSpan = dislikeBtn.querySelector('.dislike-count');
-                                    if (dislikeSpan && data.dislikes !== undefined) {
-                                        dislikeSpan.textContent = data.dislikes;
-                                    }
-                                }
-                            }
-                            
-                            saveUserInteractions();
-                            
-                            showMessage('Rəy bəyənildi!', 'success');
-                        } else {
-                            showMessage(data.message || 'Xəta baş verdi!', 'error');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        showMessage('Xəta baş verdi!', 'error');
-                    });
-            });
-        });
-        
-        // === ƏSAS RƏY DİSLİKE BUTTONLARI ===
-        document.querySelectorAll('.action-dislike').forEach(btn => {
-            const newBtn = btn.cloneNode(true);
-            btn.parentNode.replaceChild(newBtn, btn);
-            
-            const reviewId = newBtn.dataset.id;
-            const userName = newBtn.closest('.comment-card')?.dataset?.name;
-            
-            if (userInteractions[`disliked_${reviewId}`]) {
-                const icon = newBtn.querySelector('i');
-                icon.classList.remove('far', 'fa-thumbs-down');
-                icon.classList.add('fas', 'fa-thumbs-down');
-                icon.style.color = '#64748b';
-                
-                const dislikeSpan = newBtn.querySelector('.dislike-count');
-                if (dislikeSpan && userInteractions[`dislikes_${reviewId}`] !== undefined) {
-                    dislikeSpan.textContent = userInteractions[`dislikes_${reviewId}`];
-                }
-            }
-            
-            newBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                const reviewId = this.dataset.id;
-                const dislikeSpan = this.querySelector('.dislike-count');
-                const icon = this.querySelector('i');
-                const commentCard = this.closest('.comment-card');
-                const commentUserName = commentCard?.querySelector('.comment-user-name')?.textContent;
-                
-                // İstifadəçi öz rəyini bəyənməyə bilməz
-                if (currentUser.name && commentUserName && commentUserName.includes(currentUser.name)) {
-                    showMessage('Öz rəyinizi bəyənməyə bilməzsiniz!', 'warning');
-                    return;
-                }
-                
-                if (userInteractions[`disliked_${reviewId}`]) {
-                    showMessage('Siz artıq bu rəyi bəyənməmisiniz!', 'info');
-                    return;
-                }
-                
-                this.style.transform = 'scale(1.2)';
-                setTimeout(() => {
-                    this.style.transform = 'scale(1)';
-                }, 200);
-                
-                sendLike(reviewId, 'dislike_review', false)
-                    .then(data => {
-                        if (data.status === 'success') {
-                            if (dislikeSpan) {
-                                dislikeSpan.textContent = data.dislikes;
-                            }
-                            
-                            icon.classList.remove('far', 'fa-thumbs-down');
-                            icon.classList.add('fas', 'fa-thumbs-down');
-                            icon.style.color = '#64748b';
-                            
-                            userInteractions[`disliked_${reviewId}`] = true;
-                            userInteractions[`dislikes_${reviewId}`] = data.dislikes;
-                            
-                            if (userInteractions[`liked_${reviewId}`]) {
-                                delete userInteractions[`liked_${reviewId}`];
-                                delete userInteractions[`likes_${reviewId}`];
-                                
-                                const likeBtn = this.closest('.comment-actions').querySelector('.action-like');
-                                if (likeBtn) {
-                                    const likeIcon = likeBtn.querySelector('i');
-                                    likeIcon.classList.remove('fas', 'fa-heart');
-                                    likeIcon.classList.add('far', 'fa-heart');
-                                    likeIcon.style.color = '';
-                                    
-                                    const likeSpan = likeBtn.querySelector('.like-count');
-                                    if (likeSpan && data.likes !== undefined) {
-                                        likeSpan.textContent = data.likes;
-                                    }
-                                }
-                            }
-                            
-                            saveUserInteractions();
-                            
-                            showMessage('Rəy bəyənilmədi!', 'success');
-                        } else {
-                            showMessage(data.message || 'Xəta baş verdi!', 'error');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        showMessage('Xəta baş verdi!', 'error');
-                    });
-            });
-        });
-        
-        // === REPLY LİKE BUTTONLARI ===
-        document.querySelectorAll('.reply-like').forEach(btn => {
-            const newBtn = btn.cloneNode(true);
-            btn.parentNode.replaceChild(newBtn, btn);
-            
-            const replyId = newBtn.dataset.replyId;
-            
-            if (userInteractions[`reply_liked_${replyId}`]) {
-                const icon = newBtn.querySelector('i');
-                icon.classList.remove('far', 'fa-heart');
-                icon.classList.add('fas', 'fa-heart');
-                icon.style.color = '#ff4d4d';
-                
-                const likeSpan = newBtn.querySelector('.reply-like-count');
-                if (likeSpan && userInteractions[`reply_likes_${replyId}`] !== undefined) {
-                    likeSpan.textContent = userInteractions[`reply_likes_${replyId}`];
-                }
-            }
-            
-            newBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                const replyId = this.dataset.replyId;
-                const likeSpan = this.querySelector('.reply-like-count');
-                const icon = this.querySelector('i');
-                const replyCard = this.closest('.reply-card');
-                const replyName = replyCard?.querySelector('.reply-name')?.textContent;
-                
-                // İstifadəçi öz cavabını bəyənə bilməz
-                if (currentUser.name && replyName && replyName.includes(currentUser.name)) {
-                    showMessage('Öz cavabınızı bəyənə bilməzsiniz!', 'warning');
-                    return;
-                }
-                
-                if (userInteractions[`reply_liked_${replyId}`]) {
-                    showMessage('Siz artıq bu cavabı bəyənmisiniz!', 'info');
-                    return;
-                }
-                
-                this.style.transform = 'scale(1.2)';
-                setTimeout(() => {
-                    this.style.transform = 'scale(1)';
-                }, 200);
-                
-                sendLike(replyId, 'like_reply', true)
-                    .then(data => {
-                        if (data.status === 'success') {
-                            if (likeSpan) {
-                                likeSpan.textContent = data.likes;
-                            }
-                            
-                            icon.classList.remove('far', 'fa-heart');
-                            icon.classList.add('fas', 'fa-heart');
-                            icon.style.color = '#ff4d4d';
-                            
-                            userInteractions[`reply_liked_${replyId}`] = true;
-                            userInteractions[`reply_likes_${replyId}`] = data.likes;
-                            
-                            if (userInteractions[`reply_disliked_${replyId}`]) {
-                                delete userInteractions[`reply_disliked_${replyId}`];
-                                delete userInteractions[`reply_dislikes_${replyId}`];
-                                
-                                const dislikeBtn = this.closest('.reply-actions').querySelector('.reply-dislike');
-                                if (dislikeBtn) {
-                                    const dislikeIcon = dislikeBtn.querySelector('i');
-                                    dislikeIcon.classList.remove('fas', 'fa-thumbs-down');
-                                    dislikeIcon.classList.add('far', 'fa-thumbs-down');
-                                    dislikeIcon.style.color = '';
-                                    
-                                    const dislikeSpan = dislikeBtn.querySelector('.reply-dislike-count');
-                                    if (dislikeSpan && data.dislikes !== undefined) {
-                                        dislikeSpan.textContent = data.dislikes;
-                                    }
-                                }
-                            }
-                            
-                            saveUserInteractions();
-                            
-                            showMessage('Cavab bəyənildi!', 'success');
-                        } else {
-                            showMessage(data.message || 'Xəta baş verdi!', 'error');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        showMessage('Xəta baş verdi!', 'error');
-                    });
-            });
-        });
-        
-        // === REPLY DİSLİKE BUTTONLARI ===
-        document.querySelectorAll('.reply-dislike').forEach(btn => {
-            const newBtn = btn.cloneNode(true);
-            btn.parentNode.replaceChild(newBtn, btn);
-            
-            const replyId = newBtn.dataset.replyId;
-            
-            if (userInteractions[`reply_disliked_${replyId}`]) {
-                const icon = newBtn.querySelector('i');
-                icon.classList.remove('far', 'fa-thumbs-down');
-                icon.classList.add('fas', 'fa-thumbs-down');
-                icon.style.color = '#64748b';
-                
-                const dislikeSpan = newBtn.querySelector('.reply-dislike-count');
-                if (dislikeSpan && userInteractions[`reply_dislikes_${replyId}`] !== undefined) {
-                    dislikeSpan.textContent = userInteractions[`reply_dislikes_${replyId}`];
-                }
-            }
-            
-            newBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                const replyId = this.dataset.replyId;
-                const dislikeSpan = this.querySelector('.reply-dislike-count');
-                const icon = this.querySelector('i');
-                const replyCard = this.closest('.reply-card');
-                const replyName = replyCard?.querySelector('.reply-name')?.textContent;
-                
-                if (currentUser.name && replyName && replyName.includes(currentUser.name)) {
-                    showMessage('Öz cavabınızı bəyənməyə bilməzsiniz!', 'warning');
-                    return;
-                }
-                
-                if (userInteractions[`reply_disliked_${replyId}`]) {
-                    showMessage('Siz artıq bu cavabı bəyənməmisiniz!', 'info');
-                    return;
-                }
-                
-                this.style.transform = 'scale(1.2)';
-                setTimeout(() => {
-                    this.style.transform = 'scale(1)';
-                }, 200);
-                
-                sendLike(replyId, 'dislike_reply', true)
-                    .then(data => {
-                        if (data.status === 'success') {
-                            if (dislikeSpan) {
-                                dislikeSpan.textContent = data.dislikes;
-                            }
-                            
-                            icon.classList.remove('far', 'fa-thumbs-down');
-                            icon.classList.add('fas', 'fa-thumbs-down');
-                            icon.style.color = '#64748b';
-                            
-                            userInteractions[`reply_disliked_${replyId}`] = true;
-                            userInteractions[`reply_dislikes_${replyId}`] = data.dislikes;
-                            
-                            if (userInteractions[`reply_liked_${replyId}`]) {
-                                delete userInteractions[`reply_liked_${replyId}`];
-                                delete userInteractions[`reply_likes_${replyId}`];
-                                
-                                const likeBtn = this.closest('.reply-actions').querySelector('.reply-like');
-                                if (likeBtn) {
-                                    const likeIcon = likeBtn.querySelector('i');
-                                    likeIcon.classList.remove('fas', 'fa-heart');
-                                    likeIcon.classList.add('far', 'fa-heart');
-                                    likeIcon.style.color = '';
-                                    
-                                    const likeSpan = likeBtn.querySelector('.reply-like-count');
-                                    if (likeSpan && data.likes !== undefined) {
-                                        likeSpan.textContent = data.likes;
-                                    }
-                                }
-                            }
-                            
-                            saveUserInteractions();
-                            
-                            showMessage('Cavab bəyənilmədi!', 'success');
-                        } else {
-                            showMessage(data.message || 'Xəta baş verdi!', 'error');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        showMessage('Xəta baş verdi!', 'error');
-                    });
-            });
-        });
-    }
-    
-    // === REPLY GÖNDƏR ===
-    window.sendReply = function(parentIdValue, text, replyToNameValue = '') {
-        const formData = new FormData();
-        formData.append('action', 'add_reply');
-        formData.append('parent_id', parentIdValue);
-        formData.append('text', text);
-        formData.append('reply_to_name', replyToNameValue);
-        formData.append('csrfmiddlewaretoken', csrfToken);
-        
-        return fetch(window.location.href, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
-        .then(response => response.json());
-    };
-    
-    // === REPLY BUTTONLARINA EVENT LİSTENER ƏLAVƏ ET ===
-    function attachReplyListeners() {
-        document.querySelectorAll('.comment-actions .action-reply').forEach(btn => {
-            const newBtn = btn.cloneNode(true);
-            btn.parentNode.replaceChild(newBtn, btn);
-            
-            newBtn.addEventListener('click', function() {
-                const commentCard = this.closest('.comment-card');
-                const commentId = commentCard.dataset.id;
-                const commentName = commentCard.querySelector('.comment-user-name').textContent;
-                showReplyForm(commentId, commentName);
-            });
-        });
-        
-        document.querySelectorAll('.reply-to-reply').forEach(btn => {
-            const newBtn = btn.cloneNode(true);
-            btn.parentNode.replaceChild(newBtn, btn);
-            
-            newBtn.addEventListener('click', function() {
-                const replyId = this.dataset.replyId;
-                const replyName = this.dataset.replyName;
-                const commentId = this.dataset.commentId;
-                showReplyForm(replyId, replyName, commentId);
-            });
-        });
-    }
-    
-    // === REPLY FORMUNU GÖSTƏR ===
-    function showReplyForm(id, name, commentId = null) {
-        if (replyInfo && parentId && replyToName && replyToDisplayName && actionInput && commentInput && ratingSection) {
-            replyToDisplayName.textContent = name;
-            parentId.value = id;
-            replyToName.value = name;
-            actionInput.value = 'add_reply';
-            replyInfo.style.display = 'flex';
-            ratingSection.style.display = 'none';
-            commentInput.focus();
-            
-            if (cancelReplyBtn) {
-                cancelReplyBtn.onclick = function() {
-                    cancelReply();
-                };
-            }
+            return updated;
+        } catch(e) {
+            console.warn(`Update error ${selector}:`, e);
+            return false;
         }
     }
     
-    // === REPLY-İ LƏĞV ET ===
-    window.cancelReply = function() {
-        if (replyInfo) replyInfo.style.display = 'none';
-        if (parentId) parentId.value = '';
-        if (replyToName) replyToName.value = '';
-        if (actionInput) actionInput.value = 'add_review';
-        if (ratingSection) ratingSection.style.display = 'flex';
+    // ============================================================
+    // 5. BADGE SAYLARINI YENİLƏ
+    // ============================================================
+    function updateBadges(cartCount, wishlistCount) {
+        if (cartCount !== undefined) {
+            const cartSelectors = ['[data-tab="carts"] .menu-badge', '.carts-badge', '.cart-count', '.badge-cart', '.cart-badge'];
+            cartSelectors.forEach(sel => {
+                const el = document.querySelector(sel);
+                if (el) {
+                    el.textContent = cartCount;
+                    el.style.display = cartCount === 0 ? 'none' : 'inline-block';
+                }
+            });
+        }
+        
+        if (wishlistCount !== undefined) {
+            const wishlistSelectors = ['[data-tab="wishlist"] .menu-badge', '.wishlist-badge', '.wishlist-count', '.badge-wishlist', '.wishlist-badge'];
+            wishlistSelectors.forEach(sel => {
+                const el = document.querySelector(sel);
+                if (el) {
+                    el.textContent = wishlistCount;
+                    el.style.display = wishlistCount === 0 ? 'none' : 'inline-block';
+                }
+            });
+        }
+    }
+    
+    // ============================================================
+    // 6. CART TOTAL YENİLƏ
+    // ============================================================
+    function updateCartTotal() {
+        try {
+            let total = 0;
+            const rows = document.querySelectorAll('#cart-table-body tr:not(.empty-state-row)');
+            
+            rows.forEach(row => {
+                const totalEl = row.querySelector('.total-price, .item-total');
+                if (totalEl && totalEl.textContent) {
+                    const price = parseFloat(totalEl.textContent.replace(/[^0-9.-]/g, ''));
+                    if (!isNaN(price)) total += price;
+                }
+            });
+            
+            const subtotalEls = document.querySelectorAll('#cart-subtotal, .cart-total, .subtotal-value');
+            subtotalEls.forEach(el => {
+                if (el) el.textContent = `$${total.toFixed(2)}`;
+            });
+            
+            return total;
+        } catch(e) {
+            console.warn('Cart total error:', e);
+            return 0;
+        }
+    }
+    
+    // ============================================================
+    // 7. SERVER SORĞUSU
+    // ============================================================
+    async function sendRequest(action, data) {
+        const formData = new FormData();
+        const csrf = getCSRFToken();
+        if (csrf) formData.append('csrfmiddlewaretoken', csrf);
+        formData.append(action, 'true');
+        
+        Object.keys(data).forEach(key => {
+            if (data[key] !== undefined && data[key] !== null && data[key] !== '') {
+                formData.append(key, data[key]);
+            }
+        });
+        
+        try {
+            const response = await fetch(window.location.href, {
+                method: 'POST',
+                body: formData,
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            });
+            
+            const result = await response.json();
+            console.log(`📦 ${action} response:`, result);
+            return result;
+        } catch (error) {
+            console.error('Request error:', error);
+            return { status: 'error', message: 'Network error!' };
+        }
+    }
+    
+    // ============================================================
+    // 8. AD VƏ SOYADI DƏRHAL YENİLƏ
+    // ============================================================
+    function updateAllNameDisplays(firstName, lastName) {
+        console.log('🔄 Updating name displays:', firstName, lastName);
+        
+        const fullName = `${firstName} ${lastName}`.trim();
+        
+        const allNameElements = document.querySelectorAll(`
+            .user-name, .profile-name, .sidebar-user-name, .account-name,
+            .full-name, .profile-fullname, .welcome-text, .greeting,
+            #user-name, #profile-name, .navbar-user-name, .header-user-name,
+            .dropdown-user-name, span.user-name, div.user-name, .account-user-name,
+            .dashboard-user-name, .user-display-name, .profile-header-name,
+            .card-title, .account-username, .user-fullname, .display-name,
+            [data-user-name], .user-greeting, .profile-greeting, .name-display
+        `);
+        
+        allNameElements.forEach(el => {
+            if (el && el.textContent !== fullName && fullName) {
+                el.textContent = fullName;
+                console.log(`  ✓ Updated: ${el.tagName}.${el.className} -> "${fullName}"`);
+            }
+        });
+        
+        const firstNameInput = document.querySelector('#first_name, [name="first_name"], #id_first_name');
+        const lastNameInput = document.querySelector('#last_name, [name="last_name"], #id_last_name');
+        
+        if (firstNameInput && firstNameInput.value !== firstName) {
+            firstNameInput.value = firstName;
+        }
+        if (lastNameInput && lastNameInput.value !== lastName) {
+            lastNameInput.value = lastName;
+        }
+    }
+    
+    // ============================================================
+    // 9. PROFİL MƏLUMATLARINI YENİLƏ
+    // ============================================================
+    window.updateProfileData = async function(button) {
+        console.log('🟢 updateProfileData STARTED');
+        
+        const firstName = document.querySelector('#first_name, [name="first_name"], #id_first_name')?.value || '';
+        const lastName = document.querySelector('#last_name, [name="last_name"], #id_last_name')?.value || '';
+        const phone = document.querySelector('#phone, [name="phone"], #id_phone')?.value || '';
+        const birthdate = document.querySelector('#birthdate, [name="birthdate"], #id_birthdate, input[type="date"]')?.value || '';
+        
+        let gender = '';
+        const genderRadio = document.querySelector('input[name="gender"]:checked');
+        if (genderRadio) {
+            gender = genderRadio.value;
+        } else {
+            gender = document.querySelector('#gender, [name="gender"], select[name="gender"]')?.value || '';
+        }
+        
+        const receiveOffers = document.querySelector('#receive_offers, [name="receive_offers"]')?.checked || false;
+        const subscribeNewsletter = document.querySelector('#subscribe_newsletter, [name="subscribe_newsletter"]')?.checked || false;
+        
+        console.log('📤 Sending:', { firstName, lastName, phone, birthdate, gender });
+        
+        const originalHtml = button?.innerHTML || 'Update';
+        if (button) {
+            button.disabled = true;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+        }
+        
+        const result = await sendRequest('update_profile', {
+            first_name: firstName,
+            last_name: lastName,
+            phone: phone,
+            birthdate: birthdate,
+            gender: gender,
+            receive_offers: receiveOffers ? 'on' : '',
+            subscribe_newsletter: subscribeNewsletter ? 'on' : ''
+        });
+        
+        console.log('📥 Server result:', result);
+        
+        if (result.status === 'success') {
+            let newFirstName = firstName;
+            let newLastName = lastName;
+            
+            if (result.user) {
+                newFirstName = result.user.first_name || firstName;
+                newLastName = result.user.last_name || lastName;
+            } else if (result.first_name) {
+                newFirstName = result.first_name;
+                newLastName = result.last_name || lastName;
+            }
+            
+            updateAllNameDisplays(newFirstName, newLastName);
+            
+            const phoneValue = result.profile?.phone || result.phone || phone;
+            if (phoneValue) {
+                const phoneInput = document.querySelector('#phone, [name="phone"], #id_phone');
+                if (phoneInput) phoneInput.value = phoneValue;
+            }
+            
+            const birthdateValue = result.profile?.birthdate || result.birthdate || birthdate;
+            if (birthdateValue) {
+                const birthdateInput = document.querySelector('#birthdate, [name="birthdate"], #id_birthdate, input[type="date"]');
+                if (birthdateInput) birthdateInput.value = birthdateValue;
+            }
+            
+            const genderValue = result.profile?.gender || result.gender || gender;
+            if (genderValue) {
+                const genderRadioToCheck = document.querySelector(`input[name="gender"][value="${genderValue}"]`);
+                if (genderRadioToCheck) genderRadioToCheck.checked = true;
+            }
+            
+            if (result.profile) {
+                const offersCheckbox = document.querySelector('#receive_offers, [name="receive_offers"]');
+                if (offersCheckbox && result.profile.receive_offers !== undefined) {
+                    offersCheckbox.checked = result.profile.receive_offers;
+                }
+                
+                const newsletterCheckbox = document.querySelector('#subscribe_newsletter, [name="subscribe_newsletter"]');
+                if (newsletterCheckbox && result.profile.subscribe_newsletter !== undefined) {
+                    newsletterCheckbox.checked = result.profile.subscribe_newsletter;
+                }
+            }
+            
+            showMessage(result.message || '✅ Profile updated successfully!', 'success');
+            console.log('✅ Name updated WITHOUT page refresh!');
+            
+        } else {
+            showMessage(result.message || '❌ Error updating profile!', 'error');
+        }
+        
+        if (button) {
+            button.disabled = false;
+            button.innerHTML = originalHtml;
+        }
     };
     
-    // === REPLY-İ GÖNDƏR ===
-    window.submitReply = function() {
-        const parentIdValue = parentId?.value;
-        const replyToNameValue = replyToName?.value;
-        const replyText = commentInput?.value.trim();
-        
-        if (!parentIdValue || !replyText) {
-            alert('Zəhmət olmasa reply yazın!');
+    // ============================================================
+    // 10. PROFİL ŞƏKLİ YÜKLƏ
+    // ============================================================
+    window.uploadProfileImage = async function(inputElement) {
+        const file = inputElement.files[0];
+        if (!file) {
+            showMessage('Please select an image!', 'warning');
             return;
         }
         
-        sendReply(parentIdValue, replyText, replyToNameValue)
-            .then(data => {
-                if (data.status === 'success') {
-                    const targetComment = document.querySelector(`.comment-card[data-id="${parentIdValue}"]`);
-                    if (targetComment) {
-                        const repliesSection = targetComment.querySelector('.replies-section');
-                        if (repliesSection) {
-                            const replyHtml = createReplyElement(data.reply, parentIdValue);
-                            repliesSection.insertAdjacentHTML('beforeend', replyHtml);
-                        }
-                    }
-                    
-                    cancelReply();
-                    if (commentInput) commentInput.value = '';
-                    showMessage(data.message, 'success');
-                    
-                    attachReplyListeners();
-                    attachLikeDislikeListeners();
-                } else {
-                    alert('Xəta: ' + (data.message || 'Bilinməyən xəta'));
+        if (!file.type.startsWith('image/')) {
+            showMessage('Please select an image file (JPG, PNG, GIF)!', 'error');
+            inputElement.value = '';
+            return;
+        }
+        
+        if (file.size > 5 * 1024 * 1024) {
+            showMessage('Image size must be less than 5MB!', 'error');
+            inputElement.value = '';
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const imgSelectors = '.profile-avatar img, .profile-image img, .avatar img, .user-avatar img, #profile-image-preview';
+            document.querySelectorAll(imgSelectors).forEach(img => {
+                img.src = e.target.result;
+            });
+        };
+        reader.readAsDataURL(file);
+        
+        const formData = new FormData();
+        const csrf = getCSRFToken();
+        if (csrf) formData.append('csrfmiddlewaretoken', csrf);
+        formData.append('update_profile_image', 'true');
+        formData.append('profile_image', file);
+        
+        const uploadBtn = document.querySelector('#upload-photo-btn, .upload-photo-btn, button[title*="Upload"]');
+        const originalHtml = uploadBtn?.innerHTML || 'Upload';
+        if (uploadBtn) {
+            uploadBtn.disabled = true;
+            uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+        }
+        
+        try {
+            const response = await fetch(window.location.href, {
+                method: 'POST',
+                body: formData
+            });
+            
+            const result = await response.json();
+            console.log('Upload result:', result);
+            
+            if (result.status === 'success') {
+                showMessage(result.message || '✅ Profile image updated!', 'success');
+                
+                if (result.image_url) {
+                    const newUrl = result.image_url + '?t=' + Date.now();
+                    const imgSelectors = '.profile-avatar img, .profile-image img, .avatar img, .user-avatar img, #profile-image-preview';
+                    document.querySelectorAll(imgSelectors).forEach(img => {
+                        img.src = newUrl;
+                    });
                 }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Xəta baş verdi!');
-            });
+                
+                inputElement.value = '';
+            } else {
+                showMessage(result.message || '❌ Error uploading image!', 'error');
+            }
+        } catch (error) {
+            console.error('Upload error:', error);
+            showMessage('❌ Network error!', 'error');
+        }
+        
+        if (uploadBtn) {
+            uploadBtn.disabled = false;
+            uploadBtn.innerHTML = originalHtml;
+        }
     };
     
-    // === SUBMIT REPLY BUTTONU ÜÇÜN EVENT LİSTENER ===
-    function attachSubmitReplyListener() {
-        const submitReplyBtn = document.querySelector('.submit-reply');
-        if (submitReplyBtn) {
-            const newBtn = submitReplyBtn.cloneNode(true);
-            submitReplyBtn.parentNode.replaceChild(newBtn, submitReplyBtn);
-            
-            newBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                submitReply();
-            });
-        }
-    }
-    
-    // === COMMENT ELEMENTİ YARAT ===
-    function createCommentElement(review) {
-        const div = document.createElement('div');
-        div.className = 'comment-card';
-        div.dataset.id = review.id;
-        div.dataset.name = review.name;
+    // ============================================================
+    // 11. PROFİL ŞƏKLİ SİL
+    // ============================================================
+    window.deleteProfileImage = async function(btn) {
+        if (!confirm('Are you sure you want to delete your profile picture?')) return;
         
-        let starsHtml = '';
-        for (let i = 1; i <= 5; i++) {
-            if (i <= review.rating) {
-                starsHtml += '<i class="fas fa-star" style="color: #ffc107;"></i>';
-            } else {
-                starsHtml += '<i class="far fa-star" style="color: #e2e8f0;"></i>';
-            }
+        const originalHtml = btn?.innerHTML || 'Delete';
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
         }
         
-        const date = new Date(review.created_at);
-        const timeAgo = formatTimeAgo(date);
+        const result = await sendRequest('delete_profile_image', {});
         
-        div.innerHTML = `
-            <div class="comment-header">
-                <div class="comment-user">
-                    <div class="comment-avatar avatar-blue">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <div class="comment-user-info">
-                        <div class="comment-user-name">${escapeHtml(review.name)}</div>
-                        <div class="comment-date">
-                            <i class="far fa-clock"></i>
-                            ${timeAgo}
-                        </div>
-                    </div>
-                </div>
-                <div class="comment-badge">
-                    <i class="fas fa-crown"></i>
-                    Contributor
-                </div>
-            </div>
-
-            <div class="comment-rating">
-                <div class="rating-display">
-                    <div class="stars-display">
-                        ${starsHtml}
-                    </div>
-                    <span class="rating-score">${review.rating}.0</span>
-                </div>
-            </div>
-
-            <div class="comment-content">
-                <div class="comment-text">
-                    ${escapeHtml(review.text)}
-                </div>
-            </div>
-
-            <div class="comment-actions">
-                <div class="comment-action action-like" data-id="${review.id}">
-                    <i class="far fa-heart"></i>
-                    <span class="like-count">${review.likes}</span>
-                </div>
-                <div class="comment-action action-dislike" data-id="${review.id}">
-                    <i class="far fa-thumbs-down"></i>
-                    <span class="dislike-count">${review.dislikes}</span>
-                </div>
-                <div class="comment-action action-reply" data-id="${review.id}" data-name="${escapeHtml(review.name)}">
-                    <i class="far fa-comment"></i>
-                    <span>Reply</span>
-                </div>
-            </div>
+        if (result.status === 'success') {
+            showMessage(result.message || '✅ Profile image deleted!', 'success');
             
-            <div class="replies-section" id="replies-${review.id}"></div>
-        `;
-        
-        return div;
-    }
-    
-    // === REPLY ELEMENTİ YARAT (CAVAB ÜÇÜN) ===
-    function createReplyElement(reply, commentId) {
-        const date = new Date(reply.created_at);
-        const timeAgo = formatTimeAgo(date);
-        
-        const replyToHtml = reply.reply_to_name ? 
-            `<span class="reply-to">@${escapeHtml(reply.reply_to_name)}</span>` : '';
-        
-        return `
-            <div class="reply-card" data-reply-id="${reply.id}" data-comment-id="${commentId}" data-reply-name="${escapeHtml(reply.name)}">
-                <div class="reply-avatar avatar-green">
-                    <i class="fas fa-user"></i>
-                </div>
-                <div class="reply-content">
-                    <div class="reply-header">
-                        <span class="reply-name">${escapeHtml(reply.name)}</span>
-                        <span class="reply-date">${timeAgo}</span>
-                    </div>
-                    <div class="reply-text">
-                        ${replyToHtml} ${escapeHtml(reply.text)}
-                    </div>
-                    <div class="reply-actions">
-                        <!-- REPLY LIKE BUTTONU -->
-                        <span class="reply-action reply-like" data-reply-id="${reply.id}">
-                            <i class="far fa-heart"></i> 
-                            <span class="reply-like-count">${reply.likes || 0}</span>
-                        </span>
-                        <!-- REPLY DISLIKE BUTTONU -->
-                        <span class="reply-action reply-dislike" data-reply-id="${reply.id}">
-                            <i class="far fa-thumbs-down"></i> 
-                            <span class="reply-dislike-count">${reply.dislikes || 0}</span>
-                        </span>
-                        <!-- REPLY REPLY BUTTONU -->
-                        <span class="reply-action reply-to-reply" 
-                              data-reply-id="${reply.id}" 
-                              data-reply-name="${escapeHtml(reply.name)}" 
-                              data-comment-id="${commentId}">
-                            <i class="far fa-comment"></i> Reply
-                        </span>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-    
-    // === COMMENT SAYINI YENİLƏ ===
-    function updateCommentCount(increment = 1) {
-        const countElements = [commentCount, commentCountDisplay];
-        countElements.forEach(el => {
-            if (el) {
-                const current = parseInt(el.textContent) || 0;
-                el.textContent = current + increment;
-            }
-        });
-    }
-    
-    // === FORMU TƏMİZLƏ ===
-    function clearCommentForm(isReply = false) {
-        if (commentInput) commentInput.value = '';
-        if (firstNameInput) firstNameInput.value = '';
-        if (lastNameInput) lastNameInput.value = '';
-        
-        if (!isReply) {
-            ratingInputs.forEach(input => {
-                input.checked = false;
+            const defaultAvatar = '/static/images/default-avatar.png';
+            const imgSelectors = '.profile-avatar img, .profile-image img, .avatar img, .user-avatar img, #profile-image-preview';
+            document.querySelectorAll(imgSelectors).forEach(img => {
+                img.src = defaultAvatar + '?t=' + Date.now();
             });
-            
-            const ratingText = document.querySelector('.rating-text');
-            if (ratingText) ratingText.textContent = '0/5';
-            
-            document.querySelectorAll('.star-rating label').forEach(label => {
-                label.style.color = '#e2e8f0';
-            });
+        } else {
+            showMessage(result.message || '❌ Error deleting image!', 'error');
         }
-    }
+        
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = originalHtml;
+        }
+    };
     
-    // === TIME AGO FORMATI ===
-    function formatTimeAgo(date) {
-        const now = new Date();
-        const diffMs = now - date;
-        const diffSec = Math.floor(diffMs / 1000);
-        const diffMin = Math.floor(diffSec / 60);
-        const diffHour = Math.floor(diffMin / 60);
-        const diffDay = Math.floor(diffHour / 24);
+    // ============================================================
+    // 12. SƏBƏTDƏN SİL
+    // ============================================================
+    window.removeFromCart = async function(btn, skipConfirm = false) {
+        if (!skipConfirm) {
+            if (!confirm('Məhsulu səbətdən silmek istədiyinizə əminsiniz?')) return;
+        }
         
-        if (diffSec < 60) return 'just now';
-        if (diffMin < 60) return `${diffMin} minute${diffMin > 1 ? 's' : ''} ago`;
-        if (diffHour < 24) return `${diffHour} hour${diffHour > 1 ? 's' : ''} ago`;
-        if (diffDay < 7) return `${diffDay} day${diffDay > 1 ? 's' : ''} ago`;
-        return date.toLocaleDateString();
-    }
-    
-    // === HTML ESCAPE ===
-    function escapeHtml(text) {
-        if (!text) return '';
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
-    
-    // === MESSAGE GÖSTƏR ===
-    window.showMessage = function(text, type = 'info') {
-        const msg = document.createElement('div');
+        const row = btn?.closest('tr');
+        if (!row) return;
         
-        let bgColor = '#149ddd'; // info
-        if (type === 'success') bgColor = '#28a745';
-        if (type === 'error') bgColor = '#dc3545';
-        if (type === 'warning') bgColor = '#ffc107';
+        const productId = row.dataset.productId || row.dataset.id;
         
-        msg.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 12px 24px;
-            background: ${bgColor};
-            color: white;
-            border-radius: 5px;
-            z-index: 9999;
-            animation: slideIn 0.3s;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        `;
-        msg.textContent = text;
-        document.body.appendChild(msg);
+        const originalHtml = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
         
-        setTimeout(() => {
-            msg.style.animation = 'slideOut 0.3s';
+        const result = await sendRequest('remove_from_cart', { product_id: productId });
+        
+        if (result.status === 'success') {
+            row.style.transition = 'all 0.3s ease';
+            row.style.opacity = '0';
             setTimeout(() => {
-                msg.remove();
-            }, 300);
-        }, 3000);
+                row.remove();
+                updateBadges(result.cart_count, result.wishlist_count);
+                updateCartTotal();
+                showMessage('✅ Item removed from cart', 'success');
+            }, 200);
+        } else {
+            showMessage(result.message || 'Error!', 'error');
+            btn.disabled = false;
+            btn.innerHTML = originalHtml;
+        }
     };
     
-    // === EVENT LİSTENERLƏRİ BAŞLAT ===
-    attachReplyListeners();
-    attachLikeDislikeListeners();
-    attachSubmitReplyListener();
-    
-    const loadMoreBtn = document.getElementById('loadMoreBtn');
-    if (loadMoreBtn) {
-        loadMoreBtn.addEventListener('click', function() {
-            alert('Load more comments - demo mode');
-        });
-    }
-});
-
-// ========== STAR RATING SYSTEM ==========
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('✅ Star rating system loaded');
-    
-    const starInputs = document.querySelectorAll('.star-rating input');
-    const starLabels = document.querySelectorAll('.star-rating label');
-    const ratingText = document.querySelector('.rating-text');
-    const ratingContainer = document.querySelector('.rating-stars');
-    
-    if (!starInputs.length || !starLabels.length) return;
-    
-    const sortedInputs = Array.from(starInputs).sort((a, b) => parseInt(a.value) - parseInt(b.value));
-    const sortedLabels = Array.from(starLabels).sort((a, b) => {
-        const aId = a.getAttribute('for').replace('star', '');
-        const bId = b.getAttribute('for').replace('star', '');
-        return parseInt(aId) - parseInt(bId);
-    });
-    
-    function resetStars() {
-        sortedLabels.forEach(label => {
-            label.style.color = '#e2e8f0';
-        });
-    }
-    
-    function lightStars(count) {
-        resetStars();
-        for (let i = 0; i < count; i++) {
-            if (sortedLabels[i]) {
-                sortedLabels[i].style.color = '#ffc107';
-            }
+    // ============================================================
+    // 13. SƏBƏTDƏ MİQDAR YENİLƏ
+    // ============================================================
+    window.updateQuantity = async function(btn, change) {
+        const row = btn?.closest('tr');
+        if (!row) return;
+        
+        const qtySpan = row.querySelector('.qty-value, .quantity-value');
+        if (!qtySpan) return;
+        
+        const productId = row.dataset.productId || row.dataset.id;
+        let currentQty = parseInt(qtySpan.textContent) || 1;
+        let newQty = currentQty + change;
+        
+        if (newQty <= 0) {
+            await window.removeFromCart(btn, true);
+            return;
         }
-    }
-    
-    sortedLabels.forEach((label, index) => {
-        label.addEventListener('mouseenter', function() {
-            lightStars(index + 1);
+        
+        const originalHtml = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        
+        const result = await sendRequest('update_cart_quantity', { 
+            product_id: productId, 
+            quantity: newQty 
         });
         
-        label.addEventListener('mouseleave', function() {
-            const checkedInput = document.querySelector('.star-rating input:checked');
-            if (checkedInput) {
-                lightStars(parseInt(checkedInput.value));
-            } else {
-                resetStars();
-            }
-        });
-    });
-    
-    sortedInputs.forEach(input => {
-        input.addEventListener('change', function() {
-            const value = parseInt(this.value);
-            lightStars(value);
+        if (result.status === 'success') {
+            qtySpan.textContent = newQty;
             
-            if (ratingText) {
-                ratingText.textContent = `${value}/5`;
-                ratingText.style.transform = 'scale(1.1)';
-                setTimeout(() => {
-                    ratingText.style.transform = 'scale(1)';
-                }, 200);
+            const priceSpan = row.querySelector('.price, .unit-price');
+            const totalSpan = row.querySelector('.total-price, .item-total');
+            
+            if (priceSpan && totalSpan) {
+                let price = parseFloat(priceSpan.textContent.replace(/[^0-9.-]/g, ''));
+                if (isNaN(price)) price = 0;
+                totalSpan.textContent = `$${(price * newQty).toFixed(2)}`;
+            }
+            
+            updateCartTotal();
+            updateBadges(result.cart_count, result.wishlist_count);
+            showMessage(`📦 Quantity: ${newQty}`, 'success');
+        } else {
+            showMessage(result.message || 'Error!', 'error');
+            qtySpan.textContent = currentQty;
+        }
+        
+        btn.disabled = false;
+        btn.innerHTML = originalHtml;
+    };
+    
+    // ============================================================
+    // 14. WISHLIST MƏLUMATLARI
+    // ============================================================
+    function getWishlistProductInfo(row) {
+        let productName = '';
+        const nameEl = row.querySelector('.product-name, .item-name, .product-title');
+        if (nameEl) {
+            productName = nameEl.textContent.trim();
+        } else {
+            const text = row.innerText || '';
+            productName = text.split('\n')[0].trim();
+        }
+        
+        let productId = row.dataset.productId || row.dataset.id;
+        if (!productId) {
+            const idAttr = row.querySelector('[data-product-id], [data-id]');
+            if (idAttr) productId = idAttr.dataset.productId || idAttr.dataset.id;
+        }
+        
+        return { id: productId, name: productName };
+    }
+    
+    // ============================================================
+    // 15. WISHLIST-DƏN SİL
+    // ============================================================
+    window.removeFromWishlist = async function(btn) {
+        if (!confirm('Remove from wishlist?')) return;
+        
+        const row = btn?.closest('tr');
+        if (!row) return;
+        
+        const product = getWishlistProductInfo(row);
+        
+        const originalHtml = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        
+        const result = await sendRequest('remove_from_wishlist', { product_id: product.id });
+        
+        if (result.status === 'success') {
+            row.style.transition = 'all 0.3s ease';
+            row.style.opacity = '0';
+            setTimeout(() => {
+                row.remove();
+                updateBadges(result.cart_count, result.wishlist_count);
+                showMessage(`🗑️ Removed from wishlist`, 'success');
+            }, 200);
+        } else {
+            showMessage(result.message || 'Error!', 'error');
+            btn.disabled = false;
+            btn.innerHTML = originalHtml;
+        }
+    };
+    
+    // ============================================================
+    // 16. WISHLIST-DƏN SƏBƏTƏ ƏLAVƏ
+    // ============================================================
+    window.addToCartFromWishlist = async function(btn) {
+        const row = btn?.closest('tr');
+        if (!row) return;
+        
+        const product = getWishlistProductInfo(row);
+        
+        const originalHtml = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        
+        const result = await sendRequest('add_to_cart', { product_id: product.id });
+        
+        if (result.status === 'success') {
+            row.style.transition = 'all 0.3s ease';
+            row.style.opacity = '0';
+            setTimeout(() => {
+                row.remove();
+                updateBadges(result.cart_count, result.wishlist_count);
+                showMessage(`✅ Added to cart`, 'success');
+            }, 200);
+        } else {
+            showMessage(result.message || 'Error!', 'error');
+            btn.disabled = false;
+            btn.innerHTML = originalHtml;
+        }
+    };
+    
+    // ============================================================
+    // 17. EVENT LİSTENERLƏR
+    // ============================================================
+    function attachEventListeners() {
+        console.log('🔄 Attaching event listeners...');
+        
+        const profileBtns = document.querySelectorAll('#update-profile-btn, .update-profile-btn, .btn-save-profile, .save-profile-btn, [data-action="update-profile"], #save-profile-btn');
+        profileBtns.forEach(btn => {
+            if (!btn.dataset._attached) {
+                btn.dataset._attached = 'true';
+                const newBtn = btn.cloneNode(true);
+                btn.parentNode?.replaceChild(newBtn, btn);
+                newBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    window.updateProfileData(newBtn);
+                });
+                console.log('✅ Profile button attached');
             }
         });
+        
+        const profileForm = document.querySelector('#profile-form, .profile-form');
+        if (profileForm && !profileForm.dataset._attached) {
+            profileForm.dataset._attached = 'true';
+            profileForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const btn = profileForm.querySelector('button[type="submit"]');
+                if (btn) window.updateProfileData(btn);
+            });
+            console.log('✅ Profile form attached');
+        }
+        
+        const photoInput = document.querySelector('#profile-image-input, input[type="file"][accept*="image"], input[name="profile_image"]');
+        if (photoInput && !photoInput.dataset._attached) {
+            photoInput.dataset._attached = 'true';
+            photoInput.addEventListener('change', () => window.uploadProfileImage(photoInput));
+            console.log('✅ Image input attached');
+        }
+        
+        const deletePhotoBtn = document.querySelector('#delete-photo-btn, .delete-photo-btn');
+        if (deletePhotoBtn && !deletePhotoBtn.dataset._attached) {
+            deletePhotoBtn.dataset._attached = 'true';
+            const newBtn = deletePhotoBtn.cloneNode(true);
+            deletePhotoBtn.parentNode?.replaceChild(newBtn, deletePhotoBtn);
+            newBtn.addEventListener('click', () => window.deleteProfileImage(newBtn));
+            console.log('✅ Delete photo button attached');
+        }
+        
+        document.querySelectorAll('#wishlist-table-body .add-to-cart, #wishlist-table-body .cart-icon, #wishlist-table-body .move-to-cart').forEach(btn => {
+            if (!btn.dataset._attached) {
+                btn.dataset._attached = 'true';
+                const newBtn = btn.cloneNode(true);
+                btn.parentNode?.replaceChild(newBtn, btn);
+                newBtn.addEventListener('click', () => window.addToCartFromWishlist(newBtn));
+            }
+        });
+        
+        document.querySelectorAll('#wishlist-table-body .remove, #wishlist-table-body .delete, #wishlist-table-body .wishlist-remove').forEach(btn => {
+            if (!btn.dataset._attached) {
+                btn.dataset._attached = 'true';
+                const newBtn = btn.cloneNode(true);
+                btn.parentNode?.replaceChild(newBtn, btn);
+                newBtn.addEventListener('click', () => window.removeFromWishlist(newBtn));
+            }
+        });
+        
+        document.querySelectorAll('#cart-table-body .remove, #cart-table-body .delete').forEach(btn => {
+            if (!btn.dataset._attached) {
+                btn.dataset._attached = 'true';
+                const newBtn = btn.cloneNode(true);
+                btn.parentNode?.replaceChild(newBtn, btn);
+                newBtn.addEventListener('click', () => window.removeFromCart(newBtn, false));
+            }
+        });
+        
+        document.querySelectorAll('#cart-table-body .qty-plus, #cart-table-body .quantity-plus').forEach(btn => {
+            if (!btn.dataset._attached) {
+                btn.dataset._attached = 'true';
+                const newBtn = btn.cloneNode(true);
+                btn.parentNode?.replaceChild(newBtn, btn);
+                newBtn.addEventListener('click', () => window.updateQuantity(newBtn, 1));
+            }
+        });
+        
+        document.querySelectorAll('#cart-table-body .qty-minus, #cart-table-body .quantity-minus').forEach(btn => {
+            if (!btn.dataset._attached) {
+                btn.dataset._attached = 'true';
+                const newBtn = btn.cloneNode(true);
+                btn.parentNode?.replaceChild(newBtn, btn);
+                newBtn.addEventListener('click', () => window.updateQuantity(newBtn, -1));
+            }
+        });
+    }
+    
+    // ============================================================
+    // 18. MUTASİYA OBSERVER
+    // ============================================================
+    let observerTimeout;
+    const observer = new MutationObserver(() => {
+        if (observerTimeout) clearTimeout(observerTimeout);
+        observerTimeout = setTimeout(attachEventListeners, 200);
     });
+    observer.observe(document.body, { childList: true, subtree: true });
     
-    if (ratingContainer) {
-        ratingContainer.addEventListener('mouseleave', function() {
-            const checkedInput = document.querySelector('.star-rating input:checked');
-            if (checkedInput) {
-                lightStars(parseInt(checkedInput.value));
-            } else {
-                resetStars();
-            }
-        });
-    }
-    
-    const checkedInput = document.querySelector('.star-rating input:checked');
-    if (checkedInput) {
-        lightStars(parseInt(checkedInput.value));
-        if (ratingText) {
-            ratingText.textContent = `${checkedInput.value}/5`;
-        }
-    } else {
-        resetStars();
-        if (ratingText) {
-            ratingText.textContent = '0/5';
-        }
-    }
-});
-
-// Animasiyalar üçün CSS əlavə et
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideIn {
-        from {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
+    // ============================================================
+    // 19. İNİT
+    // ============================================================
+    function init() {
+        setTimeout(() => {
+            attachEventListeners();
+            updateCartTotal();
+            console.log('✅ Account JS CLEAN VERSION initialized (No comments)');
+            console.log('📍 Profile, Cart, Wishlist working - Comments removed');
+        }, 500);
     }
     
-    @keyframes slideOut {
-        from {
-            transform: translateX(0);
-            opacity: 1;
-        }
-        to {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-    }
-    
-    .action-like, .action-dislike, .reply-like, .reply-dislike {
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
-    
-    .action-like:hover i, .reply-like:hover i {
-        color: #ff4d4d !important;
-        transform: scale(1.1);
-    }
-    
-    .action-dislike:hover i, .reply-dislike:hover i {
-        color: #64748b !important;
-        transform: scale(1.1);
-    }
-`;
-document.head.appendChild(style);
-
-console.log('✅ comment.js fully loaded - Reply like/dislike fixed!');
-
-
-
-
-
-// ========== MY ACCOUNT PAGE - TAM VERSİYA ==========
-// Bu JavaScript HEÇ NƏYİ DƏYİŞMİR, sadəcə HTML-i idarə edir
-
-(function() {
-    // Səhifə tam yükləndikdə işə düş
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
     } else {
         init();
     }
     
-    function init() {
-        console.log('✅ Account page initialized');
-        
-        // Elementləri tap
-        const tabs = document.querySelectorAll('.sidebar-menu li[data-tab]');
-        const contents = document.querySelectorAll('.tab-content');
-        
-        if (!tabs.length || !contents.length) {
-            console.warn('⚠️ Tab elements not found');
-            return;
-        }
-        
-        // ===== 1. TAB SİSTEMİ =====
-        function switchTab(tabId) {
-            console.log('Switching to tab:', tabId);
-            
-            // Bütün tabları deaktiv et
-            tabs.forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            // Bütün məzmunları gizlət
-            contents.forEach(content => {
-                content.classList.remove('active');
-                content.style.display = 'none';
-            });
-            
-            // Seçilmiş tabı aktiv et
-            const activeTab = document.querySelector(`.sidebar-menu li[data-tab="${tabId}"]`);
-            if (activeTab) {
-                activeTab.classList.add('active');
+    // ============================================================
+    // 20. CSS
+    // ============================================================
+    if (!document.querySelector('#account-final-styles')) {
+        const style = document.createElement('style');
+        style.id = 'account-final-styles';
+        style.textContent = `
+            @keyframes slideInUp {
+                from { opacity: 0; transform: translateY(20px); }
+                to { opacity: 1; transform: translateY(0); }
             }
-            
-            // Seçilmiş məzmunu göstər
-            const activeContent = document.getElementById(tabId + '-tab');
-            if (activeContent) {
-                activeContent.classList.add('active');
-                activeContent.style.display = 'block';
-                
-                // Tab dəyişdikdə scroll-u sıfırla
-                const wrapper = activeContent.querySelector('.products-table-wrapper');
-                if (wrapper) {
-                    wrapper.scrollTop = 0;
-                }
+            button:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
             }
-            
-            // URL-i yenilə
-            const url = new URL(window.location);
-            url.searchParams.set('tab', tabId);
-            history.replaceState({}, '', url);
-        }
-        
-        // Klik hadisələrini əlavə et
-        tabs.forEach(tab => {
-            tab.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                const tabId = this.dataset.tab;
-                
-                // Logout xüsusi haldır
-                if (this.classList.contains('logout')) {
-                    const logoutUrl = this.querySelector('a')?.getAttribute('href');
-                    if (logoutUrl) {
-                        window.location.href = logoutUrl;
-                    }
-                    return;
-                }
-                
-                if (tabId) {
-                    switchTab(tabId);
-                }
-            });
-        });
-        
-        // Hansı tab göstərilsin?
-        const urlParams = new URLSearchParams(window.location.search);
-        const urlTab = urlParams.get('tab');
-        
-        if (urlTab && document.getElementById(urlTab + '-tab')) {
-            switchTab(urlTab);
-        } else {
-            // Default olaraq wishlist
-            switchTab('wishlist');
-        }
-        
-        // ===== 2. AXTARIŞ =====
-        const wishlistSearch = document.getElementById('wishlist-search');
-        if (wishlistSearch) {
-            wishlistSearch.addEventListener('keyup', function() {
-                const term = this.value.toLowerCase();
-                const rows = document.querySelectorAll('#wishlist-table-body tr');
-                const wrapper = document.querySelector('#wishlist-tab .products-table-wrapper');
-                
-                rows.forEach(row => {
-                    const text = row.textContent.toLowerCase();
-                    if (text.includes(term)) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
-                
-                // Scroll indikatorunu yenilə
-                if (wrapper) {
-                    setTimeout(() => checkScrollIndicator(wrapper), 50);
-                }
-            });
-        }
-        
-        const cartSearch = document.getElementById('cart-search');
-        if (cartSearch) {
-            cartSearch.addEventListener('keyup', function() {
-                const term = this.value.toLowerCase();
-                const rows = document.querySelectorAll('#cart-table-body tr');
-                const wrapper = document.querySelector('#carts-tab .products-table-wrapper');
-                
-                rows.forEach(row => {
-                    const text = row.textContent.toLowerCase();
-                    if (text.includes(term)) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
-                
-                // Scroll indikatorunu yenilə
-                if (wrapper) {
-                    setTimeout(() => checkScrollIndicator(wrapper), 50);
-                }
-            });
-        }
-        
-        // ===== 3. PROFİL ŞƏKLİ VƏ FORM FUNKSİYALARI =====
-        window.previewImage = function(input) {
-            if (input && input.files && input.files[0]) {
-                const file = input.files[0];
-                
-                // Şəkil yoxlaması
-                if (!file.type.startsWith('image/')) {
-                    showNotification('Zəhmət olmasa şəkil faylı seçin', 'error');
-                    input.value = '';
-                    return;
-                }
-                
-                // Ölçü yoxlaması (2MB)
-                if (file.size > 2 * 1024 * 1024) {
-                    showNotification('Fayl ölçüsü 2MB-dan kiçik olmalıdır', 'error');
-                    input.value = '';
-                    return;
-                }
-                
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    // Profil tab-dakı böyük şəkil
-                    const mainPreview = document.getElementById('profile-image-preview');
-                    if (mainPreview) {
-                        mainPreview.style.opacity = '0.5';
-                        mainPreview.src = e.target.result;
-                        
-                        setTimeout(() => {
-                            mainPreview.style.opacity = '1';
-                        }, 300);
-                    }
-                    
-                    // Sidebar-dakı kiçik profil şəkli
-                    const sidebarImage = document.getElementById('sidebar-profile-image');
-                    if (sidebarImage) {
-                        sidebarImage.style.opacity = '0.5';
-                        sidebarImage.src = e.target.result;
-                        
-                        setTimeout(() => {
-                            sidebarImage.style.opacity = '1';
-                        }, 300);
-                    }
-                    
-                    showNotification('Şəkil seçildi. Yadda saxlamaq üçün formu göndərin.', 'success');
-                };
-                reader.readAsDataURL(file);
+            .add-to-cart, .cart-icon, .move-to-cart, .remove, .delete, .wishlist-remove {
+                cursor: pointer;
+                transition: all 0.2s;
             }
-        };
-        
-        // Profil şəklini silmək üçün təsdiq
-        window.confirmDeleteImage = function() {
-            if (confirm('Profil şəklinizi silmək istədiyinizə əminsiniz?')) {
-                document.getElementById('delete-image-form').submit();
+            .add-to-cart:hover, .cart-icon:hover, .move-to-cart:hover {
+                transform: scale(1.05);
             }
-        };
-        
-        // Form reset
-        window.resetProfileForm = function() {
-            if (confirm('Dəyişiklikləri ləğv etmək istədiyinizə əminsiniz?')) {
-                const form = document.getElementById('profile-form');
-                form.reset();
-                
-                // Orijinal şəkli qaytar
-                const mainPreview = document.getElementById('profile-image-preview');
-                const sidebarImage = document.getElementById('sidebar-profile-image');
-                const originalSrc = mainPreview?.getAttribute('data-original-src');
-                
-                if (originalSrc) {
-                    if (mainPreview) mainPreview.src = originalSrc;
-                    if (sidebarImage) sidebarImage.src = originalSrc;
-                }
-                
-                showNotification('Dəyişikliklər ləğv edildi', 'info');
+            .remove:hover, .delete:hover, .wishlist-remove:hover {
+                transform: scale(1.05);
+                color: #dc2626 !important;
             }
-        };
-        
-        // Bildiriş göstərmə funksiyası
-        function showNotification(message, type = 'success') {
-            // Köhnə bildirişi sil
-            const oldNotification = document.querySelector('.custom-notification');
-            if (oldNotification) {
-                oldNotification.remove();
-            }
-            
-            // Yeni bildiriş yarat
-            const notification = document.createElement('div');
-            notification.className = `custom-notification notification-${type}`;
-            
-            let icon = 'check-circle';
-            if (type === 'error') icon = 'exclamation-circle';
-            if (type === 'warning') icon = 'exclamation-triangle';
-            if (type === 'info') icon = 'info-circle';
-            
-            notification.innerHTML = `
-                <i class="fas fa-${icon}"></i>
-                <span>${message}</span>
-            `;
-            
-            document.body.appendChild(notification);
-            
-            // 3 saniyə sonra sil
-            setTimeout(() => {
-                notification.style.animation = 'notificationSlideOut 0.3s ease';
-                setTimeout(() => notification.remove(), 300);
-            }, 3000);
-        }
-        
-        // Form validasiyası
-        function initProfileValidation() {
-            const profileForm = document.getElementById('profile-form');
-            if (profileForm) {
-                profileForm.addEventListener('submit', function(e) {
-                    const phone = this.querySelector('input[name="phone"]')?.value;
-                    if (phone) {
-                        // Sadə telefon validasiyası
-                        const phoneRegex = /^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,4}[-\s.]?[0-9]{1,4}$/;
-                        if (!phoneRegex.test(phone)) {
-                            e.preventDefault();
-                            showNotification('Zəhmət olmasa düzgün telefon nömrəsi daxil edin', 'error');
-                        }
-                    }
-                });
-                
-                // Orijinal şəkli yadda saxla
-                const mainPreview = document.getElementById('profile-image-preview');
-                if (mainPreview) {
-                    mainPreview.setAttribute('data-original-src', mainPreview.src);
-                }
-                
-                const sidebarImage = document.getElementById('sidebar-profile-image');
-                if (sidebarImage) {
-                    sidebarImage.setAttribute('data-original-src', sidebarImage.src);
-                }
-            }
-        }
-        
-        // Form submit olduqda sidebar məlumatlarını yenilə (ƏLAVƏ)
-        function updateSidebarOnSubmit() {
-            const profileForm = document.getElementById('profile-form');
-            if (!profileForm) return;
-            
-            profileForm.addEventListener('submit', function() {
-                // Form submit olduqdan sonra məlumatları yenilə (səhifə refresh olacaq, amma yenə də əlavə edirik)
-                const firstName = this.querySelector('input[name="first_name"]')?.value || '';
-                const lastName = this.querySelector('input[name="last_name"]')?.value || '';
-                const phone = this.querySelector('input[name="phone"]')?.value || '';
-                
-                // SessionStorage-a yaz ki, refresh-dən sonra da işləsin
-                if (firstName || lastName) {
-                    sessionStorage.setItem('user_name', `${firstName} ${lastName}`.trim());
-                }
-                if (phone) {
-                    sessionStorage.setItem('user_phone', phone);
-                }
-            });
-        }
-        
-        // Səhifə yüklənəndə sessionStorage-dan məlumatları qaytar (ƏLAVə)
-        function loadFromSessionStorage() {
-            const savedName = sessionStorage.getItem('user_name');
-            const savedPhone = sessionStorage.getItem('user_phone');
-            
-            if (savedName) {
-                const sidebarName = document.getElementById('sidebar-user-name');
-                if (sidebarName) sidebarName.textContent = savedName;
-            }
-            
-            if (savedPhone) {
-                const sidebarPhone = document.getElementById('sidebar-user-phone');
-                if (sidebarPhone) {
-                    sidebarPhone.innerHTML = `<i class="fas fa-phone"></i> ${savedPhone}`;
-                    sidebarPhone.style.display = 'block';
-                }
-            }
-            
-            // SessionStorage-i təmizlə (bir dəfə istifadə etmək üçün)
-            setTimeout(() => {
-                sessionStorage.removeItem('user_name');
-                sessionStorage.removeItem('user_phone');
-            }, 1000);
-        }
-        
-        // ===== 4. SƏBƏT MİQDARI =====
-        window.updateQuantity = function(btn, change) {
-            const form = btn.closest('form');
-            if (!form) return;
-            
-            const qtySpan = form.querySelector('.qty-value');
-            const qtyInput = form.querySelector('.quantity-input');
-            
-            if (!qtySpan || !qtyInput) return;
-            
-            // Scroll mövqeyini yadda saxla
-            const wrapper = btn.closest('.tab-content')?.querySelector('.products-table-wrapper');
-            let scrollPos = 0;
-            if (wrapper) {
-                scrollPos = wrapper.scrollTop;
-            }
-            
-            let currentQty = parseInt(qtySpan.textContent) || 1;
-            let newQty = currentQty + change;
-            
-            if (newQty > 0) {
-                qtySpan.textContent = newQty;
-                qtyInput.value = newQty;
-                form.submit();
-            } else if (newQty === 0) {
-                if (confirm('Məhsulu səbətdən silmək istədiyinizə əminsiniz?')) {
-                    qtyInput.value = 0;
-                    form.submit();
-                }
-            }
-            
-            // Scroll mövqeyini bərpa et (form submit olunarsa, bu işləməyəcək)
-            setTimeout(() => {
-                if (wrapper) {
-                    wrapper.scrollTop = scrollPos;
-                }
-            }, 10);
-        };
-        
-        // ===== 5. MESAJLARI GİZLƏ =====
-        setTimeout(() => {
-            document.querySelectorAll('.alert').forEach(alert => {
-                alert.style.transition = 'opacity 0.5s';
-                alert.style.opacity = '0';
-                setTimeout(() => alert.remove(), 500);
-            });
-        }, 5000);
-        
-        // ===== 6. DATA ATTRIBUTE-LARINI YENİLƏ =====
-        document.querySelectorAll('.wishlist-item, .cart-item').forEach(item => {
-            const nameEl = item.querySelector('.product-name');
-            const skuEl = item.querySelector('.product-sku');
-            
-            if (nameEl) {
-                item.dataset.productName = nameEl.textContent.toLowerCase();
-            }
-            if (skuEl) {
-                item.dataset.productSku = skuEl.textContent.toLowerCase();
-            }
-        });
-        
-        // ===== 7. SCROLLABLE TABLES ENHANCEMENT =====
-        function initScrollableTables() {
-            console.log('✅ Scrollable tables enhancement initialized');
-            
-            // Bütün table wrapperlarını tap
-            const tableWrappers = document.querySelectorAll('.products-table-wrapper');
-            
-            if (!tableWrappers.length) {
-                console.warn('⚠️ No table wrappers found');
-                return;
-            }
-            
-            // Scroll indikatorunu yoxla
-            function checkScrollIndicator(wrapper) {
-                if (!wrapper) return;
-                
-                const hasScroll = wrapper.scrollHeight > wrapper.clientHeight + 5;
-                if (hasScroll) {
-                    wrapper.classList.add('can-scroll-down');
-                } else {
-                    wrapper.classList.remove('can-scroll-down');
-                }
-            }
-            
-            // Hər bir wrapper üçün scroll hadisəsi əlavə et
-            tableWrappers.forEach(wrapper => {
-                // Scroll hadisəsini izlə
-                wrapper.addEventListener('scroll', function() {
-                    // Header-a scroll effekti əlavə et
-                    const thead = this.querySelector('thead');
-                    if (thead) {
-                        if (this.scrollTop > 5) {
-                            thead.classList.add('scrolled');
-                        } else {
-                            thead.classList.remove('scrolled');
-                        }
-                    }
-                    
-                    // Scroll indikatoru üçün yoxlama
-                    checkScrollIndicator(this);
-                });
-                
-                // İlkin scroll indikatoru yoxlaması
-                setTimeout(() => checkScrollIndicator(wrapper), 100);
-                
-                // Pəncərə ölçüsü dəyişdikdə scroll indikatorunu yenilə
-                window.addEventListener('resize', () => checkScrollIndicator(wrapper));
-            });
-            
-            // Tab dəyişdikdə scroll-u sıfırla (əlavə təminat)
-            tabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    setTimeout(() => {
-                        const activeTab = document.querySelector('.tab-content.active');
-                        if (activeTab) {
-                            const wrapper = activeTab.querySelector('.products-table-wrapper');
-                            if (wrapper) {
-                                wrapper.scrollTop = 0;
-                                checkScrollIndicator(wrapper);
-                            }
-                        }
-                    }, 100);
-                });
-            });
-            
-            // İlkin yoxlama
-            setTimeout(() => {
-                tableWrappers.forEach(wrapper => checkScrollIndicator(wrapper));
-            }, 200);
-        }
-        
-        // Scrollable tables-ı işə sal
-        initScrollableTables();
-        
-        // ===== 8. SƏBƏT CƏMLƏRİNİ YENİLƏ =====
-        function updateCartTotal() {
-            const cartRows = document.querySelectorAll('#cart-table-body tr');
-            let total = 0;
-            
-            cartRows.forEach(row => {
-                if (row.style.display !== 'none') {
-                    const totalPriceEl = row.querySelector('.total-price');
-                    if (totalPriceEl) {
-                        const priceText = totalPriceEl.textContent.replace('$', '');
-                        total += parseFloat(priceText) || 0;
-                    }
-                }
-            });
-            
-            const totalFooter = document.querySelector('.cart-table tfoot');
-            if (totalFooter) {
-                const totalCell = totalFooter.querySelector('td strong');
-                if (totalCell) {
-                    totalCell.textContent = `Total: $${total.toFixed(2)}`;
-                }
-            }
-        }
-        
-        // Axtarış zamanı cəmi yenilə
-        if (cartSearch) {
-            cartSearch.addEventListener('keyup', function() {
-                setTimeout(updateCartTotal, 50);
-            });
-        }
-        
-        // ===== 9. KEYBOARD NAVIGATION =====
-        document.addEventListener('keydown', function(e) {
-            // Escape düyməsi ilə axtarışı təmizlə
-            if (e.key === 'Escape') {
-                const activeSearch = document.querySelector('.tab-content.active .search-box input');
-                if (activeSearch && document.activeElement === activeSearch) {
-                    activeSearch.value = '';
-                    activeSearch.dispatchEvent(new Event('keyup'));
-                    showNotification('Axtarış təmizləndi', 'info');
-                }
-            }
-        });
-        
-        // ===== 10. RESPONSIVE MENU =====
-        function checkMobileView() {
-            if (window.innerWidth <= 1000) {
-                document.querySelector('.account-sidebar')?.classList.add('mobile');
-            } else {
-                document.querySelector('.account-sidebar')?.classList.remove('mobile');
-            }
-        }
-        
-        checkMobileView();
-        window.addEventListener('resize', checkMobileView);
-        
-        // ===== 11. PROFİL VALİDASİYASINI İŞƏ SAL =====
-        initProfileValidation();
-        
-        // ===== 12. SIDEBAR YENİLƏMƏ FUNKSİYALARI ===== (YENİ)
-        updateSidebarOnSubmit();
-        loadFromSessionStorage();
-        
-        console.log('✅ All systems ready');
+        `;
+        document.head.appendChild(style);
     }
+    
 })();
 
-// ===== 13. SCROLL İNDİKATORU ÜÇÜN STİL ƏLAVƏ ET =====
-(function addScrollIndicatorStyle() {
-    const style = document.createElement('style');
-    style.textContent = `
-        .products-table-wrapper {
-            position: relative;
-        }
-        
-        .products-table-wrapper.can-scroll-down::after {
-            content: '';
-            position: sticky;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 30px;
-            background: linear-gradient(to top, rgba(255,255,255,0.95), transparent);
-            pointer-events: none;
-            display: block;
-            margin-top: -30px;
-            z-index: 4;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .products-table-wrapper.can-scroll-down::after {
-            opacity: 1;
-        }
-        
-        .products-table thead.scrolled th {
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        
-        @media (max-width: 768px) {
-            .products-table-wrapper {
-                max-height: 400px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .products-table-wrapper {
-                max-height: 350px;
-            }
-        }
-    `;
-    document.head.appendChild(style);
-})();
 
-// ===== 14. NOTİFİKASİYA ANİMASİYALARI ÜÇÜN STİL =====
-(function addNotificationStyles() {
-    const style = document.createElement('style');
-    style.textContent = `
-        .custom-notification {
+
+/**
+ * Product Reviews - Müstəqil AJAX Sistemi (TAM VERSİYA + LİKE/DİSLİKE)
+ * Xüsusiyyətlər:
+ * - Rəy əlavə etmək (Add Review)
+ * - Rəylərə limitsiz cavab yazmaq (Reply - SADƏCƏ MƏTN)
+ * - Rəy və cavabları bəyənmək/bəyənməmək (Like/Dislike - HƏR İSTİFADƏÇİ 1 DƏFƏ)
+ * - Versiya: 9.0.0 (TAM İŞLƏK + LİKE/DİSLİKE LIMITI)
+ */
+
+(function() {
+    'use strict';
+    
+    // ============================================================
+    // 1. KONFİQURASİYA
+    // ============================================================
+    const CONFIG = {
+        STORAGE_PREFIX: 'review_vote_',
+        ANIMATION_DURATION: 300
+    };
+    
+    // ============================================================
+    // 2. GLOBAL DƏYİŞƏNLƏR
+    // ============================================================
+    let isSubmitting = false;
+    
+    // Default istifadəçi adı (admin üçün)
+    const DEFAULT_USER_NAME = 'Admin';
+    const DEFAULT_USER_SURNAME = '';
+    
+    // ============================================================
+    // 3. CSRF TOKEN
+    // ============================================================
+    function getCSRFToken() {
+        const csrfInput = document.querySelector('[name=csrfmiddlewaretoken]');
+        if (csrfInput && csrfInput.value) return csrfInput.value;
+        const metaToken = document.querySelector('meta[name="csrf-token"]');
+        if (metaToken) return metaToken.getAttribute('content');
+        const cookie = document.cookie.split('; ').find(row => row.startsWith('csrftoken='));
+        return cookie ? cookie.split('=')[1] : '';
+    }
+    
+    // ============================================================
+    // 4. BİLDİRİŞ SİSTEMİ
+    // ============================================================
+    function showNotification(message, type = 'success') {
+        const oldNotif = document.querySelector('.review-toast');
+        if (oldNotif) oldNotif.remove();
+        
+        const toast = document.createElement('div');
+        toast.className = 'review-toast';
+        
+        const colors = {
+            success: '#10b981',
+            error: '#ef4444',
+            warning: '#f59e0b',
+            info: '#3b82f6'
+        };
+        
+        toast.style.cssText = `
             position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 25px;
-            border-radius: 10px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
-            z-index: 9999;
+            bottom: 30px;
+            right: 30px;
+            padding: 14px 24px;
+            background: ${colors[type] || colors.success};
+            color: white;
+            border-radius: 12px;
+            z-index: 1000001;
+            font-size: 14px;
+            font-weight: 500;
+            font-family: system-ui, sans-serif;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2);
+            animation: slideInRight 0.3s ease;
             display: flex;
             align-items: center;
             gap: 12px;
-            font-weight: 500;
-            animation: notificationSlideIn 0.3s ease;
-            max-width: 350px;
-            color: white;
-        }
+            cursor: pointer;
+        `;
         
-        .notification-success {
-            background: #10b981;
-        }
+        toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i><span>${message}</span>`;
+        document.body.appendChild(toast);
         
-        .notification-error {
-            background: #ef4444;
-        }
-        
-        .notification-warning {
-            background: #f97316;
-        }
-        
-        .notification-info {
-            background: #3b82f6;
-        }
-        
-        @keyframes notificationSlideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
+        setTimeout(() => {
+            if (toast && toast.remove) {
+                toast.style.animation = 'slideOutRight 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
             }
-            to {
-                transform: translateX(0);
-                opacity: 1;
+        }, 3000);
+        
+        toast.onclick = () => {
+            toast.style.animation = 'slideOutRight 0.3s ease';
+            setTimeout(() => toast.remove(), 300);
+        };
+    }
+    
+    // ============================================================
+    // 5. KOMUNAL FUNKSİYALAR
+    // ============================================================
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+    
+    function timeSince(dateStr) {
+        if (!dateStr) return 'İndi';
+        try {
+            const date = new Date(dateStr);
+            const seconds = Math.floor((new Date() - date) / 1000);
+            if (seconds < 60) return 'İndi';
+            const minutes = Math.floor(seconds / 60);
+            if (minutes < 60) return minutes + ' dəq əvvəl';
+            const hours = Math.floor(minutes / 60);
+            if (hours < 24) return hours + ' saat əvvəl';
+            const days = Math.floor(hours / 24);
+            if (days < 30) return days + ' gün əvvəl';
+            const months = Math.floor(days / 30);
+            if (months < 12) return months + ' ay əvvəl';
+            return Math.floor(months / 12) + ' il əvvəl';
+        } catch(e) {
+            return 'İndi';
+        }
+    }
+    
+    function getRandomAvatarColor() {
+        const colors = ['avatar-blue', 'avatar-green', 'avatar-purple', 'avatar-orange'];
+        return colors[Math.floor(Math.random() * colors.length)];
+    }
+    
+    // ============================================================
+    // 6. SESSION IDARƏETMƏ (Hər istifadəçi 1 like/dislike)
+    // ============================================================
+    
+    // Like statusunu yoxla
+    function hasLiked(reviewId, type = 'review') {
+        const key = `${CONFIG.STORAGE_PREFIX}${type}_${reviewId}_liked`;
+        return sessionStorage.getItem(key) === 'true';
+    }
+    
+    // Dislike statusunu yoxla
+    function hasDisliked(reviewId, type = 'review') {
+        const key = `${CONFIG.STORAGE_PREFIX}${type}_${reviewId}_disliked`;
+        return sessionStorage.getItem(key) === 'true';
+    }
+    
+    // Like statusunu set et
+    function setLiked(reviewId, liked, type = 'review') {
+        const likeKey = `${CONFIG.STORAGE_PREFIX}${type}_${reviewId}_liked`;
+        const dislikeKey = `${CONFIG.STORAGE_PREFIX}${type}_${reviewId}_disliked`;
+        
+        if (liked) {
+            sessionStorage.setItem(likeKey, 'true');
+            sessionStorage.removeItem(dislikeKey);
+        } else {
+            sessionStorage.removeItem(likeKey);
+        }
+    }
+    
+    // Dislike statusunu set et
+    function setDisliked(reviewId, disliked, type = 'review') {
+        const likeKey = `${CONFIG.STORAGE_PREFIX}${type}_${reviewId}_liked`;
+        const dislikeKey = `${CONFIG.STORAGE_PREFIX}${type}_${reviewId}_disliked`;
+        
+        if (disliked) {
+            sessionStorage.setItem(dislikeKey, 'true');
+            sessionStorage.removeItem(likeKey);
+        } else {
+            sessionStorage.removeItem(dislikeKey);
+        }
+    }
+    
+    // Like/Dislike limitini yoxla (bir istifadəçi hər review üçün ya like ya da dislike edə bilər)
+    function canVote(reviewId, type = 'review') {
+        return !hasLiked(reviewId, type) && !hasDisliked(reviewId, type);
+    }
+    
+    // ============================================================
+    // 7. AJAX SORĞULARI
+    // ============================================================
+    async function sendRequest(action, data) {
+        const formData = new FormData();
+        const csrf = getCSRFToken();
+        if (csrf) formData.append('csrfmiddlewaretoken', csrf);
+        formData.append('action', action);
+        
+        Object.keys(data).forEach(key => {
+            if (data[key] !== undefined && data[key] !== null && data[key] !== '') {
+                formData.append(key, data[key]);
+            }
+        });
+        
+        try {
+            const response = await fetch(window.location.href, {
+                method: 'POST',
+                body: formData,
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            });
+            const result = await response.json();
+            console.log(`📦 ${action}:`, result);
+            return result;
+        } catch (error) {
+            console.error(`❌ ${action}:`, error);
+            return { status: 'error', message: 'Şəbəkə xətası!' };
+        }
+    }
+    
+    // ============================================================
+    // 8. RƏY ƏLAVƏ ET
+    // ============================================================
+    async function addReview(form) {
+        if (isSubmitting) {
+            showNotification('Zəhmət olmasa gözləyin...', 'warning');
+            return false;
+        }
+        
+        const name = form.querySelector('#firstName, [name="name"]')?.value?.trim();
+        const surname = form.querySelector('#lastName, [name="surname"]')?.value?.trim();
+        const text = form.querySelector('#commentText, [name="text"]')?.value?.trim();
+        const selectedRating = form.querySelector('input[name="rating"]:checked');
+        const rating = selectedRating ? selectedRating.value : null;
+        
+        if (!name) { showNotification('Adınızı daxil edin!', 'error'); return false; }
+        if (!surname) { showNotification('Soyadınızı daxil edin!', 'error'); return false; }
+        if (!text) { showNotification('Rəy mətnini daxil edin!', 'error'); return false; }
+        if (!rating) { showNotification('Ulduz sayını seçin!', 'error'); return false; }
+        
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalHtml = submitBtn?.innerHTML;
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Göndərilir...';
+        }
+        isSubmitting = true;
+        
+        const result = await sendRequest('add_review', {
+            name: name, surname: surname, text: text, rating: rating
+        });
+        
+        if (result.status === 'success') {
+            const firstNameInput = form.querySelector('#firstName, [name="name"]');
+            const lastNameInput = form.querySelector('#lastName, [name="surname"]');
+            const textInput = form.querySelector('#commentText, [name="text"]');
+            if (firstNameInput) firstNameInput.value = '';
+            if (lastNameInput) lastNameInput.value = '';
+            if (textInput) textInput.value = '';
+            
+            form.querySelectorAll('input[name="rating"]').forEach(input => input.checked = false);
+            const ratingText = form.querySelector('#ratingText');
+            if (ratingText) ratingText.textContent = '0/5';
+            
+            if (result.review) {
+                appendReviewToPage(result.review);
+            }
+            
+            showNotification(result.message || '✅ Rəyiniz əlavə edildi!', 'success');
+            updateReviewCount();
+        } else {
+            showNotification(result.message || '❌ Xəta baş verdi!', 'error');
+        }
+        
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalHtml;
+        }
+        isSubmitting = false;
+        return result.status === 'success';
+    }
+    
+    function appendReviewToPage(review) {
+        const commentsList = document.getElementById('commentsList');
+        const emptyState = document.getElementById('emptyComments');
+        
+        if (emptyState) emptyState.remove();
+        
+        const fullName = `${escapeHtml(review.name)} ${escapeHtml(review.surname || '')}`;
+        const avatarInitial = review.name.charAt(0).toUpperCase();
+        const avatarColor = getRandomAvatarColor();
+        
+        let starsHtml = '';
+        if (review.rating) {
+            const fullStars = parseInt(review.rating);
+            const emptyStars = 5 - fullStars;
+            starsHtml = '★'.repeat(fullStars) + '☆'.repeat(emptyStars);
+        }
+        
+        // Like/Dislike statuslarını yoxla
+        const isLiked = hasLiked(review.id, 'review');
+        const isDisliked = hasDisliked(review.id, 'review');
+        
+        const reviewHtml = `
+            <div class="comment-card" data-review-id="${review.id}">
+                <div class="comment-header">
+                    <div class="comment-user">
+                        <div class="comment-avatar ${avatarColor}">
+                            ${avatarInitial}
+                        </div>
+                        <div class="comment-user-info">
+                            <div class="comment-user-name">${fullName}</div>
+                            <div class="comment-date">
+                                <i class="far fa-calendar-alt"></i>
+                                <span>${timeSince(review.created)}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="comment-badge">
+                        <i class="fas fa-star"></i>
+                        <span>${review.rating}/5</span>
+                    </div>
+                </div>
+                <div class="comment-content">
+                    <div class="comment-rating">
+                        <div class="rating-display">
+                            <div class="stars-display">
+                                ${starsHtml.split('').map(s => s === '★' ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>').join('')}
+                            </div>
+                            <div class="rating-score">(${review.rating}/5)</div>
+                        </div>
+                    </div>
+                    <div class="comment-text">
+                        <p>${escapeHtml(review.text)}</p>
+                    </div>
+                    <div class="comment-actions">
+                        <div class="comment-action action-reply" data-review-id="${review.id}" data-author-name="${escapeHtml(review.name)}">
+                            <i class="fas fa-reply"></i>
+                            <span>Cavab yaz</span>
+                        </div>
+                        <div class="comment-action action-like ${isLiked ? 'active' : ''}" data-review-id="${review.id}" data-type="review" style="color: ${isLiked ? '#149ddd' : '#64748b'};">
+                            <i class="fas fa-thumbs-up"></i>
+                            <span class="like-count">${review.likes || 0}</span>
+                        </div>
+                        <div class="comment-action action-dislike ${isDisliked ? 'active' : ''}" data-review-id="${review.id}" data-type="review" style="color: ${isDisliked ? '#ff6b6b' : '#64748b'};">
+                            <i class="fas fa-thumbs-down"></i>
+                            <span class="dislike-count">${review.dislikes || 0}</span>
+                        </div>
+                    </div>
+                    <div class="replies-section" id="replies-${review.id}">
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        if (commentsList) {
+            commentsList.insertAdjacentHTML('afterbegin', reviewHtml);
+            const newReview = commentsList.firstElementChild;
+            if (newReview) {
+                newReview.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+    }
+    
+    // ============================================================
+    // 9. REPLY ƏLAVƏ ET - LİMİTSİZ VERSİYA
+    // ============================================================
+    function showReplyForm(reviewId, authorName) {
+        const targetElement = document.querySelector(`.comment-card[data-review-id="${reviewId}"] .replies-section`);
+        if (!targetElement) return;
+        
+        // Əgər bu review üçün artıq açıq form varsa, onu sil
+        const existingForm = targetElement.querySelector('.reply-form-container');
+        if (existingForm) {
+            existingForm.remove();
+        }
+        
+        const replyFormHtml = `
+            <div class="reply-form-container" data-parent-review="${reviewId}" style="margin-top: 15px; margin-bottom: 10px; padding: 16px; background: #f8fcff; border-radius: 20px; border: 1px solid rgba(20, 157, 221, 0.15);">
+                <div class="reply-form-header" style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px; flex-wrap: wrap;">
+                    <i class="fas fa-reply" style="color: #149ddd; font-size: 14px;"></i>
+                    <span style="font-size: 14px; color: #334155;">Cavab yazırsınız: <strong style="color: #149ddd;">${escapeHtml(authorName)}</strong></span>
+                    <button type="button" class="cancel-reply-btn" data-review-id="${reviewId}" style="background: none; border: none; color: #ff6b6b; cursor: pointer; margin-left: auto; font-size: 13px; padding: 4px 8px;">✕ Bağla</button>
+                </div>
+                <textarea class="reply-text" placeholder="Cavabınızı yazın..." rows="2" style="width: 100%; padding: 12px 16px; border: 1px solid #e2e8f0; border-radius: 16px; margin-bottom: 12px; resize: vertical; font-family: inherit; font-size: 14px;"></textarea>
+                <div style="display: flex; justify-content: flex-end;">
+                    <button type="button" class="submit-reply-btn" data-review-id="${reviewId}" data-reply-to="${escapeHtml(authorName)}" style="background: #149ddd; color: white; border: none; padding: 8px 24px; border-radius: 30px; cursor: pointer; font-weight: 500; font-size: 14px; transition: all 0.2s;">
+                        <i class="fas fa-paper-plane"></i> Göndər
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        targetElement.insertAdjacentHTML('beforeend', replyFormHtml);
+        const newForm = targetElement.lastElementChild;
+        
+        const cancelBtn = newForm.querySelector('.cancel-reply-btn');
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                newForm.remove();
+            });
+        }
+        
+        const submitBtn = newForm.querySelector('.submit-reply-btn');
+        if (submitBtn) {
+            submitBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                submitReply(submitBtn);
+            });
+        }
+        
+        const textarea = newForm.querySelector('.reply-text');
+        if (textarea) textarea.focus();
+    }
+    
+    async function submitReply(btn) {
+        const formContainer = btn.closest('.reply-form-container');
+        const reviewId = btn.dataset.reviewId;
+        const replyToName = btn.dataset.replyTo;
+        
+        const text = formContainer.querySelector('.reply-text')?.value?.trim();
+        
+        if (!text) { 
+            showNotification('Cavab mətnini daxil edin!', 'error'); 
+            return;
+        }
+        
+        const originalHtml = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        
+        const result = await sendRequest('add_reply', {
+            parent_id: reviewId,
+            name: DEFAULT_USER_NAME,
+            surname: DEFAULT_USER_SURNAME,
+            text: text,
+            reply_to_name: replyToName
+        });
+        
+        if (result.status === 'success') {
+            if (formContainer) formContainer.remove();
+            
+            if (result.reply) {
+                appendReplyToPage(result.reply, reviewId);
+            }
+            showNotification(result.message || '✅ Cavab əlavə edildi!', 'success');
+            updateReviewCount();
+        } else {
+            showNotification(result.message || '❌ Xəta!', 'error');
+            btn.disabled = false;
+            btn.innerHTML = originalHtml;
+        }
+    }
+    
+    function appendReplyToPage(reply, parentReviewId) {
+        const repliesContainer = document.getElementById(`replies-${parentReviewId}`);
+        if (!repliesContainer) return;
+        
+        const fullName = `${escapeHtml(reply.name)} ${escapeHtml(reply.surname || '')}`;
+        const replyText = reply.reply_to_name 
+            ? `<span style="color: #149ddd; font-weight: 500;">@${escapeHtml(reply.reply_to_name)}</span> ${escapeHtml(reply.text)}`
+            : escapeHtml(reply.text);
+        
+        // Reply üçün like/dislike statuslarını yoxla
+        const isLiked = hasLiked(reply.id, 'reply');
+        const isDisliked = hasDisliked(reply.id, 'reply');
+        
+        const replyHtml = `
+            <div class="reply-card" data-reply-id="${reply.id}" style="margin-top: 12px; padding: 12px; background: #f8fafc; border-radius: 16px; border-left: 3px solid #149ddd;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                    <div class="reply-avatar ${getRandomAvatarColor()}" style="width: 32px; height: 32px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; font-weight: 600;">
+                        ${reply.name.charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                        <span style="font-weight: 600; font-size: 14px;">${fullName}</span>
+                        <span style="font-size: 12px; color: #94a3b8; margin-left: 8px;">${timeSince(reply.created)}</span>
+                    </div>
+                </div>
+                <div class="reply-text" style="margin-bottom: 10px; padding-left: 42px;">
+                    <p style="margin: 0; font-size: 14px; color: #334155;">${replyText}</p>
+                </div>
+                <div class="reply-actions" style="padding-left: 42px; display: flex; gap: 16px;">
+                    <div class="reply-action like-reply ${isLiked ? 'active' : ''}" data-reply-id="${reply.id}" data-type="reply" style="cursor: pointer; font-size: 13px; color: ${isLiked ? '#149ddd' : '#64748b'}; transition: all 0.2s;">
+                        <i class="fas fa-thumbs-up"></i> <span class="like-count">${reply.likes || 0}</span>
+                    </div>
+                    <div class="reply-action dislike-reply ${isDisliked ? 'active' : ''}" data-reply-id="${reply.id}" data-type="reply" style="cursor: pointer; font-size: 13px; color: ${isDisliked ? '#ff6b6b' : '#64748b'}; transition: all 0.2s;">
+                        <i class="fas fa-thumbs-down"></i> <span class="dislike-count">${reply.dislikes || 0}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        repliesContainer.insertAdjacentHTML('beforeend', replyHtml);
+        const newReply = repliesContainer.lastElementChild;
+        if (newReply) {
+            newReply.style.animation = 'fadeInUp 0.3s ease';
+        }
+        
+        attachReplyLikeDislikeButtons();
+    }
+    
+    // ============================================================
+    // 10. LIKE/DISLIKE - HƏR İSTİFADƏÇİ 1 DƏFƏ
+    // ============================================================
+    async function handleLike(reviewId, type, btnElement) {
+        // Əgər artıq like edibsə, like-ı geri al
+        if (hasLiked(reviewId, type)) {
+            const result = await sendRequest(type === 'review' ? 'like_review' : 'like_reply', { review_id: reviewId });
+            if (result.status === 'success') {
+                setLiked(reviewId, false, type);
+                updateVoteUI(btnElement, result.likes, result.dislikes);
+                showNotification('Bəyənmə geri alındı', 'info');
+            }
+            return;
+        }
+        
+        // Əgər dislike edibsə, əvvəl dislike-ı geri al
+        if (hasDisliked(reviewId, type)) {
+            await sendRequest(type === 'review' ? 'dislike_review' : 'dislike_reply', { review_id: reviewId });
+            setDisliked(reviewId, false, type);
+        }
+        
+        // Like göndər
+        const result = await sendRequest(type === 'review' ? 'like_review' : 'like_reply', { review_id: reviewId });
+        if (result.status === 'success') {
+            setLiked(reviewId, true, type);
+            updateVoteUI(btnElement, result.likes, result.dislikes);
+            showNotification('Bəyənildi!', 'success');
+        }
+    }
+    
+    async function handleDislike(reviewId, type, btnElement) {
+        // Əgər artıq dislike edibsə, dislike-ı geri al
+        if (hasDisliked(reviewId, type)) {
+            const result = await sendRequest(type === 'review' ? 'dislike_review' : 'dislike_reply', { review_id: reviewId });
+            if (result.status === 'success') {
+                setDisliked(reviewId, false, type);
+                updateVoteUI(btnElement, result.likes, result.dislikes);
+                showNotification('Bəyənməmə geri alındı', 'info');
+            }
+            return;
+        }
+        
+        // Əgər like edibsə, əvvəl like-ı geri al
+        if (hasLiked(reviewId, type)) {
+            await sendRequest(type === 'review' ? 'like_review' : 'like_reply', { review_id: reviewId });
+            setLiked(reviewId, false, type);
+        }
+        
+        // Dislike göndər
+        const result = await sendRequest(type === 'review' ? 'dislike_review' : 'dislike_reply', { review_id: reviewId });
+        if (result.status === 'success') {
+            setDisliked(reviewId, true, type);
+            updateVoteUI(btnElement, result.likes, result.dislikes);
+            showNotification('Bəyənilmədi', 'info');
+        }
+    }
+    
+    function updateVoteUI(btnElement, likes, dislikes) {
+        const container = btnElement.closest('.comment-actions, .reply-actions');
+        if (!container) return;
+        
+        const likeBtn = container.querySelector('.action-like, .like-reply');
+        const dislikeBtn = container.querySelector('.action-dislike, .dislike-reply');
+        const likeSpan = likeBtn?.querySelector('.like-count');
+        const dislikeSpan = dislikeBtn?.querySelector('.dislike-count');
+        
+        if (likeSpan) likeSpan.textContent = likes;
+        if (dislikeSpan) dislikeSpan.textContent = dislikes;
+        
+        // Düymələrin rənglərini yenilə
+        const reviewId = btnElement.dataset.replyId || btnElement.dataset.reviewId;
+        const type = btnElement.dataset.type || 'review';
+        
+        if (likeBtn) {
+            if (hasLiked(reviewId, type)) {
+                likeBtn.style.color = '#149ddd';
+            } else {
+                likeBtn.style.color = '#64748b';
             }
         }
         
-        @keyframes notificationSlideOut {
-            from {
-                transform: translateX(0);
-                opacity: 1;
-            }
-            to {
-                transform: translateX(100%);
-                opacity: 0;
+        if (dislikeBtn) {
+            if (hasDisliked(reviewId, type)) {
+                dislikeBtn.style.color = '#ff6b6b';
+            } else {
+                dislikeBtn.style.color = '#64748b';
             }
         }
-    `;
-    document.head.appendChild(style);
+    }
+    
+    // ============================================================
+    // 11. REVIEW SAYI
+    // ============================================================
+    function updateReviewCount() {
+        const reviewCount = document.querySelectorAll('.comment-card').length;
+        const countElements = document.querySelectorAll('#commentCount, #commentCountDisplay, .comment-count');
+        countElements.forEach(el => {
+            if (el) el.textContent = reviewCount;
+        });
+    }
+    
+    // ============================================================
+    // 12. EVENT LİSTENERLƏR
+    // ============================================================
+    function attachEventListeners() {
+        const commentForm = document.getElementById('commentForm');
+        if (commentForm) {
+            const newForm = commentForm.cloneNode(true);
+            commentForm.parentNode?.replaceChild(newForm, commentForm);
+            newForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                await addReview(newForm);
+            });
+            console.log('✅ Comment form attached');
+        }
+        
+        document.querySelectorAll('.star-rating input').forEach(star => {
+            star.addEventListener('change', function() {
+                const ratingText = document.getElementById('ratingText');
+                if (ratingText) ratingText.textContent = `${this.value}/5`;
+            });
+        });
+    }
+    
+    function attachReplyButtons() {
+        document.body.addEventListener('click', (e) => {
+            const replyBtn = e.target.closest('.action-reply');
+            if (replyBtn) {
+                e.preventDefault();
+                e.stopPropagation();
+                const reviewId = replyBtn.dataset.reviewId;
+                const authorName = replyBtn.dataset.authorName;
+                if (reviewId) showReplyForm(reviewId, authorName);
+            }
+        });
+    }
+    
+    function attachLikeDislikeButtons() {
+        document.body.addEventListener('click', async (e) => {
+            const likeBtn = e.target.closest('.action-like, .like-reply');
+            const dislikeBtn = e.target.closest('.action-dislike, .dislike-reply');
+            
+            if (likeBtn) {
+                e.preventDefault();
+                e.stopPropagation();
+                const reviewId = likeBtn.dataset.replyId || likeBtn.dataset.reviewId;
+                const type = likeBtn.dataset.type || 'review';
+                await handleLike(reviewId, type, likeBtn);
+            }
+            
+            if (dislikeBtn) {
+                e.preventDefault();
+                e.stopPropagation();
+                const reviewId = dislikeBtn.dataset.replyId || dislikeBtn.dataset.reviewId;
+                const type = dislikeBtn.dataset.type || 'review';
+                await handleDislike(reviewId, type, dislikeBtn);
+            }
+        });
+    }
+    
+    function attachReplyLikeDislikeButtons() {
+        document.querySelectorAll('.reply-action.like-reply, .reply-action.dislike-reply').forEach(btn => {
+            if (btn.dataset.listenerAdded) return;
+            btn.dataset.listenerAdded = 'true';
+            
+            btn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const replyId = btn.dataset.replyId;
+                const type = btn.dataset.type || 'reply';
+                const isLike = btn.classList.contains('like-reply');
+                
+                if (isLike) {
+                    await handleLike(replyId, type, btn);
+                } else {
+                    await handleDislike(replyId, type, btn);
+                }
+            });
+        });
+    }
+    
+    // ============================================================
+    // 13. MUTATION OBSERVER
+    // ============================================================
+    let observerTimeout;
+    const observer = new MutationObserver(() => {
+        if (observerTimeout) clearTimeout(observerTimeout);
+        observerTimeout = setTimeout(() => {
+            attachReplyLikeDislikeButtons();
+        }, 200);
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+    
+    // ============================================================
+    // 14. MÖVCUD LIKE/DISLIKE STATUSLARINI YÜKLƏ
+    // ============================================================
+    function loadExistingVoteStatus() {
+        document.querySelectorAll('.action-like').forEach(btn => {
+            const id = btn.dataset.reviewId;
+            const type = btn.dataset.type || 'review';
+            if (hasLiked(id, type)) {
+                btn.style.color = '#149ddd';
+            }
+        });
+        document.querySelectorAll('.action-dislike').forEach(btn => {
+            const id = btn.dataset.reviewId;
+            const type = btn.dataset.type || 'review';
+            if (hasDisliked(id, type)) {
+                btn.style.color = '#ff6b6b';
+            }
+        });
+    }
+    
+    // ============================================================
+    // 15. İNİTİALİZASİYA
+    // ============================================================
+    function init() {
+        if (!document.getElementById('commentForm')) {
+            console.log('Comment form not found, skipping...');
+            return;
+        }
+        
+        attachEventListeners();
+        attachReplyButtons();
+        attachLikeDislikeButtons();
+        attachReplyLikeDislikeButtons();
+        loadExistingVoteStatus();
+        
+        updateReviewCount();
+        console.log('✅ Product Reviews System initialized - LİKE/DİSLİKE LIMITI AKTİVDİR!');
+    }
+    
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+    
 })();

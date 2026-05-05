@@ -5,6 +5,10 @@ from django.views.generic import TemplateView, DetailView, ListView
 from django.db.models import Q, Avg, Count
 from django.http import HttpResponseRedirect
 # Create your views here.
+from django.utils import translation
+from django.urls import resolve, reverse, translate_url
+from urllib.parse import urlparse
+from django.conf import settings
 
 
 
@@ -72,19 +76,49 @@ class ServiceDetailsView(DetailView):
 
 
 
-def change_language(request):
-    if request.GET.get ('lang') == 'az' or request.GET.get ('lang') == 'en' or request.GET.get ('lang') == 'ru' == 'default':
-        # print (request.META.get('HTTP_REFERER'))
-        path_list = request.META.get('HTTP_REFERER').split('/')
-        # print (path_list)
 
-        if request.GET.get ('lang') == 'default':
-            path_list.pop(4)
-        else:
-            path_list.insert(4, request.GET.get ('lang'))
-        path = '/'.join(path_list)
-        # print (path)
+
+def change_language(request):
+    lang = request.GET.get('lang')
+    next_url = request.META.get('HTTP_REFERER', '/')
     
-        response = HttpResponseRedirect(path)
-        response.set_cookie('django_language', request.GET.get ('lang'))
+    parsed_url = urlparse(next_url)
+    path = parsed_url.path
+    
+    if lang in ['az', 'en', 'ru']:
+        # 1. URL-i mövcud prefikslərdən tam təmizləyirik
+        clean_path = path
+        for supported_lang in ['en', 'ru']:
+            if path.startswith(f'/{supported_lang}/'):
+                clean_path = path.replace(f'/{supported_lang}/', '/', 1)
+                break
+
+        try:
+            # 2. Təmiz path ilə səhifəni tapırıq
+            view = resolve(clean_path)
+            translation.activate(lang)
+            target_url = reverse(view.view_name, args=view.args, kwargs=view.kwargs)
+            
+            if parsed_url.query:
+                target_url = f"{target_url}?{parsed_url.query}"
+        except:
+            # 3. Əgər resolve alınmasa, manual olaraq yeni dili yapışdırırıq
+            if lang == 'az':
+                target_url = clean_path
+            else:
+                # clean_path-in başında / olmasını təmin edirik
+                if not clean_path.startswith('/'):
+                    clean_path = f'/{clean_path}'
+                target_url = f"/{lang}{clean_path}"
+
+        response = HttpResponseRedirect(target_url)
+        
+        # 4. Dil seçimini yadda saxlayırıq
+        # LANGUAGE_SESSION_KEY yerinə birbaşa '_language' stringindən istifadə edirik
+        response.set_cookie(settings.LANGUAGE_COOKIE_NAME, lang)
+        if hasattr(request, 'session'):
+            request.session['_language'] = lang # Django bu açarı istifadə edir
+            
         return response
+
+    return HttpResponseRedirect('/')

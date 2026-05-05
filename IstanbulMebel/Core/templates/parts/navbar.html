@@ -29,8 +29,6 @@
   <link href="{% static 'assets/css/main.css' %}" rel="stylesheet">
   <link href="{% static 'assets/css/order.css' %}" rel="stylesheet">
   <link href="{% static 'assets/css/user.css' %}" rel="stylesheet">
-
-
   <!-- =======================================================
   * Template Name: iPortfolio
   * Template URL: https://bootstrapmade.com/iportfolio-bootstrap-portfolio-websites-template/
@@ -63,16 +61,14 @@
       <a href="https://www.instagram.com/samaxi_istanbul_mebel_" class="social-icon">
         <img style="width: 18px; height: 18px;" src="{% static 'assets/img/icons/instagram.png' %}" alt="">
       </a>
-      <!-- LANGUAGE DROPDOWN -->
       <div class="lang-dropdown">
         <button class="lang-toggle" id="langToggle">
           🌐
         </button>
         <ul class="lang-menu" id="langMenu">
-          <li><a href="/az/">Azerbaycan</a></li>
-          <li><a href="/en/">English</a></li>
-          <li><a href="/ru/">Russian</a></li>
-          <!-- <li><a href="/spa/">Ispania</a></li> -->
+          <li><a href="/change_language/?lang=az">Azerbaycan</a></li>
+          <li><a href="/change_language/?lang=en">English</a></li>
+          <li><a href="/change_language/?lang=ru">Russian</a></li>
         </ul>
       </div>
     </div>
@@ -100,106 +96,107 @@
       </div>
       <hr>
       <div class="dropdown-wrapper">
-          <!-- Wishlist Dropdown -->
-          <div style="right: 169px;" class="dropdown-container">
-              <button class="dropdown-icon" id="wishlistBtn">
-                  <i class="far fa-heart"></i>
-                  <span class="dropdown-badge">{{ wishlist_count }}</span>
-              </button>
+        <!-- Wishlist Dropdown -->
+        <div style="right: 169px;" class="dropdown-container">
+          <button class="dropdown-icon" id="wishlistBtn">
+            <i class="far fa-heart"></i>
+            <span class="dropdown-badge">{{ wishlist_count }}</span>
+          </button>
 
-              <ul class="dropdown-menu scrollable-dropdown" id="wishlistDropdown">
-                  <li class="dropdown-header">
-                      <span>{% translate 'İstək Siyahısı' %}</span>
-                      <span class="header-count">{{ wishlist_count }} {% translate 'məhsul' %}</span>
-                  </li>
+          <ul class="dropdown-menu scrollable-dropdown" id="wishlistDropdown">
+            <li class="dropdown-header">
+              <span>{% translate 'İstək Siyahısı' %}</span>
+              <span class="header-count">{{ wishlist_count }} {% translate 'məhsul' %}</span>
+            </li>
 
-                  <!-- 🔴 DƏYİŞDİRİLDİ: Boşdur yazısı üçün empty-placeholder class-ı əlavə edildi -->
-                  <div class="dropdown-items-container">
-                      {% if wishlist_items %}
-                          {% for item in wishlist_items %}
-                          <li class="dropdown-item" data-product-id="{{ item.product.id }}">
-                              {% if item.product.product_image %}
-                              <img src="{{ item.product.product_image.url }}" alt="{{ item.product.title }}"
-                                  style="width: 40px; height: 40px; object-fit: cover; border-radius: 5px;">
-                              {% else %}
-                              <img src="https://via.placeholder.com/40" alt="Product">
-                              {% endif %}
-                              <div class="item-details">
-                                  <div class="item-title">{{ item.product.title|truncatechars:20 }}</div>
-                                  <div style="color: white;" class="item-price">${{ item.price|floatformat:2 }}</div>
-                              </div>
-                          </li>
-                          {% endfor %}
-                      {% else %}
-                      <!-- 🔴 DƏYİŞDİRİLDİ: empty-placeholder class-ı əlavə edildi -->
-                      <li class="dropdown-item empty-placeholder" style="justify-content: center; color: #999; text-align: center; padding: 20px;">
-                          <i class="far fa-heart" style="font-size: 24px; margin-bottom: 8px; display: block;"></i>
-                          <span>{% translate 'Wishlist boşdur' %}</span>
-                      </li>
-                      {% endif %}
+            <!-- 🔴 DƏYİŞDİRİLDİ: Boşdur yazısı üçün empty-placeholder class-ı əlavə edildi -->
+            <div class="dropdown-items-container">
+              {% if wishlist_items %}
+              {% for item in wishlist_items %}
+              <li class="dropdown-item" data-product-id="{{ item.product.id }}">
+                {% if item.product.product_image %}
+                <img src="{{ item.product.product_image.url }}" alt="{{ item.product.title }}"
+                  style="width: 40px; height: 40px; object-fit: cover; border-radius: 5px;">
+                {% else %}
+                <img src="https://via.placeholder.com/40" alt="Product">
+                {% endif %}
+                <div class="item-details">
+                  <div class="item-title">{{ item.product.title|truncatechars:20 }}</div>
+                  <div style="color: white;" class="item-price">${{ item.price|floatformat:2 }}</div>
+                </div>
+              </li>
+              {% endfor %}
+              {% else %}
+              <!-- 🔴 DƏYİŞDİRİLDİ: empty-placeholder class-ı əlavə edildi -->
+              <li class="dropdown-item empty-placeholder"
+                style="justify-content: center; color: #999; text-align: center; padding: 20px;">
+                <i class="far fa-heart" style="font-size: 24px; margin-bottom: 8px; display: block;"></i>
+                <span>{% translate 'Wishlist boşdur' %}</span>
+              </li>
+              {% endif %}
+            </div>
+
+            <li class="dropdown-footer">
+              <a href="{% url 'all_list' %}" class="footer-btn">{% translate 'Hamısına bax' %}</a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Cart Dropdown -->
+        <div style="right: 165px;" class="dropdown-container">
+          <button class="dropdown-icon" id="cartBtn">
+            <i class="fas fa-shopping-cart"></i>
+            <span class="dropdown-badge">{{ mini_cart_count }}</span>
+          </button>
+
+          <ul class="dropdown-menu scrollable-dropdown" id="cartDropdown">
+            <li class="dropdown-header">
+              <span>Səbətim</span>
+              <span class="header-count">{{ mini_cart_count }} {% translate 'məhsul' %}</span>
+            </li>
+
+            <!-- 🔴 DƏYİŞDİRİLDİ: Boşdur yazısı üçün empty-placeholder class-ı əlavə edildi -->
+            <div class="dropdown-items-container">
+              {% if mini_cart_items %}
+              {% for item in mini_cart_items %}
+              <li class="dropdown-item" data-product-id="{{ item.product.id }}">
+                {% if item.product.product_image %}
+                <img src="{{ item.product.product_image.url }}" alt="{{ item.product.title }}"
+                  style="width: 40px; height: 40px; object-fit: cover; border-radius: 5px;">
+                {% else %}
+                <img src="https://via.placeholder.com/40" alt="Product">
+                {% endif %}
+                <div class="item-details">
+                  <div class="item-title">{{ item.product.title|truncatechars:20 }}</div>
+                  <div style="color: white;" class="item-price">${{ item.price|floatformat:2 }} x {{ item.quantity }}
                   </div>
+                </div>
+              </li>
+              {% endfor %}
+              {% else %}
+              <!-- 🔴 DƏYİŞDİRİLDİ: empty-placeholder class-ı əlavə edildi -->
+              <li class="dropdown-item empty-placeholder"
+                style="justify-content: center; color: #999; text-align: center; padding: 20px;">
+                <i class="fas fa-shopping-cart" style="font-size: 24px; margin-bottom: 8px; display: block;"></i>
+                <span>{% translate 'Səbət boşdur' %}</span>
+              </li>
+              {% endif %}
+            </div>
 
-                  <li class="dropdown-footer">
-                      <a href="{% url 'all_list' %}" class="footer-btn">{% translate 'Hamısına bax' %}</a>
-                  </li>
-              </ul>
-          </div>
-
-          <!-- Cart Dropdown -->
-          <div style="right: 165px;" class="dropdown-container">
-              <button class="dropdown-icon" id="cartBtn">
-                  <i class="fas fa-shopping-cart"></i>
-                  <span class="dropdown-badge">{{ mini_cart_count }}</span>
-              </button>
-
-              <ul class="dropdown-menu scrollable-dropdown" id="cartDropdown">
-                  <li class="dropdown-header">
-                      <span>Səbətim</span>
-                      <span class="header-count">{{ mini_cart_count }} {% translate 'məhsul' %}</span>
-                  </li>
-
-                  <!-- 🔴 DƏYİŞDİRİLDİ: Boşdur yazısı üçün empty-placeholder class-ı əlavə edildi -->
-                  <div class="dropdown-items-container">
-                      {% if mini_cart_items %}
-                          {% for item in mini_cart_items %}
-                          <li class="dropdown-item" data-product-id="{{ item.product.id }}">
-                              {% if item.product.product_image %}
-                              <img src="{{ item.product.product_image.url }}" alt="{{ item.product.title }}"
-                                  style="width: 40px; height: 40px; object-fit: cover; border-radius: 5px;">
-                              {% else %}
-                              <img src="https://via.placeholder.com/40" alt="Product">
-                              {% endif %}
-                              <div class="item-details">
-                                  <div class="item-title">{{ item.product.title|truncatechars:20 }}</div>
-                                  <div style="color: white;" class="item-price">${{ item.price|floatformat:2 }} x {{ item.quantity }}</div>
-                              </div>
-                          </li>
-                          {% endfor %}
-                      {% else %}
-                      <!-- 🔴 DƏYİŞDİRİLDİ: empty-placeholder class-ı əlavə edildi -->
-                      <li class="dropdown-item empty-placeholder" style="justify-content: center; color: #999; text-align: center; padding: 20px;">
-                          <i class="fas fa-shopping-cart" style="font-size: 24px; margin-bottom: 8px; display: block;"></i>
-                          <span>{% translate 'Səbət boşdur' %}</span>
-                      </li>
-                      {% endif %}
-                  </div>
-
-                  <li class="dropdown-footer">
-                      <div class="total-row">
-                          <span>{% translate 'Cəmi' %}</span>
-                          <span class="total-amount">${{ mini_cart_total|floatformat:2 }}</span>
-                      </div>
-                      <a href="{% url 'all_carts' %}" class="footer-btn primary">{% translate 'Səbətə keç' %}</a>
-                  </li>
-              </ul>
-          </div>
+            <li class="dropdown-footer">
+              <div class="total-row">
+                <span>{% translate 'Cəmi' %}</span>
+                <span class="total-amount">${{ mini_cart_total|floatformat:2 }}</span>
+              </div>
+              <a href="{% url 'all_carts' %}" class="footer-btn primary">{% translate 'Səbətə keç' %}</a>
+            </li>
+          </ul>
+        </div>
       </div>
       <hr>
       <ul>
-        <li><a href="{% url 'index' %}" class="active"><i class="bi bi-house navicon"></i>{% translate 'Ana səhifə' %}</a></li>
-        <li class="dropdown"><a href="{% url 'index' %}#portfolio"><i
-              class="bi bi-images navicon"></i><span>{% translate 'Məhsullar' %}</span> <i
-              class="bi bi-chevron-down toggle-dropdown"></i></a>
+        <li><a href="{% url 'index' %}" class="active"><i class="bi bi-house navicon"></i>{% translate "Ana səhifə" %}</a></li>
+        <li class="dropdown"><a href="{% url 'index' %}#portfolio"><i class="bi bi-images navicon"></i><span>{%translate 'Məhsullar' %}</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
           <ul>
             <li><a href="{% url 'all_product' %}">{% translate 'Bütün Məhsullar' %}<img
                   style="margin-left: 5px; width: 20px; height: 20px; padding-bottom: 2px;"
@@ -207,8 +204,7 @@
           </ul>
         </li>
         <li class="dropdown"><a><span><img style="width: 20px; height: 20px; position: relative; top: -3px;"
-                src="{% static 'assets/img/icons/truck.png' %}" alt=""><span
-                style="margin-left: 10px;">{% translate 'Sifarişlər' %}</span></span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+                src="{% static 'assets/img/icons/truck.png' %}" alt=""><span style="margin-left: 10px;">{% translate 'Sifarişlər' %}</span></span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
           <ul>
             <li><a href="{% url 'all_list' %}">{% translate 'Sevimlilər' %} <img style="margin-left: 5px;"
                   src="{% static 'assets/img/icons/wishlist.png' %}" alt=""></a></li>
@@ -218,21 +214,24 @@
                   src="{% static 'assets/img/icons/checklist.png' %}" alt=""></a></li>
           </ul>
         </li>
-        <li><a href="{% url 'index' %}#services"><i class="bi bi-hdd-stack navicon"></i> {% translate 'Servislər' %}</a></li>
+        <li><a href="{% url 'index' %}#services"><i class="bi bi-hdd-stack navicon"></i> {% translate 'Servislər' %}</a>
+        </li>
         <li><a href="{% url 'contact' %}"><i class="bi bi-envelope navicon"></i> {% translate 'Əlaqə saxla' %}</a></li>
         <li class="dropdown"><a><span style="margin-left: 3px;"><img
                 style="width: 15px; height: 15px; position: relative; top: -2px;"
-                src="{% static 'assets/img/icons/my-account.jpg' %}" alt=""><span
-                style="margin-left: 7px;">{% translate 'Qeydiyyat' %}</span></span> <i
-              class="bi bi-chevron-down toggle-dropdown"></i></a>
+                src="{% static 'assets/img/icons/my-account.jpg' %}" alt=""><span style="margin-left: 7px;">{% translate 'Qeydiyyat' %}</span></span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
           <ul>
-            <li><a href="{% url 'register' %}">{% translate 'Qeydiyyatdan Keçin' %} <img style="margin-left: 7px; height: 15px; width: 15px;"
+            <li><a href="{% url 'register' %}">{% translate 'Qeydiyyatdan Keçin' %} <img
+                  style="margin-left: 7px; height: 15px; width: 15px;"
                   src="{% static 'assets/img/icons/register.png' %}" alt=""></a></li>
-            <li><a href="{% url 'login' %}">{% translate 'Daxil olun' %} <img style="margin-left: 7px; height: 15px; width: 15px;"
-                  src="{% static 'assets/img/icons/login.png' %}" alt=""></a></li>
-            <li><a href="{% url 'account' %}">{% translate 'Hesabım' %} <img style="margin-left: 7px; height: 15px; width: 15px;"
+            <li><a href="{% url 'login' %}">{% translate 'Daxil olun' %} <img
+                  style="margin-left: 7px; height: 15px; width: 15px;" src="{% static 'assets/img/icons/login.png' %}"
+                  alt=""></a></li>
+            <li><a href="{% url 'account' %}">{% translate 'Hesabım' %} <img
+                  style="margin-left: 7px; height: 15px; width: 15px;"
                   src="{% static 'assets/img/icons/my-account.jpg' %}" alt=""></a></li>
-            <li><a href="{% url 'account' %}">{% translate 'Çıxış et' %} <img style="width: 15px; height: 15px; margin-left: 10px;"
+            <li><a href="{% url 'account' %}">{% translate 'Çıxış et' %} <img
+                  style="width: 15px; height: 15px; margin-left: 10px;"
                   src="{% static 'assets/img/icons/user-logout.jpg' %}" alt=""></a></li>
           </ul>
         </li>

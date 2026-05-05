@@ -2,17 +2,17 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-20 20:53+0400\n"
+"POT-Creation-Date: 2026-05-04 00:28+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -20,40 +20,15 @@ msgstr ""
 
 #: .\Core\templates\index.html:10
 msgid "Dizayın və Xoşbəxtliyin birləşdiyi nöqtə..)"
-msgstr "The point where Design and Happiness meet..)"
+msgstr "The point where design and happiness meet..)"
 
 #: .\Core\templates\index.html:11
-msgid ""
-"Daimi Xoşbəxtliyiniz üçün :), Yataq-Qonaq-Mətbəx, Ofis və Yumşaq Mebeller"
-msgstr "For Your Constant Happiness :), Bedroom-Living Room-Kitchen, Office and Soft Furniture"
+msgid "Daimi Xoşbəxtliyiniz üçün :), Yataq-Qonaq-Mətbəx, Ofis və Yumşaq Mebeller"
+msgstr "For your constant happiness :), Bedroom-Living-Kitchen, Office and Soft Furniture"
 
 #: .\Core\templates\index.html:23 .\Core\templates\index.html:143
-msgid ""
-"Araşdırmalara görə dolablar və vitrinlər o dövrün ən vacib mebel parçası "
-"hesab edilir, çünki onlar Neolit cəmiyyətində evlərdə simvolik əşyaların "
-"oyma sənət əsərlərinin nümayiş etdirilməsi üçün istifadə edilirdi. İllər "
-"ötdükcə insanlar Neolit dövründə olduğu kimi daha müasir mebelləri həm "
-"gündəlik həyatımız üçün funksional, həm də zövq oxşamaq üçün bir sənət əsəri "
-"kimi istifadə etməyə başladılar. Müasir həyatımızda daha çox rahatlığa və "
-"dəbdəbəyə diqqət yetirməklə, material və dayanıqlıq daha güclü və uzun "
-"ömürlü olsa da, əksər mebellərin əsas dizaynı eyni qaldı. Kreslolar sadəcə "
-"oturmaq üçün deyil, yellənmə funksiyaları əlavə olunaraq istirahət etmək "
-"üçün də bir vasitə kimi dizayn edilməyə başlanıldı. Mebeldəki dizayn "
-"dəyişikliyi bir növ cəmiyyətimizin sadə yaşam tərzindən lüks və imtiyazlı "
-"həyatlara doğru təkamülünü göstərir."
-msgstr ""
-"According to research, cabinets and display cabinets are considered the most "
-"important furniture pieces of that period, as they were used in Neolithic "
-"society to display symbolic objects and carved artworks in homes. Over the "
-"years, people began to use more modern furniture both functionally for our "
-"daily lives and as an art piece for aesthetic pleasure, just as in the "
-"Neolithic period. While focusing more on comfort and luxury in our modern "
-"lives, with materials and durability becoming stronger and longer-lasting, "
-"the basic design of most furniture remained the same. Chairs began to be "
-"designed not just for sitting, but also as a means of relaxation with the "
-"addition of rocking functions. The design change in furniture in a way "
-"reflects the evolution of our society from a simple lifestyle to luxurious "
-"and privileged lives."
+msgid "Araşdırmalara görə dolablar və vitrinlər o dövrün ən vacib mebel parçası hesab edilir, çünki onlar Neolit cəmiyyətində evlərdə simvolik əşyaların oyma sənət əsərlərinin nümayiş etdirilməsi üçün istifadə edilirdi. İllər ötdükcə insanlar Neolit dövründə olduğu kimi daha müasir mebelləri həm gündəlik həyatımız üçün funksional, həm də zövq oxşamaq üçün bir sənət əsəri kimi istifadə etməyə başladılar. Müasir həyatımızda daha çox rahatlığa və dəbdəbəyə diqqət yetirməklə, material və dayanıqlıq daha güclü və uzun ömürlü olsa da, əksər mebellərin əsas dizaynı eyni qaldı. Kreslolar sadəcə oturmaq üçün deyil, yellənmə funksiyaları əlavə olunaraq istirahət etmək üçün də bir vasitə kimi dizayn edilməyə başlanıldı. Mebeldəki dizayn dəyişikliyi bir növ cəmiyyətimizin sadə yaşam tərzindən lüks və imtiyazlı həyatlara doğru təkamülünü göstərir."
+msgstr "According to research, cabinets and display cases were considered the most important piece of furniture of that period, as they were used in Neolithic society to display symbolic objects and carved works of art in homes. Over the years, people began to use more modern furniture, as in the Neolithic period, both as functional for our daily lives and as a work of art to please the taste. By focusing more on comfort and luxury in our modern lives, although materials and durability are stronger and longer-lasting, the basic design of most furniture has remained the same. Chairs began to be designed not only for sitting, but also as a means of relaxation by adding rocking functions. The change in furniture design shows the evolution of our society from a simple lifestyle to luxurious and privileged lives."
 
 #: .\Core\templates\index.html:33
 msgid "Premium"
@@ -67,16 +42,15 @@ msgstr "No products have been added yet."
 msgid "Göstərilir"
 msgstr "Showing"
 
-#: .\Core\templates\index.html:129 .\Core\templates\parts\navbar.html:201
-#: .\Order\templates\carts.html:11 .\Order\templates\wishlist.html:11
-#: .\Products\templates\products.html:11
+#: .\Core\templates\index.html:129 .\Order\templates\carts.html:11
+#: .\Order\templates\wishlist.html:11 .\Products\templates\products.html:11
 #: .\Products\templates\products.html:361
 msgid "Məhsullar"
 msgstr "Products"
 
 #: .\Core\templates\index.html:178
 msgid "Müştərilərimizin fikirləri"
-msgstr "Customer Reviews"
+msgstr "Our customers' opinions"
 
 #: .\Core\templates\index.html:195
 msgid "Məhsul:"
@@ -84,7 +58,7 @@ msgstr "Product:"
 
 #: .\Core\templates\index.html:220
 msgid "Hələ heç bir rəy yoxdur. İlk rəy yazan siz olun!"
-msgstr "No reviews yet. Be the first to leave a review!"
+msgstr "There are no reviews yet. Be the first to leave a review!"
 
 #: .\Core\templates\index.html:223
 msgid "Rəy yoxdur"
@@ -94,15 +68,15 @@ msgstr "No reviews"
 msgid "İlk rəyi siz yazın"
 msgstr "Write the first review"
 
-#: .\Core\templates\parts\navbar.html:99 .\Products\forms.py:188
+#: .\Core\templates\parts\navbar.html:98 .\Products\forms.py:188
 msgid "Axtar"
 msgstr "Search"
 
-#: .\Core\templates\parts\navbar.html:112
+#: .\Core\templates\parts\navbar.html:111
 msgid "İstək Siyahısı"
 msgstr "Wishlist"
 
-#: .\Core\templates\parts\navbar.html:113
+#: .\Core\templates\parts\navbar.html:112
 #: .\Core\templates\parts\navbar.html:158
 msgid "məhsul"
 msgstr "product"
@@ -115,73 +89,58 @@ msgstr "Wishlist is empty"
 msgid "Hamısına bax"
 msgstr "View all"
 
-#: .\Core\templates\parts\navbar.html:182
+#: .\Core\templates\parts\navbar.html:184
 msgid "Səbət boşdur"
 msgstr "Cart is empty"
 
-#: .\Core\templates\parts\navbar.html:189 .\Order\templates\carts.html:55
+#: .\Core\templates\parts\navbar.html:191 .\Order\templates\carts.html:55
 #: .\Order\templates\carts.html:137 .\Users\templates\my-account.html:223
 msgid "Cəmi"
 msgstr "Total"
 
-#: .\Core\templates\parts\navbar.html:192
+#: .\Core\templates\parts\navbar.html:194
 msgid "Səbətə keç"
 msgstr "Go to cart"
 
-#: .\Core\templates\parts\navbar.html:199
-#: .\Products\templates\portfolio-details.html:12
-#: .\Products\templates\products.html:10 .\Users\templates\login.html:9
-msgid "Ana səhifə"
-msgstr "Home"
-
-#: .\Core\templates\parts\navbar.html:204
+#: .\Core\templates\parts\navbar.html:206
 msgid "Bütün Məhsullar"
 msgstr "All Products"
 
-#: .\Core\templates\parts\navbar.html:211
-msgid "Sifarişlər"
-msgstr "Orders"
-
-#: .\Core\templates\parts\navbar.html:213 .\Order\templates\carts.html:12
+#: .\Core\templates\parts\navbar.html:215 .\Order\templates\carts.html:12
 #: .\Users\templates\my-account.html:83
 msgid "Sevimlilər"
 msgstr "Favorites"
 
-#: .\Core\templates\parts\navbar.html:215
+#: .\Core\templates\parts\navbar.html:217
 msgid "Səbətim"
 msgstr "My Cart"
 
-#: .\Core\templates\parts\navbar.html:217
+#: .\Core\templates\parts\navbar.html:219
 msgid "Sifariş vermək"
-msgstr "Checkout"
+msgstr "Place order"
 
-#: .\Core\templates\parts\navbar.html:221
+#: .\Core\templates\parts\navbar.html:223
 msgid "Servislər"
 msgstr "Services"
 
-#: .\Core\templates\parts\navbar.html:222
+#: .\Core\templates\parts\navbar.html:225
 msgid "Əlaqə saxla"
-msgstr "Contact"
-
-#: .\Core\templates\parts\navbar.html:226 .\Users\templates\my-account.html:12
-#: .\Users\templates\register.html:13
-msgid "Qeydiyyat"
-msgstr "Register"
-
-#: .\Core\templates\parts\navbar.html:229
-msgid "Qeydiyyatdan Keçin"
-msgstr "Sign Up"
+msgstr "Contact us"
 
 #: .\Core\templates\parts\navbar.html:231
+msgid "Qeydiyyatdan Keçin"
+msgstr "Register"
+
+#: .\Core\templates\parts\navbar.html:234
 msgid "Daxil olun"
 msgstr "Login"
 
-#: .\Core\templates\parts\navbar.html:233 .\Users\templates\login.html:10
+#: .\Core\templates\parts\navbar.html:237 .\Users\templates\login.html:10
 #: .\Users\templates\my-account.html:13 .\Users\templates\register.html:11
 msgid "Hesabım"
 msgstr "My Account"
 
-#: .\Core\templates\parts\navbar.html:235
+#: .\Core\templates\parts\navbar.html:240
 msgid "Çıxış et"
 msgstr "Logout"
 
@@ -199,19 +158,19 @@ msgstr "Russian"
 
 #: .\Order\templates\carts.html:7
 msgid "Məhsul Səbətiniz"
-msgstr "Your Shopping Cart"
+msgstr "Your Product Cart"
 
 #: .\Order\templates\carts.html:10 .\Order\templates\wishlist.html:10
 msgid "Ana Səhifə"
-msgstr "Home Page"
+msgstr "Homepage"
 
 #: .\Order\templates\carts.html:13
 msgid "Məsul səbətiniz"
-msgstr "Your Cart"
+msgstr "Your shopping cart"
 
 #: .\Order\templates\carts.html:24
 msgid "Alış-veriş səbəti"
-msgstr "Shopping Cart"
+msgstr "Shopping cart"
 
 #: .\Order\templates\carts.html:42 .\Order\templates\wishlist.html:25
 msgid "Əşyalar"
@@ -236,7 +195,7 @@ msgstr "Quantity"
 
 #: .\Order\templates\carts.html:54
 msgid "Vahid qiymet"
-msgstr "Unit Price"
+msgstr "Unit price"
 
 #: .\Order\templates\carts.html:109
 msgid "Çıxarın"
@@ -260,7 +219,7 @@ msgstr "go."
 
 #: .\Order\templates\carts.html:129
 msgid "Cəm:"
-msgstr "Subtotal:"
+msgstr "Total:"
 
 #: .\Order\templates\carts.html:134
 msgid "Pulsuz"
@@ -272,21 +231,21 @@ msgstr "Update Cart"
 
 #: .\Order\templates\carts.html:151 .\Users\templates\my-account.html:304
 msgid "Sifariş verin"
-msgstr "Checkout"
+msgstr "Place Order"
 
 #: .\Order\templates\checkout.html:49 .\Order\templates\checkout.html:178
 #: .\Products\forms.py:15 .\Products\forms.py:32 .\Products\forms.py:97
 #: .\Products\forms.py:212 .\Users\templates\my-account.html:354
 #: .\Users\templates\register.html:37
 msgid "Ad"
-msgstr "First Name"
+msgstr "Name"
 
 #: .\Order\templates\checkout.html:62 .\Order\templates\checkout.html:192
 #: .\Products\forms.py:20 .\Products\forms.py:33 .\Products\forms.py:107
 #: .\Products\forms.py:217 .\Users\templates\my-account.html:358
 #: .\Users\templates\register.html:44
 msgid "Soyad"
-msgstr "Last Name"
+msgstr "Surname"
 
 #: .\Order\templates\checkout.html:79 .\Order\templates\checkout.html:210
 #: .\Users\templates\contact-us.html:39 .\Users\templates\contact-us.html:111
@@ -310,7 +269,7 @@ msgstr "Phone"
 
 #: .\Order\templates\checkout.html:161
 msgid "Fərqli ünvana göndər?"
-msgstr "Ship to different address?"
+msgstr "Ship to a different address?"
 
 #: .\Order\templates\checkout.html:171
 msgid "Göndəriləcək Ünvan"
@@ -322,7 +281,7 @@ msgstr "Order Notes"
 
 #: .\Order\templates\checkout.html:290
 msgid "Sifarişi Təsdiq Et"
-msgstr "Place Order"
+msgstr "Confirm Order"
 
 #: .\Order\templates\checkout.html:298
 msgid "Sifariş Uğurla Tamamlandı!"
@@ -342,19 +301,19 @@ msgstr "Your Order"
 
 #: .\Order\templates\checkout.html:333 .\Users\templates\my-account.html:164
 msgid "Stokda var"
-msgstr "In Stock"
+msgstr "In stock"
 
 #: .\Order\templates\checkout.html:333
 msgid "Stokda yox"
-msgstr "Out of Stock"
+msgstr "Out of stock"
 
 #: .\Order\templates\checkout.html:347
 msgid "Məhsullara keç"
-msgstr "Continue Shopping"
+msgstr "Go to products"
 
 #: .\Order\templates\checkout.html:353
 msgid "Çatdırılma:"
-msgstr "Shipping:"
+msgstr "Delivery:"
 
 #: .\Order\templates\checkout.html:363
 msgid "Ümumi:"
@@ -369,10 +328,9 @@ msgid "Səbət"
 msgstr "Cart"
 
 #: .\Order\templates\wishlist.html:13
-#, fuzzy
-#| msgid "Sifarişlər"
+
 msgid "Sifariş"
-msgstr "Orders"
+msgstr "Order"
 
 #: .\Order\templates\wishlist.html:51
 msgid "Stock"
@@ -385,19 +343,19 @@ msgstr "Price"
 
 #: .\Order\templates\wishlist.html:109
 msgid "Bəyəndiyiniz məhsulları əlavə etmək üçün"
-msgstr "To add your favorite products"
+msgstr "To add products you like"
 
 #: .\Order\templates\wishlist.html:109
 msgid "keçin"
-msgstr "go"
+msgstr "go to"
 
 #: .\Products\forms.py:25
 msgid "Rəyinizi burada yazın..."
-msgstr "Write your comment here..."
+msgstr "Write your review here..."
 
 #: .\Products\forms.py:34
 msgid "Rəyiniz"
-msgstr "Your Comment"
+msgstr "Your review"
 
 #: .\Products\forms.py:35
 msgid "Qiymətləndirmə"
@@ -405,23 +363,23 @@ msgstr "Rating"
 
 #: .\Products\forms.py:39
 msgid "Ad daxil edilməlidir"
-msgstr "First name is required"
+msgstr "Name must be entered"
 
 #: .\Products\forms.py:40
 msgid "Ad çox uzundur (maksimum 100 simvol)"
-msgstr "First name is too long (max 100 characters)"
+msgstr "Name is too long (maximum 100 characters)"
 
 #: .\Products\forms.py:43
 msgid "Soyad daxil edilməlidir"
-msgstr "Last name is required"
+msgstr "Surname must be entered"
 
 #: .\Products\forms.py:44
 msgid "Soyad çox uzundur (maksimum 100 simvol)"
-msgstr "Last name is too long (max 100 characters)"
+msgstr "Surname is too long (maximum 100 characters)"
 
 #: .\Products\forms.py:47
 msgid "Rəy mətni daxil edilməlidir"
-msgstr "Review text is required"
+msgstr "Review text must be entered"
 
 #: .\Products\forms.py:50
 msgid "Qiymətləndirmə seçilməlidir"
@@ -429,11 +387,11 @@ msgstr "Rating must be selected"
 
 #: .\Products\forms.py:62
 msgid "Adınızı daxil edin"
-msgstr "Enter your first name"
+msgstr "Enter your name"
 
 #: .\Products\forms.py:63
 msgid "Soyadınızı daxil edin"
-msgstr "Enter your last name"
+msgstr "Enter your surname"
 
 #: .\Products\forms.py:64
 msgid "Rəyinizi yazın..."
@@ -441,15 +399,15 @@ msgstr "Write your review..."
 
 #: .\Products\forms.py:69
 msgid "Qiymətləndirmə 1-5 arasında olmalıdır!"
-msgstr "Rating must be between 1-5!"
+msgstr "Rating must be between 1 and 5!"
 
 #: .\Products\forms.py:75
 msgid "Ad çox qısadır (minimum 2 simvol)"
-msgstr "First name is too short (minimum 2 characters)"
+msgstr "Name is too short (minimum 2 characters)"
 
 #: .\Products\forms.py:81
 msgid "Soyad çox qısadır (minimum 2 simvol)"
-msgstr "Last name is too short (minimum 2 characters)"
+msgstr "Surname is too short (minimum 2 characters)"
 
 #: .\Products\forms.py:94
 msgid "Adınız (istəyə bağlı)"
@@ -461,19 +419,19 @@ msgstr "Your surname (optional)"
 
 #: .\Products\forms.py:112
 msgid "Cavabınızı yazın..."
-msgstr "Write your reply..."
+msgstr "Write your answer..."
 
 #: .\Products\forms.py:116
 msgid "Cavab Mətni"
-msgstr "Reply Text"
+msgstr "Answer Text"
 
 #: .\Products\forms.py:118
 msgid "Cavab mətni daxil edilməlidir"
-msgstr "Reply text is required"
+msgstr "Answer text must be entered"
 
 #: .\Products\forms.py:137
 msgid "Cavab çox qısadır (minimum 2 simvol)"
-msgstr "Reply is too short (minimum 2 characters)"
+msgstr "Answer is too short (minimum 2 characters)"
 
 #: .\Products\forms.py:143
 msgid "İstifadəçi"
@@ -481,19 +439,19 @@ msgstr "User"
 
 #: .\Products\forms.py:152
 msgid "Ən Yenilər"
-msgstr "Newest First"
+msgstr "Newest"
 
 #: .\Products\forms.py:153
 msgid "Ən Köhnələr"
-msgstr "Oldest First"
+msgstr "Oldest"
 
 #: .\Products\forms.py:154
 msgid "Ən Yüksək Reytinq"
-msgstr "Highest Rating"
+msgstr "Highest Rated"
 
 #: .\Products\forms.py:155
 msgid "Ən Aşağı Reytinq"
-msgstr "Lowest Rating"
+msgstr "Lowest Rated"
 
 #: .\Products\forms.py:158
 msgid "Bütün Reytinqlər"
@@ -501,15 +459,15 @@ msgstr "All Ratings"
 
 #: .\Products\forms.py:168
 msgid "Sırala"
-msgstr "Sort by"
+msgstr "Sort"
 
 #: .\Products\forms.py:178
 msgid "Reytinqə görə filtrele"
-msgstr "Filter by Rating"
+msgstr "Filter by rating"
 
 #: .\Products\forms.py:185
 msgid "Rəylərdə axtar..."
-msgstr "Search in comments..."
+msgstr "Search in reviews..."
 
 #: .\Products\forms.py:198
 msgid "Yalnız aktivləri göstər"
@@ -521,11 +479,11 @@ msgstr "Your review..."
 
 #: .\Products\forms.py:237
 msgid "Ad tələb olunur"
-msgstr "First name is required"
+msgstr "Name is required"
 
 #: .\Products\forms.py:239
 msgid "Soyad tələb olunur"
-msgstr "Last name is required"
+msgstr "Surname is required"
 
 #: .\Products\forms.py:241
 msgid "Rəy mətni tələb olunur"
@@ -557,11 +515,16 @@ msgstr "End Date"
 
 #: .\Products\forms.py:299
 msgid "Məhsula görə filtrele"
-msgstr "Filter by Product"
+msgstr "Filter by product"
 
 #: .\Products\templates\portfolio-details.html:9
 msgid "Məhsul detayları"
-msgstr "Product Details"
+msgstr "Product details"
+
+#: .\Products\templates\portfolio-details.html:12
+#: .\Products\templates\products.html:10 .\Users\templates\login.html:9
+msgid "Ana səhifə"
+msgstr "Home"
 
 #: .\Products\templates\portfolio-details.html:13
 msgid "Məhsulun detallı səhifəsi"
@@ -569,7 +532,7 @@ msgstr "Product detail page"
 
 #: .\Products\templates\portfolio-details.html:84
 msgid "Məhsul haqqinda Məlumat"
-msgstr "Product Information"
+msgstr "Information about the product"
 
 #: .\Products\templates\portfolio-details.html:89
 msgid "Kateqoriya"
@@ -585,11 +548,11 @@ msgstr "No color!"
 
 #: .\Products\templates\portfolio-details.html:116
 msgid "Göstərilməyib"
-msgstr "Not specified"
+msgstr "Not shown"
 
 #: .\Products\templates\portfolio-details.html:134
 msgid "Xüsusi qiymət"
-msgstr "Special Price"
+msgstr "Special price"
 
 #: .\Products\templates\portfolio-details.html:140
 msgid "PREMIUM"
@@ -601,7 +564,7 @@ msgstr "Old price:"
 
 #: .\Products\templates\portfolio-details.html:158
 msgid "Səbətə at"
-msgstr "Add to Cart"
+msgstr "Add to cart"
 
 #: .\Products\templates\portfolio-details.html:184
 msgid "Exercitationem repudiandae officiis neque suscipit"
@@ -609,7 +572,7 @@ msgstr "Exercitationem repudiandae officiis neque suscipit"
 
 #: .\Products\templates\portfolio-details.html:201
 msgid "Kommentariya"
-msgstr "Comments"
+msgstr "Comment"
 
 #: .\Products\templates\portfolio-details.html:203
 msgid "Fikirlərinizi paylaşın"
@@ -622,7 +585,7 @@ msgstr "Reviews"
 
 #: .\Products\templates\portfolio-details.html:223
 msgid "Müzakirə əlavə edin"
-msgstr "Add to discussion"
+msgstr "Add discussion"
 
 #: .\Products\templates\portfolio-details.html:224
 msgid "Fikirlərinizi paylaşın :)"
@@ -634,7 +597,7 @@ msgstr "Your rating:"
 
 #: .\Products\templates\portfolio-details.html:298
 msgid "Cavab yazırsınız"
-msgstr "Replying to"
+msgstr "You are writing an answer"
 
 #: .\Products\templates\portfolio-details.html:300
 #: .\Users\templates\my-account.html:414
@@ -667,7 +630,7 @@ msgstr "All Furniture"
 
 #: .\Products\templates\products.html:29
 msgid "Mebelləri filterlə"
-msgstr "Filter Furniture"
+msgstr "Filter furniture"
 
 #: .\Products\templates\products.html:37
 msgid "Qiymət Filteri"
@@ -711,14 +674,11 @@ msgstr "Contact"
 
 #: .\Users\templates\contact-us.html:10
 msgid "Əlaqə"
-msgstr "Us"
+msgstr "Contact"
 
 #: .\Users\templates\contact-us.html:11
-msgid ""
-"Sual və ya təklifiniz varsa, bizə yazın. Ən qısa zamanda cavablandıracağıq."
-msgstr ""
-"If you have any questions or suggestions, write to us. We will respond as "
-"soon as possible."
+msgid "Sual və ya təklifiniz varsa, bizə yazın. Ən qısa zamanda cavablandıracağıq."
+msgstr "If you have any questions or suggestions, write to us. We will reply as soon as possible."
 
 #: .\Users\templates\contact-us.html:54
 msgid "Xəritəni böyütmək üçün ctrl + scroll düyməsindən istifadə edin"
@@ -750,7 +710,7 @@ msgstr "Send Message"
 
 #: .\Users\templates\contact-us.html:177
 msgid "Məlumatlarınız təhlükəsizdir"
-msgstr "Your information is safe"
+msgstr "Your data is secure"
 
 #: .\Users\templates\contact-us.html:192
 msgid "Mesajınız Göndərildi!"
@@ -778,12 +738,16 @@ msgstr "Account Information"
 
 #: .\Users\templates\my-account.html:10 .\Users\templates\register.html:10
 msgid "Ana sehifə"
-msgstr "Home page"
+msgstr "Home"
 
 #: .\Users\templates\my-account.html:11 .\Users\templates\register.html:12
 #: .\Users\templates\register.html:119
 msgid "Daxil ol"
 msgstr "Login"
+
+#: .\Users\templates\my-account.html:12 .\Users\templates\register.html:13
+msgid "Qeydiyyat"
+msgstr "Register"
 
 #: .\Users\templates\my-account.html:93
 msgid "Profil"
@@ -815,7 +779,7 @@ msgstr "Out of stock"
 
 #: .\Users\templates\my-account.html:193
 msgid "Sevimlilər siyahınız boşdur"
-msgstr "Your wishlist is empty"
+msgstr "Your favorites list is empty"
 
 #: .\Users\templates\my-account.html:194 .\Users\templates\my-account.html:285
 msgid "Alış-verişə dəvam edin"
@@ -823,7 +787,7 @@ msgstr "Continue shopping"
 
 #: .\Users\templates\my-account.html:207
 msgid "Məhsul səbəti"
-msgstr "Shopping cart"
+msgstr "Product cart"
 
 #: .\Users\templates\my-account.html:294
 msgid "Cəmi:"
@@ -863,7 +827,7 @@ msgstr "Email cannot be changed"
 
 #: .\Users\templates\my-account.html:378
 msgid "Doğum tarixi"
-msgstr "Birth date"
+msgstr "Date of birth"
 
 #: .\Users\templates\my-account.html:383
 msgid "Cinsiyyəy"
@@ -923,7 +887,7 @@ msgstr "Confirm password"
 
 #: .\Users\templates\register.html:91
 msgid "Doğum Tarixi"
-msgstr "Birth date"
+msgstr "Date of Birth"
 
 #: .\Users\templates\register.html:102
 msgid "Cinsiyyət"

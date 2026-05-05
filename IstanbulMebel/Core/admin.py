@@ -1,31 +1,35 @@
 from django.contrib import admin
+from modeltranslation.admin import TranslationAdmin
 from .models import ServicesModel
 from django.utils.html import format_html
+
 # Register your models here.
 
 @admin.register(ServicesModel)
-class ServicesAdmin(admin.ModelAdmin):
-    list_display = ['title', 'short_description', 'cov_img_preview', 'icons_preview']
-    list_display_links = ['title']
-    search_fields = ['title', 'descriptions', 'details_header']
+class ServicesAdmin(TranslationAdmin):
+    list_display = ['title_az', 'short_description', 'cov_img_preview', 'icons_preview']
+    list_display_links = ['title_az']
+    search_fields = ['title_az', 'title_en', 'title_ru', 'descriptions_az', 'descriptions_en', 'descriptions_ru']
     list_filter = []
     readonly_fields = ['cov_img_preview', 'icons_preview']
+    
     fieldsets = (
-        ('Əsas Məlumatlar', {
-            'fields': ('title', 'descriptions', 'details_header'),
+        ('Azərbaycanca', {
+            'fields': ('title_az', 'descriptions_az', 'details_header_az', 'details_text1_az', 'details_text2_az', 'details_text3_az'),
             'classes': ('wide',)
         }),
-        
-        ('Ətraflı Məlumatlar', {
-            'fields': ('details_text1', 'details_text2', 'details_text3'),
-            'classes': ('wide', 'extrapretty'),
+        ('İngiliscə', {
+            'fields': ('title_en', 'descriptions_en', 'details_header_en', 'details_text1_en', 'details_text2_en', 'details_text3_en'),
+            'classes': ('wide', 'collapse'),
         }),
-        
+        ('Rusca', {
+            'fields': ('title_ru', 'descriptions_ru', 'details_header_ru', 'details_text1_ru', 'details_text2_ru', 'details_text3_ru'),
+            'classes': ('wide', 'collapse'),
+        }),
         ('Cover Şəkli', {
             'fields': ('cov_img', 'cov_img_preview'),
             'classes': ('wide',),
         }),
-        
         ('İkon Şəkli', {
             'fields': ('icons', 'icons_preview'),
             'classes': ('wide',),
@@ -33,8 +37,9 @@ class ServicesAdmin(admin.ModelAdmin):
     )
 
     def short_description(self, obj):
-        if obj.descriptions:
-            return obj.descriptions[:50] + '...' if len(obj.descriptions) > 50 else obj.descriptions
+        if obj.descriptions_az:
+            text = obj.descriptions_az[:50] + '...' if len(obj.descriptions_az) > 50 else obj.descriptions_az
+            return text
         return '-'
     short_description.short_description = 'Qısa açıqlama'
     

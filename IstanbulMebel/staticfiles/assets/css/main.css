@@ -216,14 +216,14 @@ h6 {
   background: var(--accent-color);
 }
 
-/* ===== LANGUAGE DROPDOWN ===== */
-
+/* ===== LANGUAGE DROPDOWN CONTAINER ===== */
 .lang-dropdown {
   position: relative;
   display: inline-block;
+  vertical-align: middle; /* Navbar elementləri ilə eyni xətdə durması üçün */
 }
 
-/* 🌐 düyməsi - dairə */
+/* 🌐 Düyməsi (Toggle) */
 .lang-toggle {
   width: 35px;
   height: 35px;
@@ -234,12 +234,10 @@ h6 {
   cursor: pointer;
   font-size: 16px;
   transition: 0.3s;
-  
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
-  line-height: 1;
   margin: 0 auto;
 }
 
@@ -247,117 +245,85 @@ h6 {
   background: #0d6efd;
 }
 
-/* Dil menyusu - NAVBARIN ORTASINDA AÇILIR */
+/* Dil Menyusu - TAM MƏRKƏZDƏ AÇILIR */
 .lang-menu {
   position: absolute;
-  top: 45px;
-  
-  /* ---------- ORTA ÜÇÜN ---------- */
-  left: -65%;
-  right: auto;
-  transform: translateX(-50%) translateY(-5px);
-  /* ------------------------------ */
+  top: 45px; /* Düymənin bir az altında */
+  left: -10px; /* Konteynerin tam ortasından başlayır */
+  transform: translateX(-50%) translateY(-10px); /* Öz eninin yarısı qədər sola çəkilərək tam mərkəzlənir */
   
   background: #000;
   list-style: none;
-  padding: 16px;
+  padding: 15px;
   margin: 0;
   border-radius: 20px;
-  min-width: 220px;
-  z-index: 9999;
+  min-width: 210px; /* Şəkildəki dolğunluq üçün */
+  z-index: 10000; /* Digər elementlərin üstündə qalması üçün */
 
   opacity: 0;
   visibility: hidden;
-  transition: 0.3s;
+  transition: opacity 0.3s, transform 0.3s, visibility 0.3s;
+  pointer-events: none; /* Bağlı olanda kliklənməsin */
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
 }
-
-
 
 .lang-menu.show {
   opacity: 1;
   visibility: visible;
   transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
 }
 
-/* Menu itemləri arasında boşluq */
+/* Menu elementləri arası məsafə */
 .lang-menu li {
   margin-bottom: 10px;
+  display: block; /* Siyahı nizamı üçün */
 }
 
 .lang-menu li:last-child {
   margin-bottom: 0;
 }
 
-/* ========== BÜTÜN DİL DÜYMƏLƏRİ EYNİ ÖLÇÜDƏ - DÜZBUCAQLI ========== */
+/* ========== DİL DÜYMƏLƏRİ (Şəkildəki kimi) ========== */
 .lang-menu li a {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   
-  /* SABİT ÖLÇÜLƏR - hamısı eyni */
-  width: 180px;
-  height: 48px;
-  padding: 0 16px;
-  margin: 0 auto;
+  /* Ölçülər - Şəkildəki (edited-image.jpg) proporsiyalar */
+  width: 180px !important;
+  height: 48px !important;
+  padding: 0 16px !important;
+  margin: 0 auto !important;
   
-  /* DÜZBUCAQLI FORMA - yumşaq künclər */
-  border-radius: 12px;
-  
-  /* Görünüş */
-  background: #0d1b2a;
-  color: #fff;
-  text-decoration: none;
-  font-size: 16px;
-  font-weight: 500;
-  white-space: nowrap;
-  box-sizing: border-box;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  
-  transition: 0.3s;
+  /* Dizayn */
+  border-radius: 12px !important;
+  background: #0d1b2a !important;
+  color: #fff !important;
+  text-decoration: none !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  white-space: nowrap !important;
+  box-sizing: border-box !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  transition: 0.3s !important;
 }
 
 /* Hover effekti */
 .lang-menu li a:hover {
-  background: #0d6efd;
-  border-color: rgba(255, 255, 255, 0.3);
-  transform: scale(1.02);
-}
-
-/* Aktiv dil (əgər varsa) */
-.lang-menu li a.active {
-  background: #0d6efd;
-  border-color: #0d6efd;
-}
-
-/* ========== ƏLAVƏ TƏHLÜKƏSİZLİK - BÜTÜN DİLLƏR EYNİ ÖLÇÜDƏ ========== */
-.lang-menu li a[href="/az/"],
-.lang-menu li a[href="/en/"],
-.lang-menu li a[href="/ru/"],
-.lang-menu li a[href="/spa/"] {
-  width: 180px !important;
-  height: 48px !important;
-  padding: 0 16px !important;
-  border-radius: 12px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  background: #0d1b2a !important;
-  box-sizing: border-box !important;
-  margin: 0 auto !important;
-}
-
-.lang-menu li a[href="/az/"]:hover,
-.lang-menu li a[href="/en/"]:hover,
-.lang-menu li a[href="/ru/"]:hover,
-.lang-menu li a[href="/spa/"]:hover {
   background: #0d6efd !important;
   border-color: rgba(255, 255, 255, 0.3) !important;
-  transform: scale(1.02) !important;
+  transform: scale(1.03) !important;
 }
 
+/* Aktiv dil */
+.lang-menu li a.active {
+  background: #0d6efd !important;
+  border-color: #0d6efd !important;
+}
 
+/* ========== RESPONSIVE HİSSƏ (Pozulmaması üçün toxunulmadı) ========== */
 @media (min-width: 1200px) {
-
   .header~main,
   .header~#footer {
     margin-left: 300px;
@@ -373,30 +339,6 @@ h6 {
 .header.header-show {
   left: 0;
 }
-
-.header .header-toggle {
-  color: var(--contrast-color);
-  background-color: var(--accent-color);
-  font-size: 22px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  cursor: pointer;
-  position: fixed;
-  top: 15px;
-  right: 15px;
-  z-index: 9999;
-  transition: background-color 0.3s;
-}
-
-.header .header-toggle:hover {
-  color: var(--contrast-color);
-  background-color: color-mix(in srgb, var(--accent-color) 90%, white 15%);
-}
-
 
 /*--------------------------------------------------------------
 # Navigation Menu
@@ -3323,37 +3265,37 @@ button[type="submit"]:focus:not(:active)::after {
 }
 
 /* Bütün rənglər */
-.color-box.red { background-color: #ff0000; }      /* Qırmızı */
-.color-box.blue { background-color: #0000ff; }     /* Göy */
-.color-box.green { background-color: #00ff00; }    /* Yaşıl */
-.color-box.yellow { background-color: #ffff00; }   /* Sarı */
-.color-box.orange { background-color: #ffa500; }   /* Narıncı */
-.color-box.purple { background-color: #800080; }   /* Bənövşəyi */
-.color-box.pink { background-color: #ffc0cb; }     /* Çəhrayı */
-.color-box.black { background-color: #000000; }    /* Qara */
-.color-box.white { background-color: #ffffff; 
+.color-box.qirmizi { background-color: #ff0000; }      /* Qırmızı */
+.color-box.goy { background-color: #0000ff; }     /* Göy */
+.color-box.yashil { background-color: #00ff00; }    /* Yaşıl */
+.color-box.sari { background-color: #ffff00; }   /* Sarı */
+.color-box.narinci { background-color: #ffa500; }   /* Narıncı */
+.color-box.benovsheyi { background-color: #800080; }   /* Bənövşəyi */
+.color-box.chehrayi { background-color: #ffc0cb; }     /* Çəhrayı */
+.color-box.qara { background-color: #000000; }    /* Qara */
+.color-box.ag { background-color: #ffffff; 
   border: 1px solid #cccccc; 
 }                                                   /* Ağ */
-.color-box.gray { background-color: #808080; }     /* Boz */
-.color-box.darkblue { background-color: #00008b; } /* Tünd göy */
-.color-box.darkgreen { background-color: #006400; } /* Tünd yaşıl */
-.color-box.darkred { background-color: #8b0000; }  /* Tünd qırmızı */
-.color-box.brown { background-color: #a52a2a; }    /* Qəhvəyi */
-.color-box.beige { background-color: #f5f5dc; }    /* Bej */
-.color-box.gold { background-color: #ffd700; }     /* Qızılı */
-.color-box.silver { background-color: #c0c0c0; }   /* Gümüşü */
-.color-box.turquoise { background-color: #40e0d0; } /* Firuzəyi */
+.color-box.boz { background-color: #808080; }     /* Boz */
+.color-box.tundgoy { background-color: #00008b; } /* Tünd göy */
+.color-box.tundyashil { background-color: #006400; } /* Tünd yaşıl */
+.color-box.tundqirmizi { background-color: #8b0000; }  /* Tünd qırmızı */
+.color-box.qehveyi { background-color: #a52a2a; }    /* Qəhvəyi */
+.color-box.bej { background-color: #f5f5dc; }    /* Bej */
+.color-box.qizili { background-color: #ffd700; }     /* Qızılı */
+.color-box.gumushu { background-color: #c0c0c0; }   /* Gümüşü */
+.color-box.firuzeyi { background-color: #40e0d0; } /* Firuzəyi */
 .color-box.magenta { background-color: #ff00ff; }  /* Magenta */
-.color-box.lime { background-color: #00ff00; }     /* Açıq yaşıl */
-.color-box.cyan { background-color: #00ffff; }     /* Mavi-yaşıl */
-.color-box.violet { background-color: #ee82ee; }   /* Bənövşəyi */
-.color-box.indigo { background-color: #4b0082; }   /* İndiqo */
-.color-box.coral { background-color: #ff7f50; }    /* Mərcan */
-.color-box.salmon { background-color: #fa8072; }   /* Somon */
-.color-box.khaki { background-color: #f0e68c; }    /* Xaki */
-.color-box.plum { background-color: #dda0dd; }     /* Gavalı */
-.color-box.wheat { background-color: #f5deb3; }    /* Buğdayı */
-.color-box.lavender { background-color: #e6e6fa; } /* Lavanda */
+.color-box.aciqyashil { background-color: #00ff00; }     /* Açıq yaşıl */
+.color-box.maviyashil { background-color: #00ffff; }     /* Mavi-yaşıl */
+.color-box.benovsheyi { background-color: #ee82ee; }   /* Bənövşəyi */
+.color-box.indiqo { background-color: #4b0082; }   /* İndiqo */
+.color-box.mercan { background-color: #ff7f50; }    /* Mərcan */
+.color-box.somon { background-color: #fa8072; }   /* Somon */
+.color-box.xaki { background-color: #f0e68c; }    /* Xaki */
+.color-box.gavali { background-color: #dda0dd; }     /* Gavalı */
+.color-box.bugdayi { background-color: #f5deb3; }    /* Buğdayı */
+.color-box.lavanda { background-color: #e6e6fa; } /* Lavanda */
 
 /* Hover effekti (isteğe bağlı) */
 .color-box:hover {
