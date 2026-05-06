@@ -56,7 +56,9 @@
             </div>
           </div>
           <div class="card-content">
-            <h3 class="card-title">{{ product.title }}</h3>
+            <h3 class="card-title">
+              <a href="{% url 'product_details' product.pk %}">{{ product.title }}</a>
+            </h3>
             <div class="card-price">
               <!-- Cari qiymət -->
               <span class="current">₺{{ product.special_price }}</span>
@@ -136,15 +138,15 @@
 
   <!--============================================== Services Section ===============================================-->
   <section id="services" class="services section">
-    <div class="container section-title" data-aos="fade-up">
-      <h2>Services</h2>
-    </div>
-    <p class="container">
-      {% translate 'Araşdırmalara görə dolablar və vitrinlər o dövrün ən vacib mebel parçası hesab edilir, çünki onlar Neolit cəmiyyətində evlərdə simvolik əşyaların oyma sənət əsərlərinin nümayiş etdirilməsi üçün istifadə edilirdi. İllər ötdükcə insanlar Neolit dövründə olduğu kimi daha müasir mebelləri həm gündəlik həyatımız üçün funksional, həm də zövq oxşamaq üçün bir sənət əsəri kimi istifadə etməyə başladılar. Müasir həyatımızda daha çox rahatlığa və dəbdəbəyə diqqət yetirməklə, material və dayanıqlıq daha güclü və uzun ömürlü olsa da, əksər mebellərin əsas dizaynı eyni qaldı. Kreslolar sadəcə oturmaq üçün deyil, yellənmə funksiyaları əlavə olunaraq istirahət etmək üçün də bir vasitə kimi dizayn edilməyə başlanıldı. Mebeldəki dizayn dəyişikliyi bir növ cəmiyyətimizin sadə yaşam tərzindən lüks və imtiyazlı həyatlara doğru təkamülünü göstərir.' %}
-    </p>
     <!-- End Section Title -->
     <div class="container">
       <div class="row gy-4">
+        <p class="container">
+          <div class="container section-title" data-aos="fade-up">
+            <h2>Services</h2>
+          </div>
+          {% translate 'Araşdırmalara görə dolablar və vitrinlər o dövrün ən vacib mebel parçası hesab edilir, çünki onlar Neolit cəmiyyətində evlərdə simvolik əşyaların oyma sənət əsərlərinin nümayiş etdirilməsi üçün istifadə edilirdi. İllər ötdükcə insanlar Neolit dövründə olduğu kimi daha müasir mebelləri həm gündəlik həyatımız üçün funksional, həm də zövq oxşamaq üçün bir sənət əsəri kimi istifadə etməyə başladılar. Müasir həyatımızda daha çox rahatlığa və dəbdəbəyə diqqət yetirməklə, material və dayanıqlıq daha güclü və uzun ömürlü olsa da, əksər mebellərin əsas dizaynı eyni qaldı. Kreslolar sadəcə oturmaq üçün deyil, yellənmə funksiyaları əlavə olunaraq istirahət etmək üçün də bir vasitə kimi dizayn edilməyə başlanıldı. Mebeldəki dizayn dəyişikliyi bir növ cəmiyyətimizin sadə yaşam tərzindən lüks və imtiyazlı həyatlara doğru təkamülünü göstərir.' %}
+        </p>
         {% for service in services %}
         <div class="col-lg-4 col-md-6 service-item d-flex" data-aos="fade-up" data-aos-delay="100">
           <div class="icon flex-shrink-0">

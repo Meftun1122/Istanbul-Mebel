@@ -1,46 +1,16 @@
-from modeltranslation.translator import translator, TranslationOptions, register
-from .models import CategoryModel, ManufacturerModel, ColorModel, ProductModel
-
-@register(CategoryModel)
-class CategoryTranslation(TranslationOptions):
-    fields = ('title',)
-
-@register(ManufacturerModel)
-class ManufacturerTranslation(TranslationOptions):
-    fields = ('title',)
-
-@register(ColorModel)
-class ColorTranslation(TranslationOptions):
-    fields = ('title',)
-
-@register(ProductModel)
-class ProductTranslation(TranslationOptions):
-    fields = ('title', 'description', 'text')
+       <h4>
+          {{ service.details_header }}
+        </h4>
+        <p>
+          {{ service.details_text1 }}
+        </p>
+        <p>
+          {{ service.details_text2 }}
+        </p>
+        <p>
+          {{ service.details_text3 }}
+        </p>
 
 
-
-    lass ProductModel(BaseModel):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, verbose_name='User')
-    title = models.CharField(max_length=100, verbose_name='Məhsul adı')
-    description = models.TextField(verbose_name='Məhsul haqqında', blank=True, null=True)
-    special_price = models.FloatField(default=0, verbose_name='Yeni qiymət')
-    old_price = models.FloatField(default=0, verbose_name='Köhnə qiymət')
-    discount = models.IntegerField(verbose_name='Endirim', blank=True, null=True)
-    category = models.ForeignKey(CategoryModel, on_delete=models.CASCADE, verbose_name='Məhsulun kateqoriyası', blank=True, null=True)
-    manufacturer = models.ForeignKey(ManufacturerModel, on_delete=models.CASCADE, verbose_name='Məhsulun İstehsalçısı', blank=True, null=True)
-    color = models.ForeignKey(ColorModel, on_delete=models.CASCADE, verbose_name='Məhsul Rəngi', blank=True, null=True)
-    stock =  models.PositiveIntegerField(default=0, verbose_name='Stok sayı',help_text='Məhsulun anbarda olan sayı')
-    text = models.TextField(verbose_name='Məhsul haqqında məlumat', blank=True, null=True)
-    product_image = models.ImageField(upload_to='product/product_image', verbose_name='Məhsulun Şəkili')
-    cov_img = models.ImageField(upload_to='product/cov_img', verbose_name=' Məhsulun üz qabıq şəkili', null=True, blank=True)
-    rating = models.DecimalField(default=0, max_digits=2, decimal_places=1)
-    # << Detailed product image
-    product_detail_imge1 = models.ImageField(upload_to='product/detail_image', verbose_name='Detaylı şəkil-1', null=True, blank=True)
-    product_detail_imge2 = models.ImageField(upload_to='product/detail_image', verbose_name='Detaylı şəkil-2', null=True, blank=True)
-    product_detail_imge3 = models.ImageField(upload_to='product/detail_image', verbose_name='Detaylı şəkil-3', null=True, blank=True)
-    product_detail_imge4 = models.ImageField(upload_to='product/detail_image', verbose_name='Detaylı şəkil-4', null=True, blank=True)
-    product_detail_imge5 = models.ImageField(upload_to='product/detail_image', verbose_name='Detaylı şəkil-5', null=True, blank=True)
-    # Detailed product image end >>
-
-
-    sene translatin ve model py fayilini gosterirem bunu nece hell ede bilerik ? 
+bu html strukturunu ele deyismeyini isdeyirem ki sehifede yazi cox uzun olmadan sehifeye yerlesin 
+duzelde bilersen ?

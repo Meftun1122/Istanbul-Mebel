@@ -16,7 +16,7 @@ function init() {
     initAjaxForms();
     initCartQuantity();
     initProductQuantity();
-    initImageFunctions();
+    initImageFunctions();  // TƏK LIGHTBOX - DÜZƏLDİ
     initSearchFunctions();
     initCheckoutFunctions();
     initPriceSlider();
@@ -519,48 +519,219 @@ function submitCartUpdates() {
     return true;
 }
 
-// Image functions (lightbox) - FIXED with offset
+// ============================================================
+// TƏK LIGHTBOX SİSTEMİ - 2 dəfə açılma problemi HƏLL OLUNDU
+// ============================================================
 function initImageFunctions() {
-    createLightbox();
-    $$('.product-image img, .portfolio-item img, .product-card img, .wishlist-table img, .cart-row img').forEach(img => img.style.cursor = 'pointer');
+    // Köhnə lightbox varsa sil
+    const oldModal = document.getElementById('lightboxModal');
+    if (oldModal) oldModal.remove();
+    
+    // Yeni tək lightbox yarat
+    createSingleLightbox();
 }
 
-function createLightbox() {
-    let modal = document.getElementById('lightboxModal');
-    let modalImg = document.getElementById('lightboxImage');
-    let closeBtn = document.getElementById('lightboxClose');
-    if (!modal) {
-        modal = document.createElement('div');
-        modal.id = 'lightboxModal';
-        modal.style.cssText = `display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:999999; justify-content:center; align-items:center;`;
-        const content = document.createElement('div');
-        content.style.cssText = 'position:relative; max-width:90%; max-height:90%;';
-        modalImg = document.createElement('img');
-        modalImg.id = 'lightboxImage';
-        modalImg.style.cssText = 'width:100%; height:auto; max-height:90vh; object-fit:contain;';
-        closeBtn = document.createElement('div');
-        closeBtn.id = 'lightboxClose';
-        closeBtn.innerHTML = '&times;';
-        closeBtn.style.cssText = 'position:absolute; top:-40px; right:0; color:white; font-size:40px; cursor:pointer;';
-        content.appendChild(modalImg);
-        content.appendChild(closeBtn);
-        modal.appendChild(content);
-        document.body.appendChild(modal);
-        closeBtn.addEventListener('click', closeLightbox);
-        modal.addEventListener('click', (e) => { if (e.target === modal) closeLightbox(); });
-        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.style.display === 'flex') closeLightbox(); });
-    }
-    $$('img').forEach(img => {
-        if (img.closest('.product-card, .portfolio-item, .wishlist-table, .cart-row')) {
-            img.addEventListener('click', function(e) { e.preventDefault(); modalImg.src = this.src; modal.style.display = 'flex'; document.body.style.overflow = 'hidden'; });
+function createSingleLightbox() {
+    // Artıq varsa təkrar yaratma
+    if (document.getElementById('singleLightbox')) return;
+    
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slbFadeIn {
+            0% { opacity: 0; backdrop-filter: blur(0px); }
+            100% { opacity: 1; backdrop-filter: blur(8px); }
         }
+        @keyframes slbFadeOut {
+            0% { opacity: 1; backdrop-filter: blur(8px); }
+            100% { opacity: 0; backdrop-filter: blur(0px); }
+        }
+        @keyframes slbZoomIn {
+            0% { transform: scale(0.85); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes slbZoomOut {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(0.85); opacity: 0; }
+        }
+        
+        #singleLightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.92);
+            z-index: 999999;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        #slbContent {
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+            cursor: default;
+        }
+        
+        #slbImage {
+            max-width: 90vw;
+            max-height: 85vh;
+            object-fit: contain;
+            border-radius: 12px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            display: block;
+        }
+        
+        #slbClose {
+            position: absolute;
+            top: -55px;
+            right: -55px;
+            width: 44px;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            color: white;
+            font-size: 32px;
+            font-weight: 300;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        
+        #slbClose:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(1.1);
+        }
+        
+        @media (max-width: 768px) {
+            #slbClose {
+                top: -40px;
+                right: -10px;
+                width: 36px;
+                height: 36px;
+                font-size: 28px;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    const lightboxHTML = `
+        <div id="singleLightbox">
+            <div id="slbContent">
+                <img id="slbImage" src="" alt="Böyük şəkil">
+                <button id="slbClose" title="Bağla (Esc)">×</button>
+            </div>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', lightboxHTML);
+    
+    const lightbox = document.getElementById('singleLightbox');
+    const slbImage = document.getElementById('slbImage');
+    const closeBtn = document.getElementById('slbClose');
+    
+    let isAnimating = false;
+    
+    function closeLightbox() {
+        if (isAnimating || !lightbox || lightbox.style.display !== 'flex') return;
+        isAnimating = true;
+        lightbox.style.animation = 'slbFadeOut 0.2s ease forwards';
+        const content = document.getElementById('slbContent');
+        if (content) content.style.animation = 'slbZoomOut 0.2s ease forwards';
+        setTimeout(() => {
+            lightbox.style.display = 'none';
+            lightbox.style.animation = '';
+            if (content) content.style.animation = '';
+            if (slbImage) slbImage.src = '';
+            document.body.style.overflow = '';
+            isAnimating = false;
+        }, 200);
+    }
+    
+    function openLightbox(imageSrc) {
+        if (!imageSrc || isAnimating) return;
+        if (lightbox.style.display === 'flex' && slbImage.src === imageSrc) return;
+        slbImage.src = imageSrc;
+        lightbox.style.display = 'flex';
+        lightbox.style.animation = 'slbFadeIn 0.2s ease forwards';
+        const content = document.getElementById('slbContent');
+        if (content) content.style.animation = 'slbZoomIn 0.2s ease forwards';
+        document.body.style.overflow = 'hidden';
+        setTimeout(() => {
+            lightbox.style.animation = '';
+            if (content) content.style.animation = '';
+        }, 200);
+    }
+    
+    if (closeBtn) {
+        closeBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            closeLightbox();
+        });
+    }
+    
+    if (lightbox) {
+        lightbox.addEventListener('click', function(e) {
+            if (e.target === lightbox) closeLightbox();
+        });
+    }
+    
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && lightbox && lightbox.style.display === 'flex') closeLightbox();
     });
+    
+    // Şəkillərə click eventi əlavə et (yalnız BİR dəfə)
+    function attachImageClickHandlers() {
+        const imageSelectors = [
+            '.product-image img', '.portfolio-item img', '.product-card img', 
+            '.wishlist-table img', '.cart-row img', '.product-img', 
+            '.gallery-item img', '.product-thumbnail img', '[data-lightbox]'
+        ];
+        const images = document.querySelectorAll(imageSelectors.join(','));
+        
+        images.forEach(img => {
+            if (img.dataset.lbAttached === 'true') return;
+            if (img.closest('#singleLightbox')) return;
+            
+            img.dataset.lbAttached = 'true';
+            img.style.cursor = 'pointer';
+            
+            // Köhnə event listener-ları təmizləmək üçün clone
+            const newImg = img.cloneNode(true);
+            if (img.parentNode) img.parentNode.replaceChild(newImg, img);
+            
+            newImg.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                let src = this.src;
+                if (!src || src === '') {
+                    src = this.getAttribute('data-image') || this.getAttribute('data-src') || this.href;
+                }
+                if (src && src !== '' && !src.includes('data:image') && !src.includes('placeholder')) {
+                    openLightbox(src);
+                }
+            });
+        });
+    }
+    
+    // Dinamik şəkillər üçün MutationObserver
+    const observer = new MutationObserver(() => attachImageClickHandlers());
+    observer.observe(document.body, { childList: true, subtree: true });
+    
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', attachImageClickHandlers);
+    } else {
+        attachImageClickHandlers();
+    }
+    
+    window.slbOpen = openLightbox;
+    window.slbClose = closeLightbox;
 }
-
-function closeLightbox() { const modal = document.getElementById('lightboxModal'); if (modal) { modal.style.display = 'none'; document.body.style.overflow = 'auto'; } }
-
-window.expandImage = function(src) { const modal = document.getElementById('lightboxModal'); const modalImg = document.getElementById('lightboxImage'); if (modal && modalImg) { modalImg.src = src; modal.style.display = 'flex'; document.body.style.overflow = 'hidden'; } };
-window.closeImage = closeLightbox;
 
 // Search
 function initSearchFunctions() { initCartSearch(); initWishlistSearch(); initProductSearch(); }
@@ -668,7 +839,6 @@ window.submitOrder = function() {
         document.getElementById('successMessage')?.classList.remove('hidden');
         document.getElementById('step2')?.classList.remove('active'); document.getElementById('step3')?.classList.add('active');
         if (btn) { btn.innerHTML = 'Sifarişi Təsdiq Et'; btn.disabled = false; }
-        // Scroll to top after order success
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }, 1500);
 };

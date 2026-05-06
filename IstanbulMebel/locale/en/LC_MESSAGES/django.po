@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-04 00:28+0400\n"
+"POT-Creation-Date: 2026-05-05 16:04+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,12 +23,38 @@ msgid "Dizayın və Xoşbəxtliyin birləşdiyi nöqtə..)"
 msgstr "The point where design and happiness meet..)"
 
 #: .\Core\templates\index.html:11
-msgid "Daimi Xoşbəxtliyiniz üçün :), Yataq-Qonaq-Mətbəx, Ofis və Yumşaq Mebeller"
-msgstr "For your constant happiness :), Bedroom-Living-Kitchen, Office and Soft Furniture"
+msgid ""
+"Daimi Xoşbəxtliyiniz üçün :), Yataq-Qonaq-Mətbəx, Ofis və Yumşaq Mebeller"
+msgstr ""
+"For your constant happiness :), Bedroom-Living-Kitchen, Office and Soft "
+"Furniture"
 
 #: .\Core\templates\index.html:23 .\Core\templates\index.html:143
-msgid "Araşdırmalara görə dolablar və vitrinlər o dövrün ən vacib mebel parçası hesab edilir, çünki onlar Neolit cəmiyyətində evlərdə simvolik əşyaların oyma sənət əsərlərinin nümayiş etdirilməsi üçün istifadə edilirdi. İllər ötdükcə insanlar Neolit dövründə olduğu kimi daha müasir mebelləri həm gündəlik həyatımız üçün funksional, həm də zövq oxşamaq üçün bir sənət əsəri kimi istifadə etməyə başladılar. Müasir həyatımızda daha çox rahatlığa və dəbdəbəyə diqqət yetirməklə, material və dayanıqlıq daha güclü və uzun ömürlü olsa da, əksər mebellərin əsas dizaynı eyni qaldı. Kreslolar sadəcə oturmaq üçün deyil, yellənmə funksiyaları əlavə olunaraq istirahət etmək üçün də bir vasitə kimi dizayn edilməyə başlanıldı. Mebeldəki dizayn dəyişikliyi bir növ cəmiyyətimizin sadə yaşam tərzindən lüks və imtiyazlı həyatlara doğru təkamülünü göstərir."
-msgstr "According to research, cabinets and display cases were considered the most important piece of furniture of that period, as they were used in Neolithic society to display symbolic objects and carved works of art in homes. Over the years, people began to use more modern furniture, as in the Neolithic period, both as functional for our daily lives and as a work of art to please the taste. By focusing more on comfort and luxury in our modern lives, although materials and durability are stronger and longer-lasting, the basic design of most furniture has remained the same. Chairs began to be designed not only for sitting, but also as a means of relaxation by adding rocking functions. The change in furniture design shows the evolution of our society from a simple lifestyle to luxurious and privileged lives."
+msgid ""
+"Araşdırmalara görə dolablar və vitrinlər o dövrün ən vacib mebel parçası "
+"hesab edilir, çünki onlar Neolit cəmiyyətində evlərdə simvolik əşyaların "
+"oyma sənət əsərlərinin nümayiş etdirilməsi üçün istifadə edilirdi. İllər "
+"ötdükcə insanlar Neolit dövründə olduğu kimi daha müasir mebelləri həm "
+"gündəlik həyatımız üçün funksional, həm də zövq oxşamaq üçün bir sənət əsəri "
+"kimi istifadə etməyə başladılar. Müasir həyatımızda daha çox rahatlığa və "
+"dəbdəbəyə diqqət yetirməklə, material və dayanıqlıq daha güclü və uzun "
+"ömürlü olsa da, əksər mebellərin əsas dizaynı eyni qaldı. Kreslolar sadəcə "
+"oturmaq üçün deyil, yellənmə funksiyaları əlavə olunaraq istirahət etmək "
+"üçün də bir vasitə kimi dizayn edilməyə başlanıldı. Mebeldəki dizayn "
+"dəyişikliyi bir növ cəmiyyətimizin sadə yaşam tərzindən lüks və imtiyazlı "
+"həyatlara doğru təkamülünü göstərir."
+msgstr ""
+"According to research, cabinets and display cases were considered the most "
+"important piece of furniture of that period, as they were used in Neolithic "
+"society to display symbolic objects and carved works of art in homes. Over "
+"the years, people began to use more modern furniture, as in the Neolithic "
+"period, both as functional for our daily lives and as a work of art to "
+"please the taste. By focusing more on comfort and luxury in our modern "
+"lives, although materials and durability are stronger and longer-lasting, "
+"the basic design of most furniture has remained the same. Chairs began to be "
+"designed not only for sitting, but also as a means of relaxation by adding "
+"rocking functions. The change in furniture design shows the evolution of our "
+"society from a simple lifestyle to luxurious and privileged lives."
 
 #: .\Core\templates\index.html:33
 msgid "Premium"
@@ -42,9 +68,9 @@ msgstr "No products have been added yet."
 msgid "Göstərilir"
 msgstr "Showing"
 
-#: .\Core\templates\index.html:129 .\Order\templates\carts.html:11
-#: .\Order\templates\wishlist.html:11 .\Products\templates\products.html:11
-#: .\Products\templates\products.html:361
+#: .\Core\templates\index.html:129 .\Core\templates\parts\navbar.html:199
+#: .\Order\templates\carts.html:11 .\Order\templates\wishlist.html:11
+#: .\Products\templates\products.html:11 .\Products\templates\products.html:360
 msgid "Məhsullar"
 msgstr "Products"
 
@@ -68,91 +94,108 @@ msgstr "No reviews"
 msgid "İlk rəyi siz yazın"
 msgstr "Write the first review"
 
-#: .\Core\templates\parts\navbar.html:98 .\Products\forms.py:188
+#: .\Core\templates\parts\navbar.html:95 .\Products\forms.py:188
 msgid "Axtar"
 msgstr "Search"
 
-#: .\Core\templates\parts\navbar.html:111
+#: .\Core\templates\parts\navbar.html:108
 msgid "İstək Siyahısı"
 msgstr "Wishlist"
 
-#: .\Core\templates\parts\navbar.html:112
-#: .\Core\templates\parts\navbar.html:158
+#: .\Core\templates\parts\navbar.html:109
+#: .\Core\templates\parts\navbar.html:155
 msgid "məhsul"
 msgstr "product"
 
-#: .\Core\templates\parts\navbar.html:137 .\Order\templates\wishlist.html:108
+#: .\Core\templates\parts\navbar.html:134 .\Order\templates\wishlist.html:108
 msgid "Wishlist boşdur"
 msgstr "Wishlist is empty"
 
-#: .\Core\templates\parts\navbar.html:143
+#: .\Core\templates\parts\navbar.html:140
 msgid "Hamısına bax"
 msgstr "View all"
 
-#: .\Core\templates\parts\navbar.html:184
+#: .\Core\templates\parts\navbar.html:181
 msgid "Səbət boşdur"
 msgstr "Cart is empty"
 
-#: .\Core\templates\parts\navbar.html:191 .\Order\templates\carts.html:55
+#: .\Core\templates\parts\navbar.html:188 .\Order\templates\carts.html:55
 #: .\Order\templates\carts.html:137 .\Users\templates\my-account.html:223
 msgid "Cəmi"
 msgstr "Total"
 
-#: .\Core\templates\parts\navbar.html:194
+#: .\Core\templates\parts\navbar.html:191
 msgid "Səbətə keç"
 msgstr "Go to cart"
 
-#: .\Core\templates\parts\navbar.html:206
+#: .\Core\templates\parts\navbar.html:198
+#: .\Products\templates\portfolio-details.html:12
+#: .\Products\templates\products.html:10 .\Users\templates\login.html:9
+msgid "Ana səhifə"
+msgstr "Home"
+
+#: .\Core\templates\parts\navbar.html:201
 msgid "Bütün Məhsullar"
 msgstr "All Products"
 
-#: .\Core\templates\parts\navbar.html:215 .\Order\templates\carts.html:12
+#: .\Core\templates\parts\navbar.html:207
+#, fuzzy
+#| msgid "Sifariş Qeydləri"
+msgid "Sifarişlər"
+msgstr "Order Notes"
+
+#: .\Core\templates\parts\navbar.html:209 .\Order\templates\carts.html:12
 #: .\Users\templates\my-account.html:83
 msgid "Sevimlilər"
 msgstr "Favorites"
 
-#: .\Core\templates\parts\navbar.html:217
+#: .\Core\templates\parts\navbar.html:211
 msgid "Səbətim"
 msgstr "My Cart"
 
-#: .\Core\templates\parts\navbar.html:219
+#: .\Core\templates\parts\navbar.html:213
 msgid "Sifariş vermək"
 msgstr "Place order"
 
-#: .\Core\templates\parts\navbar.html:223
+#: .\Core\templates\parts\navbar.html:217
 msgid "Servislər"
 msgstr "Services"
 
-#: .\Core\templates\parts\navbar.html:225
+#: .\Core\templates\parts\navbar.html:219
 msgid "Əlaqə saxla"
 msgstr "Contact us"
 
-#: .\Core\templates\parts\navbar.html:231
+#: .\Core\templates\parts\navbar.html:222 .\Users\templates\my-account.html:12
+#: .\Users\templates\register.html:13
+msgid "Qeydiyyat"
+msgstr "Register"
+
+#: .\Core\templates\parts\navbar.html:224
 msgid "Qeydiyyatdan Keçin"
 msgstr "Register"
 
-#: .\Core\templates\parts\navbar.html:234
+#: .\Core\templates\parts\navbar.html:227
 msgid "Daxil olun"
 msgstr "Login"
 
-#: .\Core\templates\parts\navbar.html:237 .\Users\templates\login.html:10
+#: .\Core\templates\parts\navbar.html:230 .\Users\templates\login.html:10
 #: .\Users\templates\my-account.html:13 .\Users\templates\register.html:11
 msgid "Hesabım"
 msgstr "My Account"
 
-#: .\Core\templates\parts\navbar.html:240
+#: .\Core\templates\parts\navbar.html:233
 msgid "Çıxış et"
 msgstr "Logout"
 
-#: .\IstanbulMebel\settings.py:129
+#: .\IstanbulMebel\settings.py:133
 msgid "English"
 msgstr "English"
 
-#: .\IstanbulMebel\settings.py:130
+#: .\IstanbulMebel\settings.py:134
 msgid "Azerbaijani"
 msgstr "Azerbaijani"
 
-#: .\IstanbulMebel\settings.py:131
+#: .\IstanbulMebel\settings.py:135
 msgid "Russian"
 msgstr "Russian"
 
@@ -328,7 +371,6 @@ msgid "Səbət"
 msgstr "Cart"
 
 #: .\Order\templates\wishlist.html:13
-
 msgid "Sifariş"
 msgstr "Order"
 
@@ -521,11 +563,6 @@ msgstr "Filter by product"
 msgid "Məhsul detayları"
 msgstr "Product details"
 
-#: .\Products\templates\portfolio-details.html:12
-#: .\Products\templates\products.html:10 .\Users\templates\login.html:9
-msgid "Ana səhifə"
-msgstr "Home"
-
 #: .\Products\templates\portfolio-details.html:13
 msgid "Məhsulun detallı səhifəsi"
 msgstr "Product detail page"
@@ -563,6 +600,7 @@ msgid "Köhnə qiymət:"
 msgstr "Old price:"
 
 #: .\Products\templates\portfolio-details.html:158
+#: .\Products\templates\products.html:280
 msgid "Səbətə at"
 msgstr "Add to cart"
 
@@ -656,15 +694,15 @@ msgstr "No Categories"
 msgid "Rənglər"
 msgstr "Colors"
 
-#: .\Products\templates\products.html:194
+#: .\Products\templates\products.html:193
 msgid "Premium Məhsullar"
 msgstr "Premium Products"
 
-#: .\Products\templates\products.html:209
+#: .\Products\templates\products.html:208
 msgid "Məhsulları axtarın..."
 msgstr "Search products..."
 
-#: .\Products\templates\products.html:359
+#: .\Products\templates\products.html:358
 msgid "Gosterilir"
 msgstr "Showing"
 
@@ -677,8 +715,11 @@ msgid "Əlaqə"
 msgstr "Contact"
 
 #: .\Users\templates\contact-us.html:11
-msgid "Sual və ya təklifiniz varsa, bizə yazın. Ən qısa zamanda cavablandıracağıq."
-msgstr "If you have any questions or suggestions, write to us. We will reply as soon as possible."
+msgid ""
+"Sual və ya təklifiniz varsa, bizə yazın. Ən qısa zamanda cavablandıracağıq."
+msgstr ""
+"If you have any questions or suggestions, write to us. We will reply as soon "
+"as possible."
 
 #: .\Users\templates\contact-us.html:54
 msgid "Xəritəni böyütmək üçün ctrl + scroll düyməsindən istifadə edin"
@@ -744,10 +785,6 @@ msgstr "Home"
 #: .\Users\templates\register.html:119
 msgid "Daxil ol"
 msgstr "Login"
-
-#: .\Users\templates\my-account.html:12 .\Users\templates\register.html:13
-msgid "Qeydiyyat"
-msgstr "Register"
 
 #: .\Users\templates\my-account.html:93
 msgid "Profil"

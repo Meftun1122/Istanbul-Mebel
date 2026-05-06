@@ -1,5 +1,5 @@
 {% load static i18n %}
-
+{% get_current_language as LANGUAGE_CODE %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -204,14 +204,35 @@
           </ul>
         </li>
         <li class="dropdown"><a><span><img style="width: 20px; height: 20px; position: relative; top: -3px;"
-                src="{% static 'assets/img/icons/truck.png' %}" alt=""><span style="margin-left: 10px;">{% translate 'Sifarişlər' %}</span></span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+              src="{% static 'assets/img/icons/truck.png' %}" alt="">
+              <span style="margin-left: 10px;">
+                {% if LANGUAGE_CODE == 'az' %}
+                  Sifarişlər
+                {% elif LANGUAGE_CODE == 'en' %}
+                  Orders
+                {% elif LANGUAGE_CODE == 'ru' %}
+                  Заказы
+                {% endif %}
+              </span></span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
           <ul>
-            <li><a href="{% url 'all_list' %}">{% translate 'Sevimlilər' %} <img style="margin-left: 5px;"
-                  src="{% static 'assets/img/icons/wishlist.png' %}" alt=""></a></li>
-            <li><a href="{% url 'all_carts' %}">{% translate 'Səbətim' %} <img style="margin-left: 5px;"
-                  src="{% static 'assets/img/icons/shopping-cart.png' %}" alt=""></a></li>
-            <li><a href="{% url 'checkout' %}">{% translate 'Sifariş vermək' %} <img style="margin-left: 5px;"
-                  src="{% static 'assets/img/icons/checklist.png' %}" alt=""></a></li>
+            <li><a href="{% url 'all_list' %}">
+                {% if LANGUAGE_CODE == 'az' %}Sevimlilər
+                {% elif LANGUAGE_CODE == 'en' %}Wishlist
+                {% elif LANGUAGE_CODE == 'ru' %}Избранное
+                {% endif %}
+                <img style="margin-left: 5px;" src="{% static 'assets/img/icons/wishlist.png' %}" alt=""></a></li>
+            <li><a href="{% url 'all_carts' %}">
+                {% if LANGUAGE_CODE == 'az' %}Səbətim
+                {% elif LANGUAGE_CODE == 'en' %}My Cart
+                {% elif LANGUAGE_CODE == 'ru' %}Моя корзина
+                {% endif %}
+                <img style="margin-left: 5px;" src="{% static 'assets/img/icons/shopping-cart.png' %}" alt=""></a></li>
+            <li><a href="{% url 'checkout' %}">
+                {% if LANGUAGE_CODE == 'az' %}Sifariş vermək
+                {% elif LANGUAGE_CODE == 'en' %}Checkout
+                {% elif LANGUAGE_CODE == 'ru' %}Оформить заказ
+                {% endif %}
+                <img style="margin-left: 5px;" src="{% static 'assets/img/icons/checklist.png' %}" alt=""></a></li>
           </ul>
         </li>
         <li><a href="{% url 'index' %}#services"><i class="bi bi-hdd-stack navicon"></i> {% translate 'Servislər' %}</a>

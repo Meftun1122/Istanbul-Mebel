@@ -7,6 +7,7 @@
  * 
  * DÜZƏLDİLMİŞ VERSİYA - TAM AJAX DƏSTƏYİ
  * FİKS: Navbar fixed olduğu üçün scroll offset düzəldildi
+ * FİKS: Lightbox - şəffaf arxa plan + rahat animasiya
  */
 
 (function () {
@@ -17,9 +18,9 @@
   // ============================================================
   function getHeaderOffset() {
     if (window.innerWidth <= 1199) {
-      return 60; // Mobil padding-top
+      return 60;
     }
-    return 300; // Desktop header eni
+    return 300;
   }
 
   // ========== HEADER TOGGLE ==========
@@ -133,12 +134,8 @@
     });
   }
 
-  // ========== GLIGHTBOX INIT ==========
-  if (typeof GLightbox !== 'undefined') {
-    GLightbox({
-      selector: '.glightbox'
-    });
-  }
+  // ========== GLIGHTBOX - TAMAMEN DİSABLE ==========
+  // Heç bir GLightbox açılmayacaq, custom lightbox istifadə olunur
 
   // ========== ISOTOPE LAYOUT ==========
   document.querySelectorAll('.isotope-layout').forEach(function (isotopeItem) {
@@ -776,65 +773,216 @@
     }
   }
 
-  // ========== ANİMASİYALI TƏK LIGHTBOX SİSTEMİ ==========
-  function createAnimatedLightbox() {
+  // ========== TƏK LIGHTBOX SİSTEMİ - ŞƏFFAF ARXA PLAN + RAHAT ANİMASİYA ==========
+  (function() {
+    if (document.getElementById('unifiedLightbox')) return;
+    
     const style = document.createElement('style');
     style.textContent = `
-      @keyframes lightboxFadeIn { 0% { opacity: 0; backdrop-filter: blur(0px); } 100% { opacity: 1; backdrop-filter: blur(5px); } }
-      @keyframes lightboxFadeOut { 0% { opacity: 1; backdrop-filter: blur(5px); } 100% { opacity: 0; backdrop-filter: blur(0px); } }
-      @keyframes imageZoomIn { 0% { transform: scale(0.7); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-      @keyframes imageZoomOut { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(0.7); opacity: 0; } }
+      @keyframes lightboxFadeIn {
+        0% { opacity: 0; backdrop-filter: blur(0px); }
+        100% { opacity: 1; backdrop-filter: blur(12px); }
+      }
+      @keyframes lightboxFadeOut {
+        0% { opacity: 1; backdrop-filter: blur(12px); }
+        100% { opacity: 0; backdrop-filter: blur(0px); }
+      }
+      @keyframes lightboxZoomIn {
+        0% { transform: scale(0.85); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+      }
+      @keyframes lightboxZoomOut {
+        0% { transform: scale(1); opacity: 1; }
+        100% { transform: scale(0.85); opacity: 0; }
+      }
+      
+      #unifiedLightbox {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.75);
+        backdrop-filter: blur(8px);
+        z-index: 999999;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      
+      #lightboxContent {
+        position: relative;
+        max-width: 90vw;
+        max-height: 90vh;
+        cursor: default;
+      }
+      
+      #lightboxImage {
+        max-width: 90vw;
+        max-height: 85vh;
+        object-fit: contain;
+        border-radius: 16px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        display: block;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      
+      #closeLightboxBtn {
+        position: absolute;
+        top: -50px;
+        right: -50px;
+        width: 44px;
+        height: 44px;
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        color: white;
+        font-size: 28px;
+        font-weight: 300;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      
+      #closeLightboxBtn:hover {
+        background: rgba(255, 255, 255, 0.4);
+        transform: scale(1.1) rotate(90deg);
+      }
+      
+      @media (max-width: 768px) {
+        #closeLightboxBtn {
+          top: -40px;
+          right: -10px;
+          width: 36px;
+          height: 36px;
+          font-size: 24px;
+        }
+        #lightboxImage {
+          border-radius: 12px;
+        }
+      }
     `;
     document.head.appendChild(style);
 
     const lightboxHTML = `
-      <div id="unifiedLightbox" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:1000000;display:none;justify-content:center;align-items:center;">
-        <div id="lightboxContent" style="position:relative;max-width:90%;max-height:90%;">
-          <img id="lightboxImage" src="" style="max-width:100%;max-height:90vh;object-fit:contain;border-radius:8px;">
-          <button id="closeLightboxBtn" style="position:absolute;top:-45px;right:-45px;width:40px;height:40px;background:rgba(0,0,0,0.5);border:none;border-radius:50%;color:white;font-size:30px;cursor:pointer;">×</button>
+      <div id="unifiedLightbox">
+        <div id="lightboxContent">
+          <img id="lightboxImage" src="" alt="Böyük şəkil">
+          <button id="closeLightboxBtn" title="Bağla (Esc)">✕</button>
         </div>
       </div>
     `;
     document.body.insertAdjacentHTML('beforeend', lightboxHTML);
 
     const lightbox = document.getElementById('unifiedLightbox');
+    const lightboxContent = document.getElementById('lightboxContent');
+    const lightboxImage = document.getElementById('lightboxImage');
     const closeBtn = document.getElementById('closeLightboxBtn');
-    if (closeBtn) closeBtn.addEventListener('click', () => window.closeLightbox());
-    if (lightbox) lightbox.addEventListener('click', (e) => { if (e.target === lightbox) window.closeLightbox(); });
-
-    window.openLightbox = function(imageSrc) {
-      const img = document.getElementById('lightboxImage');
-      const lightbox = document.getElementById('unifiedLightbox');
-      if (!img || !lightbox) return;
-      img.src = imageSrc;
+    
+    let isAnimating = false;
+    
+    function closeLightbox() {
+      if (isAnimating || !lightbox || lightbox.style.display !== 'flex') return;
+      isAnimating = true;
+      
+      lightbox.style.animation = 'lightboxFadeOut 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards';
+      if (lightboxContent) lightboxContent.style.animation = 'lightboxZoomOut 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards';
+      
+      setTimeout(() => {
+        lightbox.style.display = 'none';
+        lightbox.style.animation = '';
+        if (lightboxContent) lightboxContent.style.animation = '';
+        lightboxImage.src = '';
+        document.body.style.overflow = '';
+        isAnimating = false;
+      }, 250);
+    }
+    
+    function openLightbox(imageSrc) {
+      if (!imageSrc || isAnimating) return;
+      if (lightbox.style.display === 'flex' && lightboxImage.src === imageSrc) return;
+      
+      lightboxImage.src = imageSrc;
       lightbox.style.display = 'flex';
+      lightbox.style.animation = 'lightboxFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards';
+      if (lightboxContent) lightboxContent.style.animation = 'lightboxZoomIn 0.35s cubic-bezier(0.34, 1.2, 0.64, 1) forwards';
       document.body.style.overflow = 'hidden';
-    };
-
-    window.closeLightbox = function() {
-      const lightbox = document.getElementById('unifiedLightbox');
-      if (lightbox) { lightbox.style.display = 'none'; document.body.style.overflow = 'auto'; }
-    };
-  }
-
-  function setupLightboxHandlers() {
-    document.querySelectorAll('.product-img, .product-image img, .portfolio-item img, .card img').forEach(img => {
-      if (!img.closest('.glightbox') && !img.closest('.view-btn')) {
-        img.style.cursor = 'pointer';
-        img.addEventListener('click', function(e) {
-          e.preventDefault();
-          if (typeof window.openLightbox === 'function') window.openLightbox(this.src);
-        });
-      }
+      
+      setTimeout(() => {
+        lightbox.style.animation = '';
+        if (lightboxContent) lightboxContent.style.animation = '';
+      }, 350);
+    }
+    
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        closeLightbox();
+      });
+    }
+    
+    if (lightbox) {
+      lightbox.addEventListener('click', function(e) {
+        if (e.target === lightbox) closeLightbox();
+      });
+    }
+    
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && lightbox && lightbox.style.display === 'flex') closeLightbox();
     });
-  }
-
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape' && typeof window.closeLightbox === 'function') window.closeLightbox();
-  });
-
-  createAnimatedLightbox();
-  setupLightboxHandlers();
+    
+    function attachClickToImages() {
+      const selectors = [
+        '.product-img', '.product-image img', '.portfolio-item img', 
+        '.card img', '[data-lightbox]', '.glightbox', '.product-card img',
+        '.shop-item img', '.gallery-item img', 'img.zoomable',
+        '.product-thumbnail img', '.product-gallery img'
+      ];
+      
+      const images = document.querySelectorAll(selectors.join(','));
+      
+      images.forEach(img => {
+        if (img.dataset.lbAttached === 'true') return;
+        if (img.closest('#unifiedLightbox')) return;
+        
+        img.dataset.lbAttached = 'true';
+        img.style.cursor = 'pointer';
+        
+        const newImg = img.cloneNode(true);
+        if (img.parentNode) img.parentNode.replaceChild(newImg, img);
+        
+        newImg.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          let src = this.src;
+          if (!src || src === '') {
+            src = this.getAttribute('data-image') || this.getAttribute('data-src') || this.href;
+          }
+          if (src && src !== '' && !src.includes('data:image') && !src.includes('placeholder')) {
+            openLightbox(src);
+          }
+        });
+      });
+    }
+    
+    const observer = new MutationObserver(() => attachClickToImages());
+    observer.observe(document.body, { childList: true, subtree: true });
+    
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', attachClickToImages);
+    } else {
+      attachClickToImages();
+    }
+    
+    window.openLightbox = openLightbox;
+    window.closeLightbox = closeLightbox;
+  })();
 
   // ========== İNİT ==========
   if (document.readyState === 'loading') {
@@ -849,7 +997,7 @@
 
 })();
 
-console.log('✅ main.js tam yükləndi - FIXED SCROLL OFFSET');
+console.log('✅ main.js tam yükləndi - ŞƏFFAF LIGHTBOX + RAHAT ANİMASİYA');
 
 // Testimonial məlumatları
 const tmsData = [

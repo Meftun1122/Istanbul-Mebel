@@ -20,38 +20,24 @@
   <section id="service-details" class="service-details section">
     <div class="container">
       <div class="row gy-4">
-        <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
-          <div class="services-list">
-            <a href="#" class="active">Web Design</a>
-            <a href="#">Software Development</a>
-            <a href="#">Product Management</a>
-            <a href="#">Graphic Design</a>
-            <a href="#">Marketing</a>
-          </div>
-          <h4>Enim qui eos rerum in delectus</h4>
-          <p>Nam voluptatem quasi numquam quas fugiat ex temporibus quo est. Quia aut quam quod facere ut non occaecati
-            ut aut. Nesciunt mollitia illum tempore corrupti sed eum reiciendis. Maxime modi rerum.</p>
-        </div>
         <div class="col-lg-8" data-aos="fade-up" data-aos-delay="200">
-          <img src="{% static 'assets/img/services.jpg' %}" alt="" class="img-fluid services-img">
-          <h3>Temporibus et in vero dicta aut eius lidero plastis trand lined voluptas dolorem ut voluptas</h3>
-          <p>
-            Blanditiis voluptate odit ex error ea sed officiis deserunt. Cupiditate non consequatur et doloremque
-            consequuntur. Accusantium labore reprehenderit error temporibus saepe perferendis fuga doloribus vero. Qui
-            omnis quo sit. Dolorem architecto eum et quos deleniti officia qui.
-          </p>
-          <p>
-            Est reprehenderit voluptatem necessitatibus asperiores neque sed ea illo.
-            Deleniti quam sequi optio iste veniam repellat odit. Aut pariatur itaque nesciunt fuga.
-          </p>
-          <p>
-            Sunt rem odit accusantium omnis perspiciatis officia.
-            Laboriosam aut consequuntur recusandae mollitia doloremque est architecto cupiditate ullam.
-            Quia est ut occaecati fuga. Distinctio ex repellendus eveniet velit sint quia sapiente cumque. Et ipsa
-            perferendis ut nihil. Laboriosam vel voluptates tenetur nostrum. Eaque iusto cupiditate et totam et quia
-            dolorum in. Sunt molestiae ipsum at consequatur vero. Architecto ut pariatur autem ad non cumque nesciunt
-            qui maxime. Sunt eum quia impedit dolore alias explicabo ea.
-          </p>
+          {% if service.cov_img %}
+              <img src="{{ service.cov_img.url }}" alt="{{ service.title }}" class="img-fluid">
+          {% else %}
+              <!-- Default şəkil (əgər yoxdursa) -->
+              <img src="{% static 'assets/img/services.jpg' %}" alt="Default image" class="img-fluid">
+          {% endif %}
+        </div>
+        <div class="service-content">
+            <h4>{{ service.details_header }}</h4>
+            
+            <div class="service-text">
+                <p>{{ service.details_text1|default:"Məlumat yoxdur"|truncatechars:1000 }}</p>
+                <br>
+                <p>{{ service.details_text2|default:"Məlumat yoxdur"|truncatechars:1000 }}</p>
+                <br>
+                <p>{{ service.details_text3|default:"Məlumat yoxdur"|truncatechars:1000 }}</p>
+            </div>
         </div>
       </div>
     </div>

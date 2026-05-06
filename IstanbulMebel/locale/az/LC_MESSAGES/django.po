@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-04 00:28+0400\n"
+"POT-Creation-Date: 2026-05-05 16:04+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
 #: .\Core\templates\index.html:10
 msgid "Dizayın və Xoşbəxtliyin birləşdiyi nöqtə..)"
 msgstr ""
@@ -54,9 +55,9 @@ msgstr ""
 msgid "Göstərilir"
 msgstr ""
 
-#: .\Core\templates\index.html:129 .\Order\templates\carts.html:11
-#: .\Order\templates\wishlist.html:11 .\Products\templates\products.html:11
-#: .\Products\templates\products.html:361
+#: .\Core\templates\index.html:129 .\Core\templates\parts\navbar.html:199
+#: .\Order\templates\carts.html:11 .\Order\templates\wishlist.html:11
+#: .\Products\templates\products.html:11 .\Products\templates\products.html:360
 msgid "Məhsullar"
 msgstr ""
 
@@ -80,91 +81,106 @@ msgstr ""
 msgid "İlk rəyi siz yazın"
 msgstr ""
 
-#: .\Core\templates\parts\navbar.html:98 .\Products\forms.py:188
+#: .\Core\templates\parts\navbar.html:95 .\Products\forms.py:188
 msgid "Axtar"
 msgstr ""
 
-#: .\Core\templates\parts\navbar.html:111
+#: .\Core\templates\parts\navbar.html:108
 msgid "İstək Siyahısı"
 msgstr ""
 
-#: .\Core\templates\parts\navbar.html:112
-#: .\Core\templates\parts\navbar.html:158
+#: .\Core\templates\parts\navbar.html:109
+#: .\Core\templates\parts\navbar.html:155
 msgid "məhsul"
 msgstr ""
 
-#: .\Core\templates\parts\navbar.html:137 .\Order\templates\wishlist.html:108
+#: .\Core\templates\parts\navbar.html:134 .\Order\templates\wishlist.html:108
 msgid "Wishlist boşdur"
 msgstr ""
 
-#: .\Core\templates\parts\navbar.html:143
+#: .\Core\templates\parts\navbar.html:140
 msgid "Hamısına bax"
 msgstr ""
 
-#: .\Core\templates\parts\navbar.html:184
+#: .\Core\templates\parts\navbar.html:181
 msgid "Səbət boşdur"
 msgstr ""
 
-#: .\Core\templates\parts\navbar.html:191 .\Order\templates\carts.html:55
+#: .\Core\templates\parts\navbar.html:188 .\Order\templates\carts.html:55
 #: .\Order\templates\carts.html:137 .\Users\templates\my-account.html:223
 msgid "Cəmi"
 msgstr ""
 
-#: .\Core\templates\parts\navbar.html:194
+#: .\Core\templates\parts\navbar.html:191
 msgid "Səbətə keç"
 msgstr ""
 
-#: .\Core\templates\parts\navbar.html:206
+#: .\Core\templates\parts\navbar.html:198
+#: .\Products\templates\portfolio-details.html:12
+#: .\Products\templates\products.html:10 .\Users\templates\login.html:9
+msgid "Ana səhifə"
+msgstr ""
+
+#: .\Core\templates\parts\navbar.html:201
 msgid "Bütün Məhsullar"
 msgstr ""
 
-#: .\Core\templates\parts\navbar.html:215 .\Order\templates\carts.html:12
+#: .\Core\templates\parts\navbar.html:207
+msgid "Sifarişlər"
+msgstr ""
+
+#: .\Core\templates\parts\navbar.html:209 .\Order\templates\carts.html:12
 #: .\Users\templates\my-account.html:83
 msgid "Sevimlilər"
 msgstr ""
 
-#: .\Core\templates\parts\navbar.html:217
+#: .\Core\templates\parts\navbar.html:211
 msgid "Səbətim"
 msgstr ""
 
-#: .\Core\templates\parts\navbar.html:219
+#: .\Core\templates\parts\navbar.html:213
 msgid "Sifariş vermək"
 msgstr ""
 
-#: .\Core\templates\parts\navbar.html:223
+#: .\Core\templates\parts\navbar.html:217
 msgid "Servislər"
 msgstr ""
 
-#: .\Core\templates\parts\navbar.html:225
+#: .\Core\templates\parts\navbar.html:219
 msgid "Əlaqə saxla"
 msgstr ""
 
-#: .\Core\templates\parts\navbar.html:231
+#: .\Core\templates\parts\navbar.html:222 .\Users\templates\my-account.html:12
+#: .\Users\templates\register.html:13
+msgid "Qeydiyyat"
+msgstr ""
+
+#: .\Core\templates\parts\navbar.html:224
 msgid "Qeydiyyatdan Keçin"
 msgstr ""
 
-#: .\Core\templates\parts\navbar.html:234
+#: .\Core\templates\parts\navbar.html:227
 msgid "Daxil olun"
 msgstr ""
 
-#: .\Core\templates\parts\navbar.html:237 .\Users\templates\login.html:10
+#: .\Core\templates\parts\navbar.html:230 .\Users\templates\login.html:10
 #: .\Users\templates\my-account.html:13 .\Users\templates\register.html:11
 msgid "Hesabım"
 msgstr ""
 
-#: .\Core\templates\parts\navbar.html:240
+#: .\Core\templates\parts\navbar.html:233
 msgid "Çıxış et"
 msgstr ""
 
-#: .\IstanbulMebel\settings.py:129
+#: .\IstanbulMebel\settings.py:133
 msgid "English"
 msgstr ""
 
-#: .\IstanbulMebel\settings.py:130
+#: .\IstanbulMebel\settings.py:134
 msgid "Azerbaijani"
 msgstr ""
 
-#: .\IstanbulMebel\settings.py:131
+#: .\IstanbulMebel\settings.py:135
 msgid "Russian"
 msgstr ""
 
@@ -532,11 +548,6 @@ msgstr ""
 msgid "Məhsul detayları"
 msgstr ""
 
-#: .\Products\templates\portfolio-details.html:12
-#: .\Products\templates\products.html:10 .\Users\templates\login.html:9
-msgid "Ana səhifə"
-msgstr ""
-
 #: .\Products\templates\portfolio-details.html:13
 msgid "Məhsulun detallı səhifəsi"
 msgstr ""
@@ -574,6 +585,7 @@ msgid "Köhnə qiymət:"
 msgstr ""
 
 #: .\Products\templates\portfolio-details.html:158
+#: .\Products\templates\products.html:280
 msgid "Səbətə at"
 msgstr ""
 
@@ -667,15 +679,15 @@ msgstr ""
 msgid "Rənglər"
 msgstr ""
 
-#: .\Products\templates\products.html:194
+#: .\Products\templates\products.html:193
 msgid "Premium Məhsullar"
 msgstr ""
 
-#: .\Products\templates\products.html:209
+#: .\Products\templates\products.html:208
 msgid "Məhsulları axtarın..."
 msgstr ""
 
-#: .\Products\templates\products.html:359
+#: .\Products\templates\products.html:358
 msgid "Gosterilir"
 msgstr ""
 
@@ -755,10 +767,6 @@ msgstr ""
 #: .\Users\templates\my-account.html:11 .\Users\templates\register.html:12
 #: .\Users\templates\register.html:119
 msgid "Daxil ol"
-msgstr ""
-
-#: .\Users\templates\my-account.html:12 .\Users\templates\register.html:13
-msgid "Qeydiyyat"
 msgstr ""
 
 #: .\Users\templates\my-account.html:93
