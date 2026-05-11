@@ -161,7 +161,7 @@
                                         </td>
                                         <td>
                                             {% if item.product.stock > 0 %}
-                                                <span class="stock in">{% translate 'Stokda var' %} ({{ item.product.stock }})</span>
+                                                <span class="stock in">{% translate 'Stokda var' %}</span>
                                             {% else %}
                                                 <span class="stock out">{% translate 'Stokda yoxdur' %}</span>
                                             {% endif %}
@@ -263,7 +263,7 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <span class="total-price">${{ item.total_price|floatformat:2 }}</span>
+                                            <span class="total-price">₼{{ item.total_price|floatformat:2 }}</span>
                                         </td>
                                         <td>
                                             <div class="action-buttons">
@@ -291,7 +291,7 @@
                             {% if cart_items %}
                                 <tfoot>
                                     <tr>
-                                        <td colspan="3" class="text-left"><strong id="cart-subtotal">{% translate 'Cəmi:' %} ${{ cart_total|floatformat:2 }}</strong></td>
+                                        <td colspan="6" class="text-left"><strong id="cart-subtotal">{% translate 'Cəmi:' %} ₼{{ cart_total|floatformat:1 }}</strong></td>
                                         <td><strong></strong></td>
                                     </tr>
                                 </tfoot>

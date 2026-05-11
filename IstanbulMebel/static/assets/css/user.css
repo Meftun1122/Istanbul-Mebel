@@ -493,57 +493,6 @@ footer {
     --border-radius-full: 40px;
 }
 
-/* ========== BASE STYLES ========== */
-
-/* ========== ANIMATIONS ========== */
-@keyframes slideUp {
-    from {
-        opacity: 0;
-        transform: translateY(40px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes pulse {
-    0% {
-        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
-    }
-    70% {
-        box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
-    }
-    100% {
-        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
-    }
-}
-
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
 
 /* ========== MAIN CONTAINER ========== */
 .account-wrapper {
@@ -1975,18 +1924,7 @@ footer {
     max-height: 500px;
 }
 
-/* Responsive düzəlişlər */
-@media (max-width: 768px) {
-    .products-table-wrapper {
-        max-height: 400px;
-    }
-}
 
-@media (max-width: 480px) {
-    .products-table-wrapper {
-        max-height: 350px;
-    }
-}
 
 /* Cədvəl sətirləri arasında boşluq saxlanılır */
 .cart-table {
@@ -1998,213 +1936,6 @@ footer {
 .products-table tbody tr[style*="display: none"] {
     display: none !important;
 }
-
-
-
-
-/* ========== RESPONSIVE ========== */
-@media (max-width: 1200px) {
-    .account-wrapper {
-        margin: 0 15px;
-    }
-}
-
-@media (max-width: 1000px) {
-    .account-wrapper {
-        padding: 20px;
-    }
-    
-    .account-content {
-        flex-direction: column;
-    }
-    
-    .account-sidebar {
-        width: 100%;
-    }
-    
-    .sidebar-menu ul {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-    }
-    
-    .sidebar-menu ul li {
-        flex: 1 1 auto;
-        min-width: 120px;
-    }
-    
-    .menu-badge {
-        position: static;
-        margin-left: auto;
-    }
-}
-
-@media (max-width: 768px) {
-    body {
-        padding: 15px;
-    }
-    
-    .account-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
-    }
-    
-    .header-right {
-        width: 100%;
-        flex-wrap: wrap;
-        justify-content: space-between;
-    }
-    
-    .form-row {
-        flex-direction: column;
-        gap: 15px;
-    }
-    
-    .profile-upload {
-        flex-direction: column;
-        text-align: center;
-    }
-    
-    .form-actions {
-        flex-direction: column;
-    }
-    
-    .btn-secondary,
-    .btn-primary,
-    .btn-outline {
-        width: 100%;
-        justify-content: center;
-    }
-    
-    .cart-actions {
-        flex-direction: column;
-    }
-    
-    .btn-update, 
-    .btn-checkout {
-        width: 100%;
-        justify-content: center;
-    }
-    
-    .section-header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    
-    .section-actions {
-        width: 100%;
-    }
-    
-    .search-box {
-        width: 100%;
-    }
-    
-    .quantity-control {
-        margin: 0;
-    }
-    
-    .cart-table .total-price {
-        font-size: 16px;
-        padding: 6px 12px;
-    }
-}
-
-@media (max-width: 600px) {
-    .checkbox-group {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    
-    .pagination {
-        justify-content: center;
-    }
-    
-    .page-btn {
-        width: 35px;
-        height: 35px;
-        font-size: 13px;
-    }
-    
-    .page-next {
-        width: 35px;
-        height: 35px;
-    }
-}
-
-@media (max-width: 480px) {
-    .account-wrapper {
-        padding: 15px;
-        border-radius: 20px;
-    }
-    
-    .header-left i {
-        width: 45px;
-        height: 45px;
-        font-size: 24px;
-    }
-    
-    .header-left h1 {
-        font-size: 22px;
-    }
-    
-    .profile-section {
-        padding: 20px;
-    }
-    
-    .profile-upload-image {
-        width: 100px;
-        height: 100px;
-    }
-    
-    .quantity-control {
-        gap: 5px;
-        padding: 4px;
-    }
-    
-    .qty-btn {
-        width: 28px;
-        height: 28px;
-    }
-    
-    .qty-value {
-        min-width: 30px;
-        font-size: 13px;
-    }
-    
-    .cart-table td {
-        padding: 15px 10px;
-    }
-    
-    .cart-table .price,
-    .cart-table .total-price {
-        font-size: 14px;
-    }
-}
-
-/* ========== PRINT STYLES ========== */
-@media print {
-    .account-wrapper {
-        box-shadow: none;
-        padding: 0;
-    }
-    
-    .btn-icon,
-    .btn-primary,
-    .btn-outline,
-    .btn-secondary,
-    .btn-action,
-    .cart-actions,
-    .pagination,
-    .search-box,
-    .profile-upload .btn-outline,
-    .edit-profile,
-    .upload-btn {
-        display: none !important;
-    }
-}
-
-
 
 
 
@@ -2272,11 +2003,6 @@ footer {
     gap: 30px;
 }
 
-@media (max-width: 992px) {
-    .contact-us-page .contact-wrapper {
-        grid-template-columns: 1fr;
-    }
-}
 
 /* ===== SOL TƏRƏF - INFO CARDS ===== */
 .contact-us-page .contact-info {
@@ -2420,11 +2146,7 @@ footer {
     gap: 15px;
 }
 
-@media (max-width: 576px) {
-    .contact-us-page .form-row {
-        grid-template-columns: 1fr;
-    }
-}
+
 
 .contact-us-page .form-group.floating {
     position: relative;
@@ -2751,22 +2473,7 @@ footer {
     box-shadow: 0 5px 15px -5px rgba(102, 126, 234, 0.5);
 }
 
-/* ===== ANIMATIONS ===== */
-@keyframes slideUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
 
 .contact-us-page .fa-spinner {
     animation: spin 1s linear infinite;
@@ -2777,57 +2484,7 @@ footer {
     display: none !important;
 }
 
-/* ===== RESPONSIVE ===== */
-@media (max-width: 768px) {
-    .contact-us-page .container {
-        padding: 20px;
-    }
-    
-    .contact-us-page .contact-header h1 {
-        font-size: 28px;
-    }
-    
-    .contact-us-page .form-row {
-        grid-template-columns: 1fr;
-    }
-    
-    .contact-us-page .info-wrap iframe {
-        height: 200px;
-    }
-}
 
-@media (max-width: 576px) {
-    .contact-us-page .contact-form-wrapper {
-        padding: 20px;
-    }
-    
-    .contact-us-page .info-card {
-        padding: 15px;
-    }
-    
-    .contact-us-page .info-icon {
-        width: 40px;
-        height: 40px;
-        font-size: 16px;
-    }
-    
-    .contact-us-page .info-content h3 {
-        font-size: 14px;
-    }
-    
-    .contact-us-page .info-content a,
-    .contact-us-page .info-content p {
-        font-size: 12px;
-    }
-    
-    .contact-us-page .modal-content {
-        padding: 30px 20px;
-    }
-    
-    .contact-us-page .modal-content h3 {
-        font-size: 18px;
-    }
-}
 
 
 
@@ -2941,22 +2598,6 @@ footer {
     box-shadow: var(--shadow-sm);
 }
 
-/* Responsive */
-@media (max-width: 600px) {
-    .upload-actions {
-        flex-direction: column;
-    }
-    
-    .form-actions {
-        flex-direction: column;
-    }
-    
-    .btn-secondary,
-    .btn-register {
-        width: 100%;
-        justify-content: center;
-    }
-}
 
 /* Alert styles */
 .alert {
@@ -3009,13 +2650,1673 @@ footer {
     transform: scale(1.2);
 }
 
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
+
+
+/* ============================================================ */
+/*                    RESPONSIVE MEDIA SORĞULARI                */
+/* ============================================================ */
+
+/* ========== 1200px və daha kiçik ========== */
+@media (max-width: 1200px) {
+    .account-wrapper {
+        margin: 0 15px;
     }
-    to {
-        opacity: 1;
-        transform: translateY(0);
+    
+    .cart-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+    
+    .cart-summary {
+        max-width: 100%;
+    }
+    
+    .product-cell img {
+        width: 110px;
+        height: 110px;
+    }
+    
+    .products-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+    }
+}
+
+/* ========== 1100px və daha kiçik ========== */
+@media (max-width: 1100px) {
+    .featured-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .featured-side {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .product-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* ========== 1000px və daha kiçik ========== */
+@media (max-width: 1000px) {
+    .account-wrapper {
+        padding: 20px;
+    }
+    
+    .account-content {
+        flex-direction: column;
+    }
+    
+    .account-sidebar {
+        width: 100%;
+    }
+    
+    .sidebar-menu ul {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .sidebar-menu ul li {
+        flex: 1 1 auto;
+        min-width: 120px;
+    }
+    
+    .menu-badge {
+        position: static;
+        margin-left: auto;
+    }
+    
+    .products-table-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .products-table {
+        min-width: 700px;
+    }
+    
+    .wishlist-table {
+        min-width: 700px;
+    }
+}
+
+/* ========== 992px və daha kiçik ========== */
+@media (max-width: 992px) {
+    .contact-us-page .contact-wrapper {
+        grid-template-columns: 1fr;
+    }
+    
+    .checkout-content {
+        padding: 30px;
+    }
+    
+    .featured-side {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .product-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+    
+    .section-header h1 {
+        font-size: 32px;
+    }
+}
+
+/* ========== 900px və daha kiçik ========== */
+@media (max-width: 900px) {
+    .product-cell img {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .product-cell {
+        gap: 18px;
+    }
+    
+    .wishlist-wrapper {
+        padding: 25px;
+    }
+    
+    .wishlist-wrapper .wishlist-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+    
+    .wishlist-wrapper .product-cell img {
+        width: 75px;
+        height: 75px;
+    }
+}
+
+/* ========== 850px və daha kiçik ========== */
+@media (max-width: 850px) {
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* ========== 800px və daha kiçik ========== */
+@media (max-width: 800px) {
+    .product-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .featured-side {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .showcase-title {
+        font-size: 32px;
+    }
+}
+
+/* ========== 768px və daha kiçik (ƏSAS MOBİL) ========== */
+@media (max-width: 768px) {
+    /* ===== ÜMUMİ ===== */
+    body {
+        padding: 10px;
+    }
+    
+    /* ===== CƏDVƏLLƏR - Üfüqi scroll MÜTLƏQ ===== */
+    .products-table-wrapper {
+        overflow-x: auto !important;
+        overflow-y: visible !important;
+        -webkit-overflow-scrolling: touch;
+        width: 100%;
+        display: block;
+    }
+    
+    .cart-table,
+    .wishlist-table,
+    .products-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+        width: 100%;
+    }
+    
+    /* Cədvəl minimum eni - scroll üçün */
+    .cart-table,
+    .wishlist-table,
+    .products-table {
+        min-width: 600px;
+    }
+    
+    /* Cədvəl hüceyrə paddingləri - SƏLİQƏLİ */
+    .cart-table td,
+    .wishlist-table td,
+    .products-table td {
+        padding: 12px 10px;
+        vertical-align: middle;
+    }
+    
+    .cart-table th,
+    .wishlist-table th,
+    .products-table th {
+        padding: 12px 10px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+    
+    /* ===== CART SƏHİFƏSİ - SƏLİQƏLİ ===== */
+    .cart-wrapper {
+        padding: 15px;
+        border-radius: 24px;
+    }
+    
+    .cart-header {
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+        flex-wrap: wrap;
+    }
+    
+    .header-left h2 {
+        font-size: 22px;
+    }
+    
+    .header-left i {
+        width: 45px;
+        height: 45px;
+        font-size: 22px;
+    }
+    
+    .header-right .item-count {
+        padding: 5px 15px;
+        font-size: 14px;
+    }
+    
+    .cart-actions {
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+    }
+    
+    .btn-update, 
+    .btn-checkout {
+        width: 100%;
+        justify-content: center;
+        padding: 12px 20px;
+        font-size: 14px;
+    }
+    
+    .product-cell {
+        gap: 12px;
+    }
+    
+    .product-cell img {
+        width: 70px;
+        height: 70px;
+        border-radius: 12px;
+    }
+    
+    .product-name {
+        font-size: 14px;
+    }
+    
+    .product-sku {
+        font-size: 10px;
+        padding: 3px 8px;
+    }
+    
+    .manufacturer-name {
+        font-size: 12px;
+        padding: 4px 10px;
+    }
+    
+    .price,
+    .unit-price {
+        font-size: 14px;
+    }
+    
+    .total-price {
+        font-size: 15px;
+        padding: 4px 10px;
+    }
+    
+    /* Quantity Control */
+    .quantity-control {
+        gap: 5px;
+        padding: 4px;
+    }
+    
+    .qty-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
+    }
+    
+    .qty-value,
+    .qty-input {
+        min-width: 30px;
+        font-size: 14px;
+    }
+    
+    /* Remove Button */
+    .btn-remove {
+        padding: 5px 12px;
+        font-size: 12px;
+    }
+    
+    .btn-remove i {
+        font-size: 13px;
+    }
+    
+    /* Cart Summary */
+    .cart-summary {
+        padding: 15px;
+        margin-top: 20px;
+    }
+    
+    .summary-row {
+        padding: 8px 0;
+    }
+    
+    .summary-label {
+        font-size: 14px;
+    }
+    
+    .summary-value {
+        font-size: 15px;
+    }
+    
+    .summary-row.total .summary-label {
+        font-size: 16px;
+    }
+    
+    .summary-row.total .summary-value {
+        font-size: 20px;
+    }
+    
+    /* Lightbox close */
+    .lightbox-close {
+        top: -30px;
+        right: -30px;
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+    }
+    
+    /* ===== WISHLIST SƏHİFƏSİ - SƏLİQƏLİ ===== */
+    .wishlist-wrapper {
+        padding: 15px;
+        border-radius: 24px;
+    }
+    
+    .wishlist-wrapper .wishlist-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+    }
+    
+    .wishlist-wrapper .wishlist-header h2 {
+        font-size: 22px;
+    }
+    
+    .wishlist-wrapper .wishlist-header h2::after {
+        width: 50px;
+        height: 3px;
+        bottom: -8px;
+    }
+    
+    .wishlist-wrapper .wishlist-search {
+        width: 100%;
+    }
+    
+    .wishlist-wrapper .wishlist-search input {
+        padding: 10px 15px 10px 40px;
+        font-size: 13px;
+    }
+    
+    .wishlist-wrapper .product-cell {
+        gap: 12px;
+    }
+    
+    .wishlist-wrapper .product-cell img {
+        width: 55px;
+        height: 55px;
+        border-radius: 12px;
+    }
+    
+    .wishlist-wrapper .product-name {
+        font-size: 13px;
+    }
+    
+    .wishlist-wrapper .badge {
+        padding: 4px 10px;
+        font-size: 11px;
+    }
+    
+    .wishlist-wrapper .price {
+        font-size: 15px;
+    }
+    
+    .wishlist-wrapper .stock {
+        padding: 4px 10px;
+        font-size: 11px;
+    }
+    
+    .wishlist-wrapper .btn-cart,
+    .wishlist-wrapper .btn-remove {
+        width: 32px;
+        height: 32px;
+        font-size: 14px;
+    }
+    
+    /* ===== PREMIUM MƏHSUL KARTLARI ===== */
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        margin-top: 20px;
+    }
+    
+    .product-image {
+        height: 180px;
+    }
+    
+    .product-info {
+        padding: 10px 12px 8px;
+    }
+    
+    .product-title {
+        font-size: 14px;
+        margin-bottom: 4px;
+    }
+    
+    .current-price {
+        font-size: 16px;
+    }
+    
+    .old-price {
+        font-size: 11px;
+    }
+    
+    .rating i {
+        font-size: 10px;
+    }
+    
+    .rating span {
+        font-size: 9px;
+    }
+    
+    .btn-add-cart {
+        padding: 6px 8px;
+        font-size: 10px;
+    }
+    
+    .btn-add-cart svg {
+        width: 12px;
+        height: 12px;
+    }
+    
+    .btn-wishlist {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .btn-wishlist svg {
+        width: 14px;
+        height: 14px;
+    }
+    
+    .stock-status {
+        padding: 3px 8px;
+        font-size: 9px;
+        margin: 0 10px 8px auto;
+    }
+    
+    /* ===== VİTRİN ===== */
+    .featured-side {
+        grid-template-columns: 1fr;
+    }
+    
+    .product-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .featured-name {
+        font-size: 20px;
+    }
+    
+    .current-price {
+        font-size: 24px;
+    }
+    
+    .featured-image {
+        height: 250px;
+    }
+    
+    .side-card {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .side-image {
+        width: 100%;
+        height: 160px;
+    }
+    
+    .side-content {
+        padding: 15px;
+    }
+    
+    .side-name {
+        font-size: 16px;
+    }
+    
+    .side-price {
+        font-size: 18px;
+    }
+    
+    .showcase-title {
+        font-size: 28px;
+    }
+    
+    .showcase-subtitle {
+        font-size: 14px;
+    }
+    
+    /* ===== CHECKOUT SƏHİFƏSİ ===== */
+    .checkout-content {
+        grid-template-columns: 1fr;
+        padding: 15px;
+        gap: 20px;
+    }
+    
+    .form-section {
+        background: transparent;
+        padding: 0;
+    }
+    
+    .order-summary {
+        max-height: 450px;
+        padding: 15px;
+    }
+    
+    .order-items-container {
+        max-height: 220px;
+    }
+    
+    .progress-steps {
+        padding: 15px 10px 0;
+        gap: 10px;
+    }
+    
+    .progress-steps::before {
+        top: 32px;
+        left: 25px;
+        right: 25px;
+    }
+    
+    .step-number {
+        width: 30px;
+        height: 30px;
+        font-size: 12px;
+    }
+    
+    .step-label {
+        font-size: 10px;
+        max-width: 60px;
+    }
+    
+    .section-title {
+        font-size: 16px;
+        margin-bottom: 15px;
+        padding-bottom: 8px;
+    }
+    
+    .form-group {
+        margin-bottom: 12px;
+    }
+    
+    .form-control {
+        padding: 10px 35px 10px 12px;
+        font-size: 13px;
+    }
+    
+    .order-item {
+        padding: 10px;
+        gap: 10px;
+    }
+    
+    .item-image {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .item-details h4 {
+        font-size: 13px;
+    }
+    
+    .item-details p {
+        font-size: 11px;
+    }
+    
+    .item-price {
+        font-size: 13px;
+    }
+    
+    .price-row {
+        font-size: 13px;
+    }
+    
+    .price-row.total {
+        font-size: 16px;
+    }
+    
+    .checkout-header h1 {
+        font-size: 22px;
+    }
+    
+    .checkout-header p {
+        font-size: 13px;
+    }
+    
+    /* ===== CONTACT SƏHİFƏSİ ===== */
+    .contact-us-page .container {
+        padding: 15px;
+        border-radius: 20px;
+    }
+    
+    .contact-us-page .contact-header h1 {
+        font-size: 26px;
+    }
+    
+    .contact-us-page .contact-header p {
+        font-size: 13px;
+    }
+    
+    .contact-us-page .form-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .contact-us-page .info-wrap iframe {
+        height: 180px;
+    }
+    
+    .contact-us-page .info-card {
+        padding: 12px;
+        gap: 12px;
+    }
+    
+    .contact-us-page .info-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+    
+    .contact-us-page .info-content h3 {
+        font-size: 14px;
+    }
+    
+    .contact-us-page .info-content a,
+    .contact-us-page .info-content p {
+        font-size: 12px;
+    }
+    
+    .contact-us-page .contact-form-wrapper {
+        padding: 20px;
+    }
+    
+    .contact-us-page .submit-btn {
+        padding: 12px 20px;
+        font-size: 14px;
+    }
+    
+    /* ===== PAGINATION ===== */
+    .pagination {
+        gap: 4px;
+        padding: 6px 8px;
+    }
+    
+    .page-link {
+        min-width: 34px;
+        height: 34px;
+        font-size: 13px;
+    }
+    
+    .pagination-info {
+        font-size: 11px;
+        padding: 5px 12px;
+    }
+    
+    /* ===== FILTER PANEL ===== */
+    .filter-container {
+        padding: 12px !important;
+        border-radius: 20px;
+    }
+    
+    .filter-cards {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+    }
+    
+    .filter-card {
+        min-height: auto !important;
+        height: auto !important;
+        padding: 12px !important;
+    }
+    
+    .filter-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 10px !important;
+    }
+    
+    .filter-header h2 {
+        font-size: 18px !important;
+    }
+    
+    .reset-all-btn {
+        width: 100% !important;
+        justify-content: center !important;
+        padding: 6px 12px !important;
+        font-size: 12px !important;
+    }
+    
+    /* Color card */
+    .color-card .color-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 8px !important;
+    }
+    
+    .color-card .color-circle {
+        width: 28px !important;
+        height: 28px !important;
+    }
+    
+    .color-card .color-name {
+        font-size: 9px !important;
+    }
+    
+    /* Price Card */
+    .price-card .price-inputs {
+        gap: 8px;
+    }
+    
+    .price-card .price-field input {
+        padding: 8px 10px;
+        font-size: 13px;
+    }
+    
+    .price-card .btn-apply,
+    .price-card .btn-reset {
+        padding: 8px;
+        font-size: 12px;
+    }
+    
+    /* ===== PRODUCT SEARCH ===== */
+    .product-search {
+        position: static !important;
+        min-width: 100% !important;
+        max-width: 100% !important;
+        margin: 12px auto !important;
+    }
+    
+    .product-search input {
+        width: 100% !important;
+        padding: 10px 35px 10px 35px !important;
+        font-size: 13px !important;
+        border-radius: 30px !important;
+    }
+    
+    .product-search .fa-search {
+        left: 12px !important;
+        font-size: 13px !important;
+    }
+    
+    .product-search .fa-times,
+    .product-search .clear-product-search {
+        right: 12px !important;
+        font-size: 14px !important;
+    }
+    
+    /* ===== ACCOUNT HEADER ===== */
+    .account-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 12px 15px;
+    }
+    
+    .header-left i {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+    }
+    
+    .header-left h1 {
+        font-size: 20px;
+    }
+    
+    .header-right {
+        width: 100%;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 10px;
+    }
+    
+    .welcome-message {
+        font-size: 13px;
+    }
+    
+    /* ===== SIDEBAR ===== */
+    .user-profile {
+        padding: 20px 15px;
+    }
+    
+    .profile-image {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .user-profile h3 {
+        font-size: 16px;
+    }
+    
+    .user-email,
+    .user-phone {
+        font-size: 12px;
+    }
+    
+    .sidebar-menu ul li a {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+    
+    /* ===== FORM DÜZƏLİŞLƏRİ ===== */
+    .form-row {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .profile-upload {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+        padding: 15px;
+    }
+    
+    .profile-upload-image {
+        width: 100px;
+        height: 100px;
+        margin: 0 auto;
+    }
+    
+    .upload-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 14px;
+    }
+    
+    .upload-info h4 {
+        font-size: 16px;
+    }
+    
+    .upload-info p {
+        font-size: 12px;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 20px;
+        padding-top: 15px;
+    }
+    
+    .btn-secondary,
+    .btn-primary,
+    .btn-outline {
+        width: 100%;
+        justify-content: center;
+        padding: 10px 15px;
+        font-size: 13px;
+    }
+    
+    .profile-section {
+        padding: 20px;
+    }
+    
+    .profile-section h2 {
+        font-size: 20px;
+    }
+    
+    .profile-subtitle {
+        font-size: 13px;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+    }
+    
+    /* ===== SEARCH BOX ===== */
+    .search-box {
+        width: 100%;
+    }
+    
+    .search-box input {
+        padding: 10px 15px 10px 40px;
+        font-size: 13px;
+    }
+    
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .section-header h2 {
+        font-size: 18px;
+    }
+    
+    .section-actions {
+        width: 100%;
+    }
+    
+    /* ===== RADIO GROUP ===== */
+    .radio-group {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .radio-option {
+        width: 100%;
+        padding: 10px 12px;
+    }
+    
+    /* ===== TERMS BOX ===== */
+    .terms-box {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 10px;
+        padding: 12px;
+    }
+    
+    /* ===== CHECKBOX GROUP ===== */
+    .checkbox-group {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    /* ===== ALERTS ===== */
+    .alert {
+        padding: 12px 15px;
+        font-size: 13px;
+    }
+    
+    /* ===== EMPTY STATE ===== */
+    .empty-state {
+        padding: 40px 20px;
+    }
+    
+    .empty-state i {
+        font-size: 50px;
+    }
+    
+    .empty-state p {
+        font-size: 16px;
+    }
+}
+
+/* ========== 700px və daha kiçik ========== */
+@media (max-width: 700px) {
+    .cart-wrapper {
+        padding: 15px;
+    }
+    
+    .cart-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    
+    .cart-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .btn-update, 
+    .btn-checkout {
+        width: 100%;
+        justify-content: center;
+        padding: 10px 16px;
+    }
+    
+    .product-cell img {
+        width: 65px;
+        height: 65px;
+    }
+    
+    .lightbox-close {
+        top: -30px;
+        right: -30px;
+        width: 35px;
+        height: 35px;
+        font-size: 18px;
+    }
+    
+    .wishlist-wrapper .product-cell img {
+        width: 55px;
+        height: 55px;
+    }
+    
+    /* Cədvəl minimum eni */
+    .cart-table,
+    .wishlist-table,
+    .products-table {
+        min-width: 550px;
+    }
+}
+
+/* ========== 600px və daha kiçik ========== */
+@media (max-width: 600px) {
+    .checkbox-group {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .pagination {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .page-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 12px;
+    }
+    
+    .page-next {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .upload-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    /* Contact */
+    .contact-us-page .contact-form-wrapper {
+        padding: 15px;
+    }
+    
+    .contact-us-page .info-card {
+        padding: 12px;
+    }
+    
+    /* Cədvəl */
+    .cart-table th,
+    .wishlist-table th,
+    .products-table th {
+        font-size: 11px;
+        padding: 8px 6px;
+    }
+    
+    .cart-table td,
+    .wishlist-table td,
+    .products-table td {
+        padding: 8px 6px;
+    }
+    
+    .product-name {
+        font-size: 12px;
+    }
+    
+    .price,
+    .total-price {
+        font-size: 12px;
+    }
+    
+    .qty-btn {
+        width: 24px;
+        height: 24px;
+        font-size: 10px;
+    }
+    
+    .btn-action {
+        width: 28px;
+        height: 28px;
+        font-size: 11px;
+    }
+}
+
+/* ========== 576px və daha kiçik ========== */
+@media (max-width: 576px) {
+    .contact-us-page .info-icon {
+        width: 35px;
+        height: 35px;
+        font-size: 14px;
+    }
+    
+    .contact-us-page .info-content h3 {
+        font-size: 13px;
+    }
+    
+    .contact-us-page .info-content a,
+    .contact-us-page .info-content p {
+        font-size: 11px;
+    }
+    
+    .contact-us-page .modal-content {
+        padding: 25px 15px;
+    }
+    
+    .contact-us-page .modal-content h3 {
+        font-size: 16px;
+    }
+}
+
+/* ========== 550px və daha kiçik ========== */
+@media (max-width: 550px) {
+    .products-grid {
+        grid-template-columns: 1fr;
+        max-width: 300px;
+        margin: 0 auto;
+        gap: 15px;
+    }
+    
+    .product-image {
+        height: 200px;
+    }
+    
+    .product-info {
+        padding: 10px 12px 6px;
+    }
+    
+    .product-title {
+        font-size: 15px;
+    }
+    
+    .current-price {
+        font-size: 17px;
+    }
+    
+    .btn-add-cart {
+        padding: 7px 10px;
+        font-size: 11px;
+    }
+    
+    .btn-wishlist {
+        width: 34px;
+        height: 34px;
+    }
+    
+    .section-header h1 {
+        font-size: 24px;
+    }
+    
+    .stock-status {
+        margin: 0 10px 8px auto;
+        padding: 2px 8px;
+        font-size: 9px;
+    }
+    
+    .lightbox-close {
+        top: -25px;
+        right: -25px;
+        width: 35px;
+        height: 35px;
+        font-size: 20px;
+    }
+    
+    .lightbox-caption {
+        bottom: -30px;
+        font-size: 14px;
+    }
+}
+
+/* ========== 500px və daha kiçik ========== */
+@media (max-width: 500px) {
+    .product-grid,
+    .featured-side {
+        grid-template-columns: 1fr;
+    }
+    
+    .featured-name {
+        font-size: 20px;
+    }
+    
+    .current-price {
+        font-size: 24px;
+    }
+    
+    .showcase-title {
+        font-size: 24px;
+    }
+    
+    /* Cədvəl */
+    .cart-table,
+    .wishlist-table,
+    .products-table {
+        min-width: 450px;
+    }
+    
+    .cart-table th,
+    .wishlist-table th,
+    .products-table th {
+        font-size: 10px;
+        padding: 6px 4px;
+    }
+    
+    .product-cell img {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .product-name {
+        font-size: 11px;
+    }
+}
+
+/* ========== 480px və daha kiçik (ÇOX KİÇİK) ========== */
+@media (max-width: 480px) {
+    /* ===== CART ===== */
+    .cart-wrapper {
+        padding: 12px;
+    }
+    
+    .header-left h2 {
+        font-size: 18px;
+    }
+    
+    .header-left i {
+        width: 35px;
+        height: 35px;
+        font-size: 18px;
+    }
+    
+    .header-right .item-count {
+        padding: 4px 12px;
+        font-size: 12px;
+    }
+    
+    .product-cell {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .product-cell img {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .product-info {
+        width: 100%;
+    }
+    
+    .manufacturer-name {
+        font-size: 11px;
+        padding: 3px 10px;
+    }
+    
+    .quantity-control {
+        margin: 3px 0;
+    }
+    
+    .btn-remove {
+        padding: 4px 10px;
+        font-size: 11px;
+    }
+    
+    .btn-remove i {
+        font-size: 12px;
+    }
+    
+    /* ===== WISHLIST ===== */
+    .wishlist-wrapper {
+        padding: 12px;
+    }
+    
+    .wishlist-wrapper .wishlist-header h2 {
+        font-size: 20px;
+    }
+    
+    .wishlist-wrapper .product-cell {
+        gap: 8px;
+    }
+    
+    .wishlist-wrapper .product-cell img {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .wishlist-wrapper .product-name {
+        font-size: 12px;
+    }
+    
+    .wishlist-wrapper .price {
+        font-size: 13px;
+    }
+    
+    .wishlist-wrapper .btn-cart,
+    .wishlist-wrapper .btn-remove {
+        width: 30px;
+        height: 30px;
+        font-size: 13px;
+    }
+    
+    /* ===== PAGINATION ===== */
+    .page-link:not(.prev):not(.next):not(.active) {
+        display: none;
+    }
+    
+    .page-link.prev,
+    .page-link.next {
+        display: flex;
+    }
+    
+    .pagination {
+        gap: 6px;
+        padding: 5px 10px;
+    }
+    
+    /* ===== CHECKOUT ===== */
+    .checkout-header h1 {
+        font-size: 20px;
+    }
+    
+    .checkout-header p {
+        font-size: 12px;
+    }
+    
+    .checkout-content {
+        padding: 12px;
+        gap: 12px;
+    }
+    
+    .section-title {
+        font-size: 14px;
+    }
+    
+    .form-control {
+        padding: 8px 30px 8px 10px;
+        font-size: 12px;
+    }
+    
+    .order-summary {
+        padding: 12px;
+    }
+    
+    .order-items-container {
+        max-height: 180px;
+    }
+    
+    .order-item {
+        padding: 8px;
+    }
+    
+    .item-image {
+        width: 35px;
+        height: 35px;
+    }
+    
+    /* ===== ACCOUNT ===== */
+    .account-wrapper {
+        padding: 10px;
+        border-radius: 16px;
+    }
+    
+    .header-left i {
+        width: 35px;
+        height: 35px;
+        font-size: 18px;
+    }
+    
+    .header-left h1 {
+        font-size: 18px;
+    }
+    
+    .profile-section {
+        padding: 12px;
+    }
+    
+    .profile-upload-image {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .quantity-control {
+        gap: 4px;
+        padding: 3px;
+    }
+    
+    .qty-btn {
+        width: 24px;
+        height: 24px;
+        font-size: 10px;
+    }
+    
+    .qty-value {
+        min-width: 25px;
+        font-size: 12px;
+    }
+    
+    .cart-table td {
+        padding: 8px 6px;
+    }
+    
+    .cart-table .price,
+    .cart-table .total-price {
+        font-size: 12px;
+    }
+    
+    /* ===== FILTER ===== */
+    .color-card .color-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+    
+    .color-card .color-circle {
+        width: 22px !important;
+        height: 22px !important;
+    }
+    
+    .color-card .color-name {
+        font-size: 8px !important;
+    }
+    
+    /* ===== PRODUCT SEARCH ===== */
+    .product-search input {
+        padding: 8px 30px 8px 30px !important;
+        font-size: 12px !important;
+    }
+    
+    .product-search .fa-search {
+        left: 10px !important;
+        font-size: 12px !important;
+    }
+    
+    .product-search .fa-times,
+    .product-search .clear-product-search {
+        right: 10px !important;
+        font-size: 13px !important;
+    }
+    
+    /* ===== CLOSE BTN ===== */
+    .close-btn,
+    .lightbox-close {
+        top: -25px;
+        right: -5px;
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+    }
+    
+    /* Cədvəl minimum eni */
+    .cart-table,
+    .wishlist-table,
+    .products-table {
+        min-width: 400px;
+    }
+}
+
+/* ========== 400px və daha kiçik (ÇOX KİÇİK TELEFON) ========== */
+@media (max-width: 400px) {
+    .cart-table,
+    .wishlist-table,
+    .products-table {
+        min-width: 350px;
+    }
+    
+    .cart-table th,
+    .wishlist-table th,
+    .products-table th {
+        font-size: 9px;
+        padding: 6px 3px;
+    }
+    
+    .cart-table td,
+    .wishlist-table td,
+    .products-table td {
+        padding: 6px 3px;
+    }
+    
+    .product-cell img {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .product-name {
+        font-size: 10px;
+    }
+    
+    .price,
+    .total-price {
+        font-size: 11px;
+    }
+    
+    .btn-remove {
+        padding: 3px 6px;
+        font-size: 9px;
+    }
+    
+    .btn-remove i {
+        font-size: 10px;
+    }
+    
+    .qty-btn {
+        width: 22px;
+        height: 22px;
+        font-size: 9px;
+    }
+    
+    .qty-value {
+        min-width: 22px;
+        font-size: 11px;
+    }
+    
+    .btn-action {
+        width: 24px;
+        height: 24px;
+        font-size: 10px;
+    }
+    
+    .wishlist-wrapper .product-cell img {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .wishlist-wrapper .btn-cart,
+    .wishlist-wrapper .btn-remove {
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
+    }
+}
+
+/* ========== LANDSCAPE MODE (MOBİL) ========== */
+@media (max-width: 768px) and (orientation: landscape) {
+    .checkout-content {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .order-summary {
+        position: sticky;
+        top: 10px;
+        max-height: 380px;
+    }
+    
+    .order-items-container {
+        max-height: 200px;
+    }
+    
+    .featured-image {
+        height: 200px;
+    }
+    
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .cart-table,
+    .wishlist-table,
+    .products-table {
+        min-width: 500px;
+    }
+}
+
+/* ========== TOUCH DEVICE DÜZƏLİŞLƏRİ ========== */
+@media (hover: none) and (pointer: coarse) {
+    .btn:hover {
+        transform: none;
+    }
+    
+    .product-card:hover,
+    .featured-card:hover,
+    .side-card:hover {
+        transform: none;
+    }
+    
+    .form-control:hover {
+        border-color: #e0e0e0;
+    }
+    
+    .btn:active {
+        transform: scale(0.98);
+    }
+    
+    .action-btn:active {
+        transform: scale(1.1);
+    }
+    
+    /* Touch cihazlarda daha böyük klik sahəsi */
+    .btn-action,
+    .qty-btn,
+    .btn-remove,
+    .btn-cart {
+        min-width: 40px;
+        min-height: 40px;
+    }
+}
+
+/* ========== KIÇIK HÜNDÜRLÜK CİHAZLAR ========== */
+@media (max-height: 600px) {
+    .checkout-wrapper {
+        margin: 5px 0;
+    }
+    
+    .checkout-header {
+        padding: 12px;
+    }
+    
+    .progress-steps {
+        padding: 10px 10px 0;
+    }
+    
+    .checkout-content {
+        padding: 12px;
+    }
+    
+    .order-summary {
+        max-height: 350px;
+    }
+    
+    .order-items-container {
+        max-height: 180px;
+    }
+}
+
+/* ========== PRINT STYLES ========== */
+@media print {
+    .account-wrapper {
+        box-shadow: none;
+        padding: 0;
+    }
+    
+    .btn-icon,
+    .btn-primary,
+    .btn-outline,
+    .btn-secondary,
+    .btn-action,
+    .cart-actions,
+    .pagination,
+    .search-box,
+    .profile-upload .btn-outline,
+    .edit-profile,
+    .upload-btn {
+        display: none !important;
+    }
+    
+    .cart-table,
+    .wishlist-table {
+        overflow: visible;
+    }
+    
+    body {
+        padding: 0;
+        margin: 0;
     }
 }

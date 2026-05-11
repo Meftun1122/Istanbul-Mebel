@@ -1,16 +1,15 @@
 /**
- * Template Name: iPortfolio
- * Template URL: https://bootstrapmade.com/iportfolio-bootstrap-portfolio-websites-template/
- * Updated: Jun 29 2024 with Bootstrap v5.3.3
- * Author: BootstrapMade.com
- * License: https://bootstrapmade.com/license/
+ * iPortfolio Template - TAM DÜZƏLDİLMİŞ VERSİYA (VALYUTA FİKSİ + LIGHTBOX)
  * 
- * DÜZƏLDİLMİŞ VERSİYA - TAM AJAX DƏSTƏYİ
- * FİKS: Navbar fixed olduğu üçün scroll offset düzəldildi
- * FİKS: Lightbox - şəffaf arxa plan + rahat animasiya
+ * XÜSUSİYYƏTLƏR:
+ * 1. BÜTÜN şəkillərə klik etdikdə lightbox açılır
+ * 2. Səbətdə miqdar artırıb azaltdıqda ümumi məbləğ DÜZGÜN hesablanır
+ * 3. Bütün TL (₺) dəyərləri avtomatik olaraq Manat (₼) ilə əvəz olunur
+ * 4. NAVBAR fixed offset düzəldilib
+ * 5. AJAX ilə səbət və wishlist əməliyyatları (Profil hissəsi SİLİNDİ)
  */
 
-(function () {
+(function() {
   "use strict";
 
   // ============================================================
@@ -47,7 +46,7 @@
 
   // ========== TOGGLE MOBILE NAV DROPDOWNS ==========
   document.querySelectorAll('.navmenu .toggle-dropdown').forEach(navmenu => {
-    navmenu.addEventListener('click', function (e) {
+    navmenu.addEventListener('click', function(e) {
       e.preventDefault();
       this.parentNode.classList.toggle('active');
       this.parentNode.nextElementSibling?.classList.toggle('dropdown-active');
@@ -124,7 +123,7 @@
       new Waypoint({
         element: item,
         offset: '80%',
-        handler: function () {
+        handler: function() {
           let progress = item.querySelectorAll('.progress .progress-bar');
           progress.forEach(el => {
             el.style.width = el.getAttribute('aria-valuenow') + '%';
@@ -134,11 +133,8 @@
     });
   }
 
-  // ========== GLIGHTBOX - TAMAMEN DİSABLE ==========
-  // Heç bir GLightbox açılmayacaq, custom lightbox istifadə olunur
-
   // ========== ISOTOPE LAYOUT ==========
-  document.querySelectorAll('.isotope-layout').forEach(function (isotopeItem) {
+  document.querySelectorAll('.isotope-layout').forEach(function(isotopeItem) {
     if (typeof imagesLoaded === 'undefined' || typeof Isotope === 'undefined') return;
 
     let layout = isotopeItem.getAttribute('data-layout') ?? 'masonry';
@@ -146,7 +142,7 @@
     let sort = isotopeItem.getAttribute('data-sort') ?? 'original-order';
 
     let initIsotope;
-    imagesLoaded(isotopeItem.querySelector('.isotope-container'), function () {
+    imagesLoaded(isotopeItem.querySelector('.isotope-container'), function() {
       initIsotope = new Isotope(isotopeItem.querySelector('.isotope-container'), {
         itemSelector: '.isotope-item',
         layoutMode: layout,
@@ -155,8 +151,8 @@
       });
     });
 
-    isotopeItem.querySelectorAll('.isotope-filters li').forEach(function (filters) {
-      filters.addEventListener('click', function () {
+    isotopeItem.querySelectorAll('.isotope-filters li').forEach(function(filters) {
+      filters.addEventListener('click', function() {
         isotopeItem.querySelector('.isotope-filters .filter-active')?.classList.remove('filter-active');
         this.classList.add('filter-active');
         if (initIsotope) {
@@ -175,14 +171,14 @@
   function initSwiper() {
     if (typeof Swiper === 'undefined') return;
 
-    document.querySelectorAll(".init-swiper").forEach(function (swiperElement) {
+    document.querySelectorAll(".init-swiper").forEach(function(swiperElement) {
       let configElement = swiperElement.querySelector(".swiper-config");
       if (!configElement) return;
 
       try {
         let config = JSON.parse(configElement.innerHTML.trim());
         new Swiper(swiperElement, config);
-      } catch (e) {
+      } catch(e) {
         console.error('Swiper config error:', e);
       }
     });
@@ -190,7 +186,7 @@
   window.addEventListener("load", initSwiper);
 
   // ========== FIXED: CORRECT SCROLLING FOR HASH LINKS ==========
-  window.addEventListener('load', function () {
+  window.addEventListener('load', function() {
     if (window.location.hash) {
       let section = document.querySelector(window.location.hash);
       if (section) {
@@ -310,6 +306,9 @@
           opacity: 0.6;
           cursor: not-allowed !important;
         }
+        .price, .total-price, .cart-subtotal, #cart-subtotal {
+          transition: all 0.2s ease;
+        }
       `;
       document.head.appendChild(style);
     }
@@ -381,7 +380,7 @@
         });
         const result = await response.json();
         return result;
-      } catch (error) {
+      } catch(error) {
         console.error(`❌ ${action} error:`, error);
         return { status: 'error', message: 'Network error!' };
       }
@@ -404,214 +403,120 @@
       }
     }
 
+    // ========== KRİTİK: QİYMƏT TƏMİZLƏMƏ FUNKSİYASI - TL-ni MANAT-a ÇEVİRİR ==========
+    function cleanPrice(priceText) {
+      if (!priceText) return 0;
+      if (typeof priceText === 'number') return priceText;
+      
+      let cleaned = priceText.toString();
+      
+      // BÜTÜN valyuta simvollarını təmizlə: $, ₼, €, £, ₺, ₽, ¥
+      cleaned = cleaned.replace(/[$₼€£₺₽¥]/g, '');
+      
+      // Boşluqları təmizlə
+      cleaned = cleaned.replace(/\s/g, '');
+      
+      // Vergül və nöqtə ilə işləmə (1.234,56 və 1,234.56 formatları üçün)
+      if (cleaned.includes(',') && cleaned.includes('.')) {
+        // 1,234.56 formatı: vergül minlik ayırıcıdır, təmizlə
+        cleaned = cleaned.replace(/,/g, '');
+      } else if (cleaned.includes(',') && !cleaned.includes('.')) {
+        // Yalnız vergül var
+        const parts = cleaned.split(',');
+        if (parts.length === 2 && parts[1].length === 2) {
+          // Ondalık ayırıcı kimi vergül (1234,56 -> 1234.56)
+          cleaned = parts[0] + '.' + parts[1];
+        } else {
+          // Minlik ayırıcı kimi vergül (1,234 -> 1234)
+          cleaned = cleaned.replace(/,/g, '');
+        }
+      }
+      
+      // Qalan qeyri-rəqəm simvolları təmizlə (nöqtə və minusdan başqa)
+      cleaned = cleaned.replace(/[^0-9.-]/g, '');
+      
+      // Birdən çox nöqtə varsa düzəlt
+      const dotParts = cleaned.split('.');
+      if (dotParts.length > 2) {
+        cleaned = dotParts[0] + '.' + dotParts.slice(1).join('');
+      }
+      
+      const parsed = parseFloat(cleaned);
+      return isNaN(parsed) ? 0 : parsed;
+    }
+
+    // ========== QİYMƏT FORMATLA - MANAT (₼) İLƏ ==========
+    function formatPrice(price) {
+      return `₼${price.toFixed(2)}`;
+    }
+
+    // ========== SƏBƏTDƏKİ BÜTÜN TL DƏYƏRLƏRİNİ MANATA ÇEVİR ==========
+    function convertAllTLtoAZN() {
+      // Bütün .price elementlərini yoxla
+      document.querySelectorAll('.price, .total-price, .cart-subtotal, #cart-subtotal, .product-price, .item-price').forEach(el => {
+        let text = el.textContent;
+        if (text && text.includes('₺')) {
+          // TL-ni Manata çevir (sadəcə simvolu dəyiş)
+          let newText = text.replace(/₺/g, '₼');
+          el.textContent = newText;
+          console.log('💰 Valyuta çevrildi:', text, '→', newText);
+        }
+      });
+    }
+
+    // ========== ÜMUMİ SƏBƏT CƏMİNİ YENİLƏ ==========
     function updateCartTotal() {
       let total = 0;
-      const rows = document.querySelectorAll('#cart-table-body tr');
+      const rows = document.querySelectorAll('#cart-table-body tr.cart-item');
+      
       rows.forEach(row => {
-        if (row.style.display !== 'none' && !row.querySelector('.empty-state')) {
-          const totalPriceEl = row.querySelector('.total-price');
+        if (row.style.display !== 'none') {
+          // Əvvəlcə .total-price-dan oxu
+          let totalPriceEl = row.querySelector('.total-price');
           if (totalPriceEl) {
-            const priceText = totalPriceEl.textContent.replace(/[^0-9.-]/g, '');
-            total += parseFloat(priceText) || 0;
+            let price = cleanPrice(totalPriceEl.textContent);
+            if (!isNaN(price) && price > 0) {
+              total += price;
+            } else {
+              // Əgər total-price yoxdursa, unitPrice * quantity hesabla
+              const priceSpan = row.querySelector('.price');
+              const qtySpan = row.querySelector('.qty-value');
+              if (priceSpan && qtySpan) {
+                let unitPrice = cleanPrice(priceSpan.textContent);
+                let qty = parseInt(qtySpan.textContent) || 1;
+                if (unitPrice > 0) {
+                  let rowTotal = unitPrice * qty;
+                  total += rowTotal;
+                  // total-price-ı yenilə
+                  if (totalPriceEl) totalPriceEl.textContent = formatPrice(rowTotal);
+                }
+              }
+            }
           }
         }
       });
-      const cartSubtotal = document.getElementById('cart-subtotal');
-      if (cartSubtotal) cartSubtotal.textContent = `Total: $${total.toFixed(2)}`;
-      const tfootTotal = document.querySelector('.cart-table tfoot td strong');
-      if (tfootTotal) tfootTotal.textContent = `Total: $${total.toFixed(2)}`;
+      
+      // Subtotal elementini yenilə
+      const subtotalElement = document.querySelector('#cart-subtotal, .cart-subtotal, tfoot #cart-subtotal');
+      if (subtotalElement) {
+        subtotalElement.innerHTML = `<strong>Cəmi: ${formatPrice(total)}</strong>`;
+      }
+      
+      // Başqa yerlərdəki total elementləri
+      document.querySelectorAll('.cart-grand-total, .total-amount, #cart-total').forEach(el => {
+        el.textContent = formatPrice(total);
+      });
+      
+      console.log(`💰 Ümumi səbət cəmi: ${formatPrice(total)}`);
       return total;
     }
 
-    function updateAllNameElements(firstName, lastName) {
-      const fullName = `${firstName} ${lastName}`.trim();
-      const selectors = [
-        '.sidebar-user-name', '.sidebar-menu .user-name', '.account-sidebar .user-name',
-        '.profile-sidebar .user-name', '.sidebar .user-name', '.profile-name',
-        '.account-name', '.user-name', '.full-name', '.profile-fullname',
-        '.user-fullname', '.display-name', '.welcome-text', '.greeting',
-        '.user-greeting', '.navbar-user-name', '.header-user-name', '.nav-user-name',
-        '.topbar-user-name', '#user-name', '#profile-name', '#sidebar-user-name',
-        '#account-user-name', '#display-name', '[data-user-name]', '[data-profile-name]'
-      ];
-      selectors.forEach(selector => {
-        document.querySelectorAll(selector).forEach(el => {
-          if (el && el.textContent !== fullName && fullName) {
-            el.textContent = fullName;
-          }
-        });
-      });
-    }
-
-    window.updateProfileInfoAJAX = async function(submitBtn, event) {
-      if (event && event.preventDefault) {
-        event.preventDefault();
-        event.stopPropagation();
-      }
-      
-      const firstNameInput = document.querySelector('#first_name, [name="first_name"], #id_first_name');
-      const lastNameInput = document.querySelector('#last_name, [name="last_name"], #id_last_name');
-      const phoneInput = document.querySelector('#phone, [name="phone"], #id_phone');
-      const firstName = firstNameInput?.value || '';
-      const lastName = lastNameInput?.value || '';
-      const phone = phoneInput?.value || '';
-      const birthdate = document.querySelector('#birthdate, [name="birthdate"], #id_birthdate, input[type="date"]')?.value || '';
-      
-      let gender = '';
-      const genderRadio = document.querySelector('input[name="gender"]:checked');
-      if (genderRadio) gender = genderRadio.value;
-      else gender = document.querySelector('#gender, [name="gender"], select[name="gender"]')?.value || '';
-      
-      const receiveOffers = document.querySelector('#receive_offers, [name="receive_offers"]')?.checked || false;
-      const subscribeNewsletter = document.querySelector('#subscribe_newsletter, [name="subscribe_newsletter"]')?.checked || false;
-      
-      const btn = submitBtn || event?.target?.closest('button[type="submit"]');
-      const originalHtml = btn?.innerHTML || 'Update';
-      if (btn) {
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Yenilənir...';
-      }
-      
-      const result = await sendAjaxRequest('update_profile', {
-        first_name: firstName,
-        last_name: lastName,
-        phone: phone,
-        birthdate: birthdate,
-        gender: gender,
-        receive_offers: receiveOffers ? 'on' : '',
-        subscribe_newsletter: subscribeNewsletter ? 'on' : ''
-      });
-      
-      if (result.status === 'success') {
-        let newFirstName = firstName, newLastName = lastName, newPhone = phone;
-        if (result.user && result.user.first_name) {
-          newFirstName = result.user.first_name;
-          newLastName = result.user.last_name || '';
-        } else if (result.data && result.data.user) {
-          newFirstName = result.data.user.first_name || '';
-          newLastName = result.data.user.last_name || '';
-        } else if (result.first_name) {
-          newFirstName = result.first_name;
-          newLastName = result.last_name || '';
-        }
-        if (result.profile?.phone) newPhone = result.profile.phone;
-        else if (result.phone) newPhone = result.phone;
-        
-        if (firstNameInput && firstNameInput.value !== newFirstName) firstNameInput.value = newFirstName;
-        if (lastNameInput && lastNameInput.value !== newLastName) lastNameInput.value = newLastName;
-        if (phoneInput && phoneInput.value !== newPhone && newPhone) phoneInput.value = newPhone;
-        
-        if (newFirstName || newLastName) updateAllNameElements(newFirstName, newLastName);
-        
-        showNotification(result.message || '✅ Profil məlumatları yeniləndi!', 'success');
-      } else {
-        showNotification(result.message || '❌ Xəta baş verdi!', 'error');
-      }
-      
-      if (btn) {
-        btn.disabled = false;
-        btn.innerHTML = originalHtml;
-      }
-    };
-
-    const profileForm = document.getElementById('profile-form');
-    if (profileForm) {
-      const newProfileForm = profileForm.cloneNode(true);
-      profileForm.parentNode?.replaceChild(newProfileForm, profileForm);
-      newProfileForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        const submitBtn = this.querySelector('button[type="submit"], .update-profile-btn, #update-profile-btn');
-        await window.updateProfileInfoAJAX(submitBtn, e);
-      });
-    }
-
-    const profileBtns = document.querySelectorAll('#update-profile-btn, .update-profile-btn, .btn-save-profile, .save-profile-btn, [data-action="update-profile"]');
-    profileBtns.forEach(btn => {
-      if (!btn.dataset._ajaxAttached) {
-        btn.dataset._ajaxAttached = 'true';
-        const newBtn = btn.cloneNode(true);
-        btn.parentNode?.replaceChild(newBtn, btn);
-        newBtn.addEventListener('click', async (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          await window.updateProfileInfoAJAX(newBtn, e);
-        });
-      }
-    });
-
-    const fileInput = document.getElementById('profile_image_input');
-    if (fileInput) {
-      const newFileInput = fileInput.cloneNode(true);
-      fileInput.parentNode?.replaceChild(newFileInput, fileInput);
-      newFileInput.addEventListener('change', async function(e) {
-        const file = this.files[0];
-        if (!file) return;
-        if (!file.type.startsWith('image/')) {
-          showNotification('Zəhmət olmasa şəkil faylı seçin', 'error');
-          this.value = '';
-          return;
-        }
-        if (file.size > 5 * 1024 * 1024) {
-          showNotification('Fayl ölçüsü 5MB-dan kiçik olmalıdır', 'error');
-          this.value = '';
-          return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          const mainPreview = document.getElementById('profile-image-preview');
-          const sidebarImage = document.getElementById('sidebar-profile-image');
-          if (mainPreview) mainPreview.src = e.target.result;
-          if (sidebarImage) sidebarImage.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-
-        const formData = new FormData();
-        formData.append('profile_image', file);
-        formData.append('update_profile_image', '1');
-        formData.append('csrfmiddlewaretoken', getCSRFToken());
-
-        try {
-          const response = await fetch(window.location.href, {
-            method: 'POST',
-            body: formData,
-            headers: { 'X-Requested-With': 'XMLHttpRequest' }
-          });
-          const data = await response.json();
-          if (data.status === 'success') {
-            showNotification(data.message, 'success');
-            if (data.image_url) {
-              const newUrl = data.image_url + '?t=' + Date.now();
-              const mainPreview = document.getElementById('profile-image-preview');
-              const sidebarImage = document.getElementById('sidebar-profile-image');
-              if (mainPreview) mainPreview.src = newUrl;
-              if (sidebarImage) sidebarImage.src = newUrl;
-            }
-          } else {
-            showNotification(data.message || 'Xəta baş verdi', 'error');
-          }
-        } catch (err) {
-          showNotification('Server xətası!', 'error');
-        }
-      });
-    }
-
-    window.confirmDeleteImage = async function() {
-      const result = await sendAjaxRequest('delete_profile_image', {});
-      if (result.status === 'success') {
-        showNotification(result.message, 'success');
-        const defaultImg = '/static/images/default-avatar.png';
-        const mainPreview = document.getElementById('profile-image-preview');
-        const sidebarImage = document.getElementById('sidebar-profile-image');
-        if (mainPreview) mainPreview.src = defaultImg;
-        if (sidebarImage) sidebarImage.src = defaultImg;
-      } else {
-        showNotification(result.message || 'Xəta baş verdi', 'error');
-      }
-    };
+    // ========== PROFİL HİSSƏSİ TAMAMİLƏ SİLİNDİ ==========
+    // updateAllNameElements, updateProfileInfoAJAX, profileForm, profileBtns, fileInput, confirmDeleteImage - SİLİNDİ
 
     window.removeFromCart = async function(productId, element, skipConfirm = false) {
+      if (!skipConfirm && !confirm('Məhsulu səbətdən silmək istədiyinizə əminsiniz?')) return;
+      
       const row = element?.closest('tr');
       const originalHtml = element?.innerHTML;
       if (element) {
@@ -640,6 +545,8 @@
     };
 
     window.removeFromWishlist = async function(productId, element) {
+      if (!confirm('Wishlist-dən silmək istədiyinizə əminsiniz?')) return;
+      
       const row = element?.closest('tr');
       const originalHtml = element?.innerHTML;
       if (element) {
@@ -666,37 +573,94 @@
       }
     };
 
+    // ========== KRİTİK: MİQDAR YENİLƏMƏ - DÜZGÜN HESABLAMA ==========
     window.updateQuantity = async function(btn, change, productId) {
-      const row = btn?.closest('tr');
-      if (!row) return;
-      const qtySpan = row.querySelector('.qty-value, .quantity-value');
-      if (!qtySpan) return;
+      const row = btn?.closest('tr.cart-item');
+      if (!row) {
+        console.error('❌ Sətir tapılmadı!');
+        showNotification('Xəta: Sətir tapılmadı!', 'error');
+        return;
+      }
+      
+      const qtySpan = row.querySelector('.qty-value');
+      if (!qtySpan) {
+        console.error('❌ Miqdar elementi tapılmadı!');
+        showNotification('Xəta: Miqdar elementi tapılmadı!', 'error');
+        return;
+      }
+      
+      // ========== VAHİD QİYMƏTİ TAP ==========
+      let unitPrice = 0;
+      const priceSpan = row.querySelector('.price');
+      
+      if (priceSpan) {
+        // Əvvəlcə data-price atributunu yoxla
+        if (priceSpan.dataset.price) {
+          unitPrice = cleanPrice(priceSpan.dataset.price);
+        } else {
+          unitPrice = cleanPrice(priceSpan.textContent);
+        }
+      }
+      
+      // Əgər unitPrice hələ tapılmayıbsa, total-price-dan geriyə hesabla
+      if (unitPrice <= 0) {
+        const totalSpan = row.querySelector('.total-price');
+        let currentQty = parseInt(qtySpan.textContent) || 1;
+        if (totalSpan && currentQty > 0) {
+          const totalValue = cleanPrice(totalSpan.textContent);
+          unitPrice = totalValue / currentQty;
+        }
+      }
+      
+      if (unitPrice <= 0) {
+        console.error('❌ Vahid qiymət tapılmadı!');
+        showNotification('Xəta: Qiymət məlumatı tapılmadı!', 'error');
+        return;
+      }
+      
+      // Vahid qiyməti row-da saxla
+      row.dataset.unitPrice = unitPrice;
+      
       let currentQty = parseInt(qtySpan.textContent) || 1;
       let newQty = currentQty + change;
+      
       if (newQty <= 0) {
         await window.removeFromCart(productId, btn, true);
         return;
       }
+      
       const originalHtml = btn.innerHTML;
       btn.disabled = true;
       btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-      const result = await sendAjaxRequest('update_cart_quantity', { product_id: productId, quantity: newQty });
+      
+      const result = await sendAjaxRequest('update_cart_quantity', { 
+        product_id: productId, 
+        quantity: newQty 
+      });
+      
       if (result.status === 'success') {
+        // Miqdarı yenilə
         qtySpan.textContent = newQty;
-        const priceSpan = row.querySelector('.price, .unit-price');
-        const totalSpan = row.querySelector('.total-price, .item-total');
-        if (priceSpan && totalSpan) {
-          let price = parseFloat(priceSpan.textContent.replace(/[^0-9.-]/g, ''));
-          if (isNaN(price)) price = 0;
-          totalSpan.textContent = `$${(price * newQty).toFixed(2)}`;
+        
+        // 🔥 KRİTİK: Vahid qiymət * yeni miqdar
+        const newTotal = unitPrice * newQty;
+        
+        // Cəmi yenilə
+        const totalSpan = row.querySelector('.total-price');
+        if (totalSpan) {
+          totalSpan.textContent = formatPrice(newTotal);
         }
+        
+        // Ümumi səbət cəmini yenilə
         updateCartTotal();
         updateSidebarBadges(result.cart_count, result.wishlist_count);
-        showNotification(`📦 Miqdar: ${newQty}`, 'success');
+        
+        showNotification(`✅ Miqdar: ${newQty} | Cəmi: ${formatPrice(newTotal)}`, 'success');
       } else {
         showNotification(result.message || '❌ Xəta baş verdi!', 'error');
         qtySpan.textContent = currentQty;
       }
+      
       btn.disabled = false;
       btn.innerHTML = originalHtml;
     };
@@ -726,6 +690,12 @@
         btn.innerHTML = originalHtml;
       }
     };
+    
+    // Səhifə yükləndikdə TL-ni Manata çevir
+    setTimeout(() => {
+      convertAllTLtoAZN();
+      updateCartTotal();
+    }, 500);
   }
 
   // ========== SEARCH TOGGLE ==========
@@ -745,11 +715,11 @@
   const langToggle = document.getElementById('langToggle');
   const langMenu = document.getElementById('langMenu');
   if (langToggle && langMenu) {
-    langToggle.addEventListener('click', function (e) {
+    langToggle.addEventListener('click', function(e) {
       e.stopPropagation();
       langMenu.classList.toggle('show');
     });
-    document.addEventListener('click', function (e) {
+    document.addEventListener('click', function(e) {
       if (!langToggle.contains(e.target) && !langMenu.contains(e.target)) langMenu.classList.remove('show');
     });
   }
@@ -769,16 +739,18 @@
           navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
           breakpoints: { 320: { slidesPerView: 1, spaceBetween: 10 }, 768: { slidesPerView: 2, spaceBetween: 15 }, 1024: { slidesPerView: 'auto', spaceBetween: 20 } }
         });
-      } catch (e) { console.error('Swiper init error:', e); }
+      } catch(e) { console.error('Swiper init error:', e); }
     }
   }
 
-  // ========== TƏK LIGHTBOX SİSTEMİ - ŞƏFFAF ARXA PLAN + RAHAT ANİMASİYA ==========
+  // ============================================================
+  // BÜTÜN ŞƏKİLLƏR ÜÇÜN LIGHTBOX SİSTEMİ - ŞƏFFAF ARXA PLAN + ZOOM
+  // ============================================================
   (function() {
     if (document.getElementById('unifiedLightbox')) return;
     
-    const style = document.createElement('style');
-    style.textContent = `
+    const lightboxStyles = document.createElement('style');
+    lightboxStyles.textContent = `
       @keyframes lightboxFadeIn {
         0% { opacity: 0; backdrop-filter: blur(0px); }
         100% { opacity: 1; backdrop-filter: blur(12px); }
@@ -788,12 +760,12 @@
         100% { opacity: 0; backdrop-filter: blur(0px); }
       }
       @keyframes lightboxZoomIn {
-        0% { transform: scale(0.85); opacity: 0; }
+        0% { transform: scale(0.8); opacity: 0; }
         100% { transform: scale(1); opacity: 1; }
       }
       @keyframes lightboxZoomOut {
         0% { transform: scale(1); opacity: 1; }
-        100% { transform: scale(0.85); opacity: 0; }
+        100% { transform: scale(0.8); opacity: 0; }
       }
       
       #unifiedLightbox {
@@ -802,14 +774,13 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.75);
+        background: rgba(0, 0, 0, 0.85);
         backdrop-filter: blur(8px);
         z-index: 999999;
         display: none;
         justify-content: center;
         align-items: center;
         cursor: pointer;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       }
       
       #lightboxContent {
@@ -823,10 +794,9 @@
         max-width: 90vw;
         max-height: 85vh;
         object-fit: contain;
-        border-radius: 16px;
+        border-radius: 12px;
         box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         display: block;
-        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       }
       
       #closeLightboxBtn {
@@ -846,7 +816,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: all 0.3s ease;
       }
       
       #closeLightboxBtn:hover {
@@ -863,11 +833,15 @@
           font-size: 24px;
         }
         #lightboxImage {
-          border-radius: 12px;
+          border-radius: 8px;
         }
       }
+      
+      body.lightbox-open {
+        overflow: hidden !important;
+      }
     `;
-    document.head.appendChild(style);
+    document.head.appendChild(lightboxStyles);
 
     const lightboxHTML = `
       <div id="unifiedLightbox">
@@ -890,15 +864,15 @@
       if (isAnimating || !lightbox || lightbox.style.display !== 'flex') return;
       isAnimating = true;
       
-      lightbox.style.animation = 'lightboxFadeOut 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards';
-      if (lightboxContent) lightboxContent.style.animation = 'lightboxZoomOut 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards';
+      lightbox.style.animation = 'lightboxFadeOut 0.25s ease forwards';
+      if (lightboxContent) lightboxContent.style.animation = 'lightboxZoomOut 0.25s ease forwards';
       
       setTimeout(() => {
         lightbox.style.display = 'none';
         lightbox.style.animation = '';
         if (lightboxContent) lightboxContent.style.animation = '';
         lightboxImage.src = '';
-        document.body.style.overflow = '';
+        document.body.classList.remove('lightbox-open');
         isAnimating = false;
       }, 250);
     }
@@ -909,9 +883,9 @@
       
       lightboxImage.src = imageSrc;
       lightbox.style.display = 'flex';
-      lightbox.style.animation = 'lightboxFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards';
+      lightbox.style.animation = 'lightboxFadeIn 0.3s ease forwards';
       if (lightboxContent) lightboxContent.style.animation = 'lightboxZoomIn 0.35s cubic-bezier(0.34, 1.2, 0.64, 1) forwards';
-      document.body.style.overflow = 'hidden';
+      document.body.classList.add('lightbox-open');
       
       setTimeout(() => {
         lightbox.style.animation = '';
@@ -933,98 +907,96 @@
     }
     
     document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape' && lightbox && lightbox.style.display === 'flex') closeLightbox();
+      if (e.key === 'Escape' && lightbox && lightbox.style.display === 'flex') {
+        closeLightbox();
+      }
     });
     
-    function attachClickToImages() {
-      const selectors = [
-        '.product-img', '.product-image img', '.portfolio-item img', 
-        '.card img', '[data-lightbox]', '.glightbox', '.product-card img',
-        '.shop-item img', '.gallery-item img', 'img.zoomable',
-        '.product-thumbnail img', '.product-gallery img'
-      ];
+    // ===== BÜTÜN ŞƏKİLLƏRƏ KLİK EVENTİ ƏLAVƏ ET =====
+    function attachClickToAllImages() {
+      const allImages = document.querySelectorAll('img');
       
-      const images = document.querySelectorAll(selectors.join(','));
-      
-      images.forEach(img => {
+      allImages.forEach(img => {
         if (img.dataset.lbAttached === 'true') return;
         if (img.closest('#unifiedLightbox')) return;
         
-        img.dataset.lbAttached = 'true';
-        img.style.cursor = 'pointer';
+        let src = img.src;
+        if (!src || src === '') {
+          src = img.getAttribute('data-src') || img.getAttribute('data-image');
+        }
         
-        const newImg = img.cloneNode(true);
-        if (img.parentNode) img.parentNode.replaceChild(newImg, img);
-        
-        newImg.addEventListener('click', function(e) {
-          e.preventDefault();
-          e.stopPropagation();
+        if (src && src !== '' && !src.includes('data:image') && !src.includes('placeholder') && !src.includes('blank')) {
+          img.dataset.lbAttached = 'true';
+          img.style.cursor = 'pointer';
           
-          let src = this.src;
-          if (!src || src === '') {
-            src = this.getAttribute('data-image') || this.getAttribute('data-src') || this.href;
+          const newImg = img.cloneNode(true);
+          if (img.parentNode) {
+            img.parentNode.replaceChild(newImg, img);
           }
-          if (src && src !== '' && !src.includes('data:image') && !src.includes('placeholder')) {
-            openLightbox(src);
-          }
-        });
+          
+          newImg.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            let imageSrc = this.src;
+            if (!imageSrc || imageSrc === '') {
+              imageSrc = this.getAttribute('data-src') || this.getAttribute('data-image') || this.href;
+            }
+            if (imageSrc && imageSrc !== '' && !imageSrc.includes('data:image')) {
+              openLightbox(imageSrc);
+            }
+          });
+        }
       });
     }
     
-    const observer = new MutationObserver(() => attachClickToImages());
-    observer.observe(document.body, { childList: true, subtree: true });
+    const lightboxObserver = new MutationObserver(() => {
+      attachClickToAllImages();
+    });
+    lightboxObserver.observe(document.body, { childList: true, subtree: true });
     
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', attachClickToImages);
+      document.addEventListener('DOMContentLoaded', attachClickToAllImages);
     } else {
-      attachClickToImages();
+      attachClickToAllImages();
     }
+    
+    setInterval(() => {
+      attachClickToAllImages();
+    }, 2000);
     
     window.openLightbox = openLightbox;
     window.closeLightbox = closeLightbox;
+    
+    console.log('✅ LIGHTBOX SİSTEMİ AKTİVDİR - BÜTÜN ŞƏKİLLƏR ÜÇÜN İŞLƏYİR!');
   })();
 
-  // ========== İNİT ==========
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      initAccountTabs();
-      initAccountAjax();
-    });
-  } else {
-    initAccountTabs();
-    initAccountAjax();
-  }
-
-})();
-
-console.log('✅ main.js tam yükləndi - ŞƏFFAF LIGHTBOX + RAHAT ANİMASİYA');
-
-// Testimonial məlumatları
-const tmsData = [
+  // ========== TESTİMONİAL SLİDER ==========
+  const tmsData = [
     { text: "Maecen aliquam, risus at semper. Proin iaculis purus consequat sem cure dignissim.", name: "Saul Goodman", title: "Ceo & Founder" },
     { text: "Ən yaxşı xidmət! Donec porttitora entum suscipit rhoncus. Çox tövsiyə edirəm.", name: "Kim Wexler", title: "Lead Attorney" },
     { text: "Accusantium quam, ultricies eget id, aliquam eget nibh et. Mükəmməl komanda!", name: "Mike Ehrmantraut", title: "Security Consultant" },
     { text: "Bu şirkətlə işləmək böyük zövq idi. Nəticələr gözləntilərimdən də yaxşı oldu.", name: "Jesse Pinkman", title: "Product Manager" }
-];
+  ];
 
-function renderTestimonial(container) {
+  function renderTestimonial(container) {
     container.innerHTML = `
-        <div class="tms-container">
-            <div class="tms-header">
-                <h2 class="tms-title">Testimonials</h2>
-                <p class="tms-description">Proin iaculis purus consequat sem cure digni ssim donec porttitora entum suscipit rhoncus. Accusantium quam, ultricies eget id, aliquam eget nibh et.</p>
-            </div>
-            <div class="tms-divider"></div>
-            <div class="tms-wrapper">
-                <div class="tms-card" id="tmsCard">
-                    <div class="tms-quote">“</div>
-                    <p class="tms-review-text" id="tmsReviewText"></p>
-                    <h4 class="tms-customer-name" id="tmsCustomerName"></h4>
-                    <p class="tms-customer-title" id="tmsCustomerTitle"></p>
-                </div>
-                <div class="tms-dots" id="tmsDots"></div>
-            </div>
+      <div class="tms-container">
+        <div class="tms-header">
+          <h2 class="tms-title">Testimonials</h2>
+          <p class="tms-description">Proin iaculis purus consequat sem cure digni ssim donec porttitora entum suscipit rhoncus. Accusantium quam, ultricies eget id, aliquam eget nibh et.</p>
         </div>
+        <div class="tms-divider"></div>
+        <div class="tms-wrapper">
+          <div class="tms-card" id="tmsCard">
+            <div class="tms-quote">"</div>
+            <p class="tms-review-text" id="tmsReviewText"></p>
+            <h4 class="tms-customer-name" id="tmsCustomerName"></h4>
+            <p class="tms-customer-title" id="tmsCustomerTitle"></p>
+          </div>
+          <div class="tms-dots" id="tmsDots"></div>
+        </div>
+      </div>
     `;
     
     const reviewTextEl = document.getElementById('tmsReviewText');
@@ -1037,36 +1009,36 @@ function renderTestimonial(container) {
     let autoSlideInterval;
     
     function createDots() {
-        dotsContainer.innerHTML = '';
-        tmsData.forEach((_, index) => {
-            const dot = document.createElement('button');
-            dot.className = 'tms-dot';
-            if (index === currentIndex) dot.classList.add('tms-dot-active');
-            dot.setAttribute('data-index', index);
-            dot.addEventListener('click', () => { if (index !== currentIndex) { changeTestimonialWithAnimation(index); resetAutoSlide(); } });
-            dotsContainer.appendChild(dot);
-        });
+      dotsContainer.innerHTML = '';
+      tmsData.forEach((_, index) => {
+        const dot = document.createElement('button');
+        dot.className = 'tms-dot';
+        if (index === currentIndex) dot.classList.add('tms-dot-active');
+        dot.setAttribute('data-index', index);
+        dot.addEventListener('click', () => { if (index !== currentIndex) { changeTestimonialWithAnimation(index); resetAutoSlide(); } });
+        dotsContainer.appendChild(dot);
+      });
     }
     
     function updateActiveDot() {
-        const dots = document.querySelectorAll('.tms-dot');
-        dots.forEach((dot, i) => { if (i === currentIndex) dot.classList.add('tms-dot-active'); else dot.classList.remove('tms-dot-active'); });
+      const dots = document.querySelectorAll('.tms-dot');
+      dots.forEach((dot, i) => { if (i === currentIndex) dot.classList.add('tms-dot-active'); else dot.classList.remove('tms-dot-active'); });
     }
     
     function changeTestimonialWithAnimation(newIndex) {
-        if (isAnimating || newIndex === currentIndex) return;
-        isAnimating = true;
-        card.classList.add('tms-card-exit');
-        setTimeout(() => {
-            currentIndex = newIndex;
-            reviewTextEl.textContent = tmsData[currentIndex].text;
-            customerNameEl.textContent = tmsData[currentIndex].name;
-            customerTitleEl.textContent = tmsData[currentIndex].title;
-            updateActiveDot();
-            card.classList.remove('tms-card-exit');
-            card.classList.add('tms-card-enter');
-            setTimeout(() => { card.classList.remove('tms-card-enter'); isAnimating = false; }, 400);
-        }, 250);
+      if (isAnimating || newIndex === currentIndex) return;
+      isAnimating = true;
+      card.classList.add('tms-card-exit');
+      setTimeout(() => {
+        currentIndex = newIndex;
+        reviewTextEl.textContent = tmsData[currentIndex].text;
+        customerNameEl.textContent = tmsData[currentIndex].name;
+        customerTitleEl.textContent = tmsData[currentIndex].title;
+        updateActiveDot();
+        card.classList.remove('tms-card-exit');
+        card.classList.add('tms-card-enter');
+        setTimeout(() => { card.classList.remove('tms-card-enter'); isAnimating = false; }, 400);
+      }, 250);
     }
     
     function startAutoSlide() { autoSlideInterval = setInterval(() => { const nextIndex = (currentIndex + 1) % tmsData.length; changeTestimonialWithAnimation(nextIndex); }, 5000); }
@@ -1077,9 +1049,26 @@ function renderTestimonial(container) {
     customerNameEl.textContent = tmsData[0].name;
     customerTitleEl.textContent = tmsData[0].title;
     startAutoSlide();
-}
+  }
 
-document.addEventListener('DOMContentLoaded', () => {
-    const root = document.getElementById('testimonial-root');
-    if (root) renderTestimonial(root);
-});
+  // ========== İNİT ==========
+  function init() {
+    initAccountTabs();
+    initAccountAjax();
+    
+    const testimonialRoot = document.getElementById('testimonial-root');
+    if (testimonialRoot) renderTestimonial(testimonialRoot);
+    
+    console.log('✅ BÜTÜN SİSTEM AKTİVDİR - TL avtomatik MANAT-a çevrilir!');
+    console.log('✅ Profil hissəsi SİLİNDİ - yalnız səbət və wishlist işləyir!');
+  }
+  
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+})();
+
+console.log('✅ main.js - Profil hissəsi silindi, yalnız səbət və wishlist qaldı');
