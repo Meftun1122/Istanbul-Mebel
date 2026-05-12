@@ -21,7 +21,6 @@ from .forms import *
 # ============================================= #
 #                Carts View                     #
 # ============================================= #
-
 @method_decorator(csrf_protect, name='dispatch')
 class CartView(LoginRequiredMixin, View):
     login_url = 'login'
@@ -128,7 +127,6 @@ class CartView(LoginRequiredMixin, View):
 # ============================================= #
 #              Update Carts View                #
 # ============================================= #
-
 class UpdateCartView(LoginRequiredMixin, View):
     login_url = 'login'
 
@@ -205,7 +203,6 @@ class UpdateCartView(LoginRequiredMixin, View):
 # ============================================= #
 #              Remove Carts View                #
 # ============================================= #
-
 class RemoveFromCartView(LoginRequiredMixin, View):
     login_url = 'login'
 
@@ -239,15 +236,11 @@ class RemoveFromCartView(LoginRequiredMixin, View):
 # ============================================= #
 #                Wishlist Views                 #
 # ============================================= #
-
 class WishlistView(LoginRequiredMixin, View):
     login_url = 'login'
 
     def get(self, request):
-        wishlist_items = WishlistModel.objects.filter(
-            user=request.user
-        ).select_related('product')
-
+        wishlist_items = WishlistModel.objects.filter(user=request.user).select_related('product')
         return render(request, 'wishlist.html', {
             'wishlist_items': wishlist_items
         })
@@ -256,7 +249,6 @@ class WishlistView(LoginRequiredMixin, View):
 # ============================================= #
 #             Add to Wishlist Views             #
 # ============================================= #
-
 class AddToWishlistView(LoginRequiredMixin, View):
     login_url = 'login'
 
@@ -300,7 +292,6 @@ class AddToWishlistView(LoginRequiredMixin, View):
 # ============================================= #
 #            Remove Wishlist Views              #
 # ============================================= #
-
 class RemoveFromWishlistView(LoginRequiredMixin, View):
     login_url = 'login'
 
@@ -335,7 +326,6 @@ class RemoveFromWishlistView(LoginRequiredMixin, View):
 # ============================================= #
 #     Move to Wishlist to Cart View             #
 # ============================================= #
-
 class MoveToCartView(LoginRequiredMixin, View):
     login_url = 'login'
 

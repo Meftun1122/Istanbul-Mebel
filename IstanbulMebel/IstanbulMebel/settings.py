@@ -10,7 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
+from django.utils.translation import gettext_lazy as _
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,12 +22,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-s6kr@3kt02(s7v=mxasx)x6dvo=k2o4c9!4hhb4da!yu422-x1'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-s6kr@3kt02(s7v=mxasx)x6dvo=k2o4c9!4hhb4da!yu422-x1')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 
 # Application definition
@@ -55,9 +57,10 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # ✅ BURASI 1-Cİ SIRADA OLMALIDIR
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.locale.LocaleMiddleware', # new
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -93,11 +96,11 @@ WSGI_APPLICATION = 'IstanbulMebel.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME' : 'IstanbulMebeldb',
-        'USER' : 'IstanbulMebelUser',
-        'PASSWORD' : 'MfHcQHkbamUIPwHt',
-        'HOST': 'localhost',
-        'PORT': 5432,
+        'NAME': os.environ.get('DB_NAME', 'IstanbulMebeldb'),
+        'USER': os.environ.get('DB_USER', 'IstanbulMebelUser'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'MfHcQHkbamUIPwHt'),
+        'HOST': os.environ.get('DB_HOST', 'localhost'),
+        'PORT': os.environ.get('DB_PORT', '5432'),
     }
 }
 
@@ -106,6 +109,7 @@ DATABASES = {
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
 AUTH_USER_MODEL = 'Users.User'
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -122,10 +126,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
-from django.utils.translation import gettext_lazy as _
 
 LANGUAGE_CODE = 'az'
 
@@ -147,37 +149,40 @@ USE_L10N = True
 
 USE_TZ = True
 
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
-
-STATIC_ROOT = BASE_DIR / 'static'
-
+STATIC_URL = '/static/'  # ✅ Dəyişdirildi (əvvəl 'static/' idi)
+STATIC_ROOT = '/app/staticfiles'  # ✅ Docker üçün dəyişdirildi
 STATICFILES_DIRS = [
     BASE_DIR / 'staticfiles',
 ]
 
+# ✅ WhiteNoise konfiqurasiyası - əlavə edildi
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Media files
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = '/app/media'  # ✅ Docker üçün dəyişdirildi
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Email forum settings
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST ="smtp.gmail.com"
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = "dadasovmeftun9@gmail.com"
-EMAIL_HOST_PASSWORD = "rztdjtyphhzelzky"
 
-# Logout olduqdan sonra yönləndiriləcək URL
-LOGOUT_REDIRECT_URL = '/'  # Əsas səhifəyə yönləndir
-LOGOUT_REDIRECT_URL = 'index'  # URL name ilə
+# Email settings
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 587))
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True').lower() == 'true'
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'dadasovmeftun9@gmail.com')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'rztdjtyphhzelzky')
+
+
+# Login/Logout redirects
+LOGOUT_REDIRECT_URL = 'index'
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'index'
-
-
