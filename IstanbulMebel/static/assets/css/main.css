@@ -1644,30 +1644,6 @@ button[type="submit"]:focus:not(:active)::after {
 
 
 
-/* ===== COLOR WRAPPER ===== */
-.color-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.color-text {
-  font-weight: 600;
-  color: #0f172a;
-  font-size: 16px;
-}
-
-/* ===== DÜZBUCAQLI RENG QUTUSU ===== */
-.color-box {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;  /* Düzbucaqlı, yumşaq künclər */
-  display: inline-block;
-  border: 2px solid #e2e8f0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  transition: all 0.2s ease;
-}
-
 /* Bütün rənglər */
 .color-box.qirmizi { background-color: #ff0000; }      /* Qırmızı */
 .color-box.goy { background-color: #0000ff; }     /* Göy */
@@ -1700,21 +1676,6 @@ button[type="submit"]:focus:not(:active)::after {
 .color-box.gavali { background-color: #dda0dd; }     /* Gavalı */
 .color-box.bugdayi { background-color: #f5deb3; }    /* Buğdayı */
 .color-box.lavanda { background-color: #e6e6fa; } /* Lavanda */
-
-/* Hover effekti (isteğe bağlı) */
-.color-box:hover {
-  transform: scale(1.1);
-  border-color: #149ddd;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-/* Responsive */
-@media (max-width: 576px) {
-  .color-box {
-    width: 28px;
-    height: 28px;
-  }
-}
 
 
 

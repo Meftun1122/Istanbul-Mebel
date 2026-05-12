@@ -1,5 +1,5 @@
 /**
- * iPortfolio Template - TAM DÜZƏLDİLMİŞ VERSİYA (VALYUTA FİKSİ + LIGHTBOX)
+ * iPortfolio Template - TAM DÜZƏLDİLMİŞ VERSİYA (VALYUTA FİKSİ + LIGHTBOX + AXTARIŞ)
  * 
  * XÜSUSİYYƏTLƏR:
  * 1. BÜTÜN şəkillərə klik etdikdə lightbox açılır
@@ -7,11 +7,639 @@
  * 3. Bütün TL (₺) dəyərləri avtomatik olaraq Manat (₼) ilə əvəz olunur
  * 4. NAVBAR fixed offset düzəldilib
  * 5. AJAX ilə səbət və wishlist əməliyyatları (Profil hissəsi SİLİNDİ)
+ * 6. GELİŞMİŞ AXTARIŞ SİSTEMİ - real vaxtda məhsul axtarışı
  */
 
 (function() {
   "use strict";
 
+  // ============================================================
+  // GELİŞMİŞ AXTARIŞ SİSTEMİ
+  // ============================================================
+  
+  // Axtarış elementlərini seç
+  const searchInput = document.querySelector('.search__input');
+  const searchButton = document.querySelector('.search__button');
+  const searchForm = document.getElementById('searchForm');
+  
+  // Axtarış nəticələri üçün container yarat
+  let searchResultsContainer = null;
+  
+  // Debounce timer
+  let searchDebounceTimer = null;
+  
+  // Bütün məhsul elementlərini topla
+  function getAllProductItems() {
+    // Məhsul kartlarını seç (saytınızdakı məhsul kartlarının strukturuna uyğun)
+    const productSelectors = [
+      '.product-card', '.portfolio-item', '.shop-item', 
+      '.product-item', '.card.product', '[class*="product-card"]',
+      '.products-grid > div', '.product-list > div', '.row > .col'
+    ];
+    
+    let products = [];
+    productSelectors.forEach(selector => {
+      document.querySelectorAll(selector).forEach(el => {
+        // Artıq əlavə edilməyibsə
+        if (!products.includes(el) && el.querySelector('img, .product-title, h3, h4')) {
+          products.push(el);
+        }
+      });
+    });
+    
+    return products;
+  }
+  
+  // Məhsul məlumatlarını çıxar
+  function extractProductData(productElement) {
+    // Şəkil
+    const img = productElement.querySelector('img');
+    const imageUrl = img ? (img.src || img.getAttribute('data-src') || '') : '';
+    
+    // Başlıq
+    const titleSelectors = ['.product-title', 'h3', 'h4', '.title', '.product-name', '.name', 'h5', '.card-title'];
+    let title = '';
+    for (const selector of titleSelectors) {
+      const titleEl = productElement.querySelector(selector);
+      if (titleEl && titleEl.textContent) {
+        title = titleEl.textContent.trim();
+        break;
+      }
+    }
+    if (!title) title = 'Məhsul';
+    
+    // Qiymət
+    const priceSelectors = ['.price', '.current-price', '.special-price', '.product-price', '.price-value'];
+    let price = '';
+    for (const selector of priceSelectors) {
+      const priceEl = productElement.querySelector(selector);
+      if (priceEl && priceEl.textContent) {
+        price = priceEl.textContent.trim();
+        break;
+      }
+    }
+    
+    // Link
+    const link = productElement.querySelector('a') ? productElement.querySelector('a').href : '#';
+    
+    // Kateqoriya / Manufacturer
+    const categorySelectors = ['.category', '.manufacturer', '.badge', '.product-category', '.brand'];
+    let category = '';
+    for (const selector of categorySelectors) {
+      const catEl = productElement.querySelector(selector);
+      if (catEl && catEl.textContent) {
+        category = catEl.textContent.trim();
+        break;
+      }
+    }
+    
+    // Təsvir
+    const descSelectors = ['.description', '.product-description', 'p', '.short-desc'];
+    let description = '';
+    for (const selector of descSelectors) {
+      const descEl = productElement.querySelector(selector);
+      if (descEl && descEl.textContent && descEl.textContent.length > 10) {
+        description = descEl.textContent.trim().substring(0, 120);
+        break;
+      }
+    }
+    
+    return { element: productElement, imageUrl, title, price, link, category, description };
+  }
+  
+  // Axtarış funksiyası
+  function performSearch(searchTerm) {
+    const term = searchTerm.toLowerCase().trim();
+    const products = getAllProductItems();
+    
+    if (term === '') {
+      // Axtarış boşdursa, bütün məhsulları göstər və nəticə container-nı gizlət
+      products.forEach(product => {
+        product.style.display = '';
+      });
+      if (searchResultsContainer) {
+        searchResultsContainer.style.display = 'none';
+      }
+      return;
+    }
+    
+    // Uyğun məhsulları tap
+    const matchedProducts = [];
+    products.forEach(product => {
+      const data = extractProductData(product);
+      const matches = data.title.toLowerCase().includes(term) || 
+                      (data.category && data.category.toLowerCase().includes(term)) ||
+                      (data.description && data.description.toLowerCase().includes(term));
+      
+      if (matches) {
+        matchedProducts.push(data);
+        product.style.display = '';
+        // Highlight effekti
+        product.classList.add('search-highlight-animation');
+        setTimeout(() => {
+          product.classList.remove('search-highlight-animation');
+        }, 500);
+      } else {
+        product.style.display = 'none';
+      }
+    });
+    
+    // Nəticələri göstər
+    showSearchResults(term, matchedProducts);
+  }
+  
+  // Nəticələri göstər (gözəl dizayn)
+  function showSearchResults(searchTerm, matchedProducts) {
+    // Container yoxdursa yarat
+    if (!searchResultsContainer) {
+      searchResultsContainer = document.createElement('div');
+      searchResultsContainer.className = 'search-results-overlay';
+      document.body.appendChild(searchResultsContainer);
+    }
+    
+    const resultsCount = matchedProducts.length;
+    const symbol = getCurrencySymbol ? getCurrencySymbol() : '₼';
+    
+    if (resultsCount === 0) {
+      searchResultsContainer.innerHTML = `
+        <div class="search-results-container">
+          <div class="search-results-header">
+            <h3>Axtarış nəticələri</h3>
+            <button class="search-results-close">&times;</button>
+          </div>
+          <div class="search-results-empty">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              <line x1="11" y1="8" x2="11" y2="14"></line>
+              <line x1="8" y1="11" x2="14" y2="11"></line>
+            </svg>
+            <p>"${escapeHtml(searchTerm)}" üçün heç bir nəticə tapılmadı</p>
+            <small>Fərqli açar sözlərlə cəhd edin</small>
+          </div>
+        </div>
+      `;
+    } else {
+      let resultsHtml = `
+        <div class="search-results-container">
+          <div class="search-results-header">
+            <h3>Axtarış nəticələri <span class="results-count">(${resultsCount})</span></h3>
+            <button class="search-results-close">&times;</button>
+          </div>
+          <div class="search-results-grid">
+      `;
+      
+      matchedProducts.forEach(product => {
+        resultsHtml += `
+          <div class="search-result-card" data-link="${product.link}">
+            <div class="search-result-image">
+              <img src="${product.imageUrl || '/static/images/no-image.png'}" alt="${escapeHtml(product.title)}" loading="lazy">
+            </div>
+            <div class="search-result-info">
+              <h4 class="search-result-title">${highlightText(product.title, searchTerm)}</h4>
+              ${product.category ? `<p class="search-result-category"><i class="fas fa-tag"></i> ${highlightText(product.category, searchTerm)}</p>` : ''}
+              ${product.price ? `<p class="search-result-price">${symbol}${cleanPriceToDisplay(product.price)}</p>` : ''}
+              ${product.description ? `<p class="search-result-desc">${highlightText(product.description, searchTerm)}</p>` : ''}
+              <a href="${product.link}" class="search-result-link">Ətraflı <i class="fas fa-arrow-right"></i></a>
+            </div>
+          </div>
+        `;
+      });
+      
+      resultsHtml += `
+          </div>
+        </div>
+      `;
+      
+      searchResultsContainer.innerHTML = resultsHtml;
+    }
+    
+    // Container-ı göstər
+    searchResultsContainer.style.display = 'flex';
+    document.body.classList.add('search-open');
+    
+    // Bağlama düyməsi
+    const closeBtn = searchResultsContainer.querySelector('.search-results-close');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', closeSearchResults);
+    }
+    
+    // Container-ın arxa fonuna klik
+    searchResultsContainer.addEventListener('click', function(e) {
+      if (e.target === searchResultsContainer) {
+        closeSearchResults();
+      }
+    });
+    
+    // ESC düyməsi
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && searchResultsContainer && searchResultsContainer.style.display === 'flex') {
+        closeSearchResults();
+      }
+    });
+    
+    // Nəticə kartlarına klik
+    document.querySelectorAll('.search-result-card').forEach(card => {
+      card.addEventListener('click', function(e) {
+        if (!e.target.closest('.search-result-link')) {
+          const link = this.dataset.link;
+          if (link && link !== '#') {
+            window.location.href = link;
+          }
+        }
+      });
+    });
+  }
+  
+  // Axtarış nəticələrini bağla
+  function closeSearchResults() {
+    if (searchResultsContainer) {
+      searchResultsContainer.style.display = 'none';
+      document.body.classList.remove('search-open');
+    }
+    
+    // Bütün məhsulları yenidən göstər
+    const products = getAllProductItems();
+    products.forEach(product => {
+      product.style.display = '';
+    });
+    
+    // Input-u təmizlə
+    if (searchInput) {
+      searchInput.value = '';
+    }
+  }
+  
+  // Qiyməti təmizlə göstərmək üçün
+  function cleanPriceToDisplay(priceText) {
+    if (!priceText) return '0.00';
+    let cleaned = priceText.replace(/[₼$€£₺₽¥]/g, '').replace(/[^0-9.,]/g, '').replace(',', '.');
+    const price = parseFloat(cleaned);
+    return isNaN(price) ? '0.00' : price.toFixed(2);
+  }
+  
+  // Mətndə axtarılan sözü vurğula
+  function highlightText(text, searchTerm) {
+    if (!text || !searchTerm) return escapeHtml(text);
+    const regex = new RegExp(`(${escapeRegex(searchTerm)})`, 'gi');
+    return escapeHtml(text).replace(regex, '<mark class="search-highlight-text">$1</mark>');
+  }
+  
+  // Regex üçün escape
+  function escapeRegex(str) {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+  
+  // HTML escape
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/[&<>"'`=\/]/g, function(s) {
+      const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;',
+        '/': '&#x2F;',
+        '`': '&#x60;',
+        '=': '&#x3D;'
+      };
+      return map[s] || s;
+    });
+  }
+  
+  // Valyuta simvolunu al (əgər varsa)
+  function getCurrencySymbol() {
+    // Əvvəlki valyuta sistemindən istifadə et
+    if (window.getCurrencySymbol) return window.getCurrencySymbol();
+    const lang = document.documentElement.lang || 'az';
+    switch(lang) {
+      case 'az': return '₼';
+      case 'en': return '$';
+      case 'ru': return '₽';
+      default: return '₼';
+    }
+  }
+  
+  // Axtarış sistemini başlat
+  function initSearchSystem() {
+    console.log('🔍 Axtarış sistemi başladıldı...');
+    
+    if (!searchInput) {
+      console.warn('Axtarış input elementi tapılmadı!');
+      return;
+    }
+    
+    // Axtarış CSS-i əlavə et
+    if (!document.querySelector('#search-system-styles')) {
+      const style = document.createElement('style');
+      style.id = 'search-system-styles';
+      style.textContent = `
+        /* Axtarış nəticələri overlay */
+        .search-results-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.85);
+          backdrop-filter: blur(10px);
+          z-index: 1000000;
+          display: none;
+          justify-content: center;
+          align-items: center;
+          animation: searchFadeIn 0.3s ease;
+        }
+        
+        @keyframes searchFadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        
+        .search-results-container {
+          width: 90%;
+          max-width: 1200px;
+          max-height: 85vh;
+          background: #fff;
+          border-radius: 20px;
+          overflow: hidden;
+          display: flex;
+          flex-direction: column;
+          animation: searchSlideIn 0.3s cubic-bezier(0.34, 1.2, 0.64, 1);
+        }
+        
+        @keyframes searchSlideIn {
+          from { transform: translateY(30px); opacity: 0; }
+          to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .search-results-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 18px 24px;
+          background: linear-gradient(135deg, #1a1a2e, #16213e);
+          color: white;
+          border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .search-results-header h3 {
+          margin: 0;
+          font-size: 1.3rem;
+          font-weight: 600;
+        }
+        
+        .results-count {
+          font-size: 0.9rem;
+          color: #ff6b6b;
+          margin-left: 8px;
+        }
+        
+        .search-results-close {
+          background: none;
+          border: none;
+          color: white;
+          font-size: 28px;
+          cursor: pointer;
+          padding: 0;
+          width: 36px;
+          height: 36px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.3s;
+        }
+        
+        .search-results-close:hover {
+          background: rgba(255,255,255,0.2);
+          transform: rotate(90deg);
+        }
+        
+        .search-results-grid {
+          flex: 1;
+          overflow-y: auto;
+          padding: 24px;
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+          gap: 20px;
+          background: #f8f9fa;
+        }
+        
+        .search-result-card {
+          background: white;
+          border-radius: 16px;
+          overflow: hidden;
+          box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+          transition: all 0.3s ease;
+          cursor: pointer;
+          display: flex;
+          flex-direction: column;
+        }
+        
+        .search-result-card:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+        
+        .search-result-image {
+          height: 180px;
+          overflow: hidden;
+          background: #f0f0f0;
+        }
+        
+        .search-result-image img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transition: transform 0.5s;
+        }
+        
+        .search-result-card:hover .search-result-image img {
+          transform: scale(1.05);
+        }
+        
+        .search-result-info {
+          padding: 16px;
+          flex: 1;
+        }
+        
+        .search-result-title {
+          font-size: 1rem;
+          font-weight: 600;
+          margin: 0 0 8px 0;
+          color: #1a1a2e;
+          line-height: 1.4;
+        }
+        
+        .search-result-title mark {
+          background: #ffd700;
+          color: #1a1a2e;
+          padding: 0 3px;
+          border-radius: 4px;
+        }
+        
+        .search-result-category {
+          font-size: 0.75rem;
+          color: #ff6b6b;
+          margin: 0 0 8px 0;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+        
+        .search-result-category mark {
+          background: #ffd700;
+          padding: 0 3px;
+          border-radius: 4px;
+        }
+        
+        .search-result-price {
+          font-size: 1.1rem;
+          font-weight: 700;
+          color: #2ecc71;
+          margin: 8px 0;
+        }
+        
+        .search-result-desc {
+          font-size: 0.8rem;
+          color: #666;
+          line-height: 1.5;
+          margin: 8px 0;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+        
+        .search-result-desc mark {
+          background: #ffd700;
+          padding: 0 3px;
+          border-radius: 4px;
+        }
+        
+        .search-result-link {
+          display: inline-block;
+          margin-top: 10px;
+          color: #3498db;
+          text-decoration: none;
+          font-size: 0.85rem;
+          font-weight: 500;
+          transition: all 0.3s;
+        }
+        
+        .search-result-link:hover {
+          color: #2980b9;
+          transform: translateX(5px);
+        }
+        
+        .search-results-empty {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          padding: 60px 20px;
+          text-align: center;
+          color: #666;
+        }
+        
+        .search-results-empty svg {
+          margin-bottom: 20px;
+          color: #ff6b6b;
+        }
+        
+        .search-results-empty p {
+          font-size: 1.2rem;
+          margin-bottom: 10px;
+        }
+        
+        /* Axtarış highlight animasiyası */
+        .search-highlight-animation {
+          animation: searchHighlightPulse 0.5s ease;
+        }
+        
+        @keyframes searchHighlightPulse {
+          0% { background-color: rgba(255, 215, 0, 0); }
+          50% { background-color: rgba(255, 215, 0, 0.3); }
+          100% { background-color: rgba(255, 215, 0, 0); }
+        }
+        
+        /* Scrollbar styling */
+        .search-results-grid::-webkit-scrollbar {
+          width: 8px;
+        }
+        
+        .search-results-grid::-webkit-scrollbar-track {
+          background: #e0e0e0;
+          border-radius: 4px;
+        }
+        
+        .search-results-grid::-webkit-scrollbar-thumb {
+          background: #888;
+          border-radius: 4px;
+        }
+        
+        .search-results-grid::-webkit-scrollbar-thumb:hover {
+          background: #555;
+        }
+        
+        @media (max-width: 768px) {
+          .search-results-grid {
+            grid-template-columns: 1fr;
+            padding: 16px;
+          }
+          .search-results-container {
+            width: 95%;
+            max-height: 90vh;
+          }
+          .search-results-header h3 {
+            font-size: 1rem;
+          }
+        }
+        
+        body.search-open {
+          overflow: hidden;
+        }
+      `;
+      document.head.appendChild(style);
+    }
+    
+    // Input eventi (real vaxt axtarış)
+    searchInput.addEventListener('input', function(e) {
+      clearTimeout(searchDebounceTimer);
+      searchDebounceTimer = setTimeout(() => {
+        performSearch(this.value);
+      }, 300);
+    });
+    
+    // Enter düyməsi
+    searchInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        clearTimeout(searchDebounceTimer);
+        performSearch(this.value);
+      }
+    });
+    
+    // Axtarış düyməsi
+    if (searchButton) {
+      searchButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        performSearch(searchInput.value);
+      });
+    }
+    
+    // Form submit
+    if (searchForm) {
+      searchForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        performSearch(searchInput.value);
+      });
+    }
+    
+    console.log('✅ Axtarış sistemi hazırdır!');
+  }
+  
   // ============================================================
   // FIX: Navbar fixed olduğu üçün scroll offset
   // ============================================================
@@ -512,7 +1140,6 @@
     }
 
     // ========== PROFİL HİSSƏSİ TAMAMİLƏ SİLİNDİ ==========
-    // updateAllNameElements, updateProfileInfoAJAX, profileForm, profileBtns, fileInput, confirmDeleteImage - SİLİNDİ
 
     window.removeFromCart = async function(productId, element, skipConfirm = false) {
       if (!skipConfirm && !confirm('Məhsulu səbətdən silmək istədiyinizə əminsiniz?')) return;
@@ -1055,12 +1682,14 @@
   function init() {
     initAccountTabs();
     initAccountAjax();
+    initSearchSystem(); // Axtarış sistemini başlat
     
     const testimonialRoot = document.getElementById('testimonial-root');
     if (testimonialRoot) renderTestimonial(testimonialRoot);
     
     console.log('✅ BÜTÜN SİSTEM AKTİVDİR - TL avtomatik MANAT-a çevrilir!');
     console.log('✅ Profil hissəsi SİLİNDİ - yalnız səbət və wishlist işləyir!');
+    console.log('✅ AXTARIŞ SİSTEMİ AKTİVDİR - Real vaxtda məhsul axtarışı!');
   }
   
   if (document.readyState === 'loading') {
@@ -1071,4 +1700,4 @@
 
 })();
 
-console.log('✅ main.js ');
+console.log('✅ main.js - AXTARIŞ SİSTEMİ ƏLAVƏ EDİLDİ');
