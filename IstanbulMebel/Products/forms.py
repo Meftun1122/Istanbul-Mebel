@@ -86,50 +86,33 @@ class ReplyForm(forms.Form):
     """
     Reply-lər üçün form (rating tələb olunmur)
     """
-    name = forms.CharField(
-        max_length=100,
-        required=False,
-        widget=forms.TextInput(attrs={
-            'class': 'form-control reply-name-input',
-            'placeholder': _('Adınız (istəyə bağlı)'),
-            'id': 'id_reply_name'
-        }),
-        label=_('Ad')
-    )
-    surname = forms.CharField(
-        max_length=100,
-        required=False,
-        widget=forms.TextInput(attrs={
-            'class': 'form-control reply-surname-input',
-            'placeholder': _('Soyadınız (istəyə bağlı)'),
-            'id': 'id_reply_surname'
-        }),
-        label=_('Soyad')
-    )
-    text = forms.CharField(
-        widget=forms.Textarea(attrs={
-            'class': 'form-control reply-text-input',
-            'placeholder': _('Cavabınızı yazın...'),
-            'id': 'id_reply_text',
-            'rows': 3
-        }),
-        label=_('Cavab Mətni'),
-        error_messages={
-            'required': _('Cavab mətni daxil edilməlidir'),
-        }
-    )
+    name = forms.CharField(max_length=100, required=False, widget=forms.TextInput(attrs={
+        'class': 'form-control reply-name-input',
+        'placeholder': _('Adınız (istəyə bağlı)'),
+        'id': 'id_reply_name'
+    }),label=_('Ad'))
+    # Soyad sahəsi isteğe bağlı oldu, beləliklə istifadəçi yalnız adını daxil edə bilər və ya hər ikisini daxil edə bilər.
+    surname = forms.CharField(max_length=100, required=False, widget=forms.TextInput(attrs={
+        'class': 'form-control reply-surname-input',
+        'placeholder': _('Soyadınız (istəyə bağlı)'),
+        'id': 'id_reply_surname'
+    }),label=_('Soyad'))
+    # Rəy mətni
+    text = forms.CharField(widget=forms.Textarea(attrs={
+        'class': 'form-control reply-text-input',
+        'placeholder': _('Cavabınızı yazın...'),
+        'id': 'id_reply_text',
+        'rows': 3
+    }),label=_('Cavab Mətni'),error_messages={'required': _('Cavab mətni daxil edilməlidir'),})
+    # Rating reply-lər üçün tələb olunmur, beləliklə bu sahə formdan çıxarıldı
     parent_id = forms.IntegerField(widget=forms.HiddenInput(attrs={
         'id': 'id_parent_id',
         'class': 'parent-id-input'
-        })
-    )
-    reply_to_name = forms.CharField(
-        max_length=200,
-        required=False,
-        widget=forms.HiddenInput(attrs={
-            'id': 'id_reply_to_name'
-        })
-    )
+    }))
+    # Reply-lərin kimə cavab verdiyini saxlamaq üçün əlavə sahə (istəyə bağlı)
+    reply_to_name = forms.CharField(max_length=200, required=False, widget=forms.HiddenInput(attrs={
+        'id': 'id_reply_to_name'
+    }))
 
     def clean_text(self):
         text = self.cleaned_data.get('text')
@@ -154,49 +137,28 @@ class ReviewFilterForm(forms.Form):
         ('highest', _('Ən Yüksək Reytinq')),
         ('lowest', _('Ən Aşağı Reytinq')),
     ]
-    
+    # RATING_CHOICES-da boş seçim əlavə edildi, beləliklə istifadəçi bütün reytinqləri görə bilər
     RATING_CHOICES = [('', _('Bütün Reytinqlər'))] + [(i, f'{i} Ulduz') for i in range(1, 6)]
-    
-    sort = forms.ChoiceField(
-        choices=SORT_CHOICES,
-        required=False,
-        initial='newest',
-        widget=forms.Select(attrs={
-            'class': 'form-select sort-select',
-            'id': 'id_sort'
-        }),
-        label=_('Sırala')
-    )
-    
-    rating = forms.ChoiceField(
-        choices=RATING_CHOICES,
-        required=False,
-        widget=forms.Select(attrs={
-            'class': 'form-select rating-select',
-            'id': 'id_filter_rating'
-        }),
-        label=_('Reytinqə görə filtrele')
-    )
-    
-    search = forms.CharField(
-        required=False,
-        widget=forms.TextInput(attrs={
-            'class': 'form-control search-input',
-            'placeholder': _('Rəylərdə axtar...'),
-            'id': 'id_search'
-        }),
-        label=_('Axtar')
-    )
-    
-    is_active = forms.BooleanField(
-        required=False,
-        initial=True,
-        widget=forms.CheckboxInput(attrs={
-            'class': 'form-check-input',
-            'id': 'id_is_active'
-        }),
-        label=_('Yalnız aktivləri göstər')
-    )
+    sort = forms.ChoiceField(choices=SORT_CHOICES, required=False, initial='newest', widget=forms.Select(attrs={
+        'class': 'form-select sort-select',
+        'id': 'id_sort'
+    }),label=_('Sırala'))
+    # RATING_CHOICES-da boş seçim əlavə edildi, beləliklə istifadəçi bütün reytinqləri görə bilər
+    rating = forms.ChoiceField(choices=RATING_CHOICES, required=False, widget=forms.Select(attrs={
+        'class': 'form-select rating-select',
+        'id': 'id_filter_rating'
+    }),label=_('Reytinqə görə filtrele'))
+    # Axtarış sahəsi əlavə edildi
+    search = forms.CharField(required=False, widget=forms.TextInput(attrs={
+        'class': 'form-control search-input',
+        'placeholder': _('Rəylərdə axtar...'),
+        'id': 'id_search'
+    }),label=_('Axtar'))
+    # Yalnız aktiv rəyləri göstərmək üçün checkbox əlavə edildi
+    is_active = forms.BooleanField(required=False, initial=True, widget=forms.CheckboxInput(attrs={
+        'class': 'form-check-input',
+        'id': 'id_is_active'
+    }),label=_('Yalnız aktivləri göstər'))
 
 
 class QuickReviewForm(forms.ModelForm):
@@ -257,45 +219,24 @@ class BulkReviewActionForm(forms.Form):
         ('deactivate', _('Seçilənləri deaktiv et')),
         ('delete', _('Seçilənləri sil')),
     ]
-    
-    action = forms.ChoiceField(
-        choices=ACTION_CHOICES,
-        required=True,
-        widget=forms.Select(attrs={'class': 'form-select'})
-    )
-    
-    review_ids = forms.CharField(
-        widget=forms.HiddenInput(),
-        required=False
-    )
+    action = forms.ChoiceField(choices=ACTION_CHOICES, required=True,widget=forms.Select(attrs={'class': 'form-select'}))
+    review_ids = forms.CharField(widget=forms.HiddenInput(),required=False)
 
 
 class ReviewStatsForm(forms.Form):
     """
     Rəy statistikası üçün form
     """
-    date_from = forms.DateField(
-        required=False,
-        widget=forms.DateInput(attrs={
-            'type': 'date',
-            'class': 'form-control'
-        }),
-        label=_('Başlanğıc Tarix')
-    )
+    date_from = forms.DateField(required=False, widget=forms.DateInput(attrs={
+        'type': 'date',
+        'class': 'form-control'
+    }),label=_('Başlanğıc Tarix'))
     
-    date_to = forms.DateField(
-        required=False,
-        widget=forms.DateInput(attrs={
-            'type': 'date',
-            'class': 'form-control'
-        }),
-        label=_('Bitiş Tarix')
-    )
-    
-    product = forms.ModelChoiceField(
-        queryset=None,  # View-də təyin ediləcək
-        required=False,
-        widget=forms.Select(attrs={'class': 'form-select'}),
+    date_to = forms.DateField(required=False, widget=forms.DateInput(attrs={
+        'type': 'date',
+        'class': 'form-control'
+    }),label=_('Bitiş Tarix'))
+    product = forms.ModelChoiceField(queryset=None, required=False, widget=forms.Select(attrs={'class': 'form-select'}),
         label=_('Məhsula görə filtrele')
     )
     

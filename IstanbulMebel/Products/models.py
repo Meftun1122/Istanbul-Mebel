@@ -7,7 +7,6 @@ from django.conf import settings
 #  ========================================================  #
 #                       Category Model                       #
 #  ========================================================  #
-
 class CategoryModel(BaseModel):
     title = models.CharField(max_length=50, verbose_name='Kateqoriya növü', help_text='Maximum 50 character')
     descriptions = models.TextField(verbose_name='Kateqoriya haqqında', blank=True, null=True)
@@ -23,7 +22,6 @@ class CategoryModel(BaseModel):
 #  ========================================================  #
 #                      Manufacturer Model                    #
 #  ========================================================  #
-    
 class ManufacturerModel(BaseModel):
     title = models.CharField(max_length=50, verbose_name='Məhsul İstehsalcısı', help_text='Maximum 50 character')
     description = models.TextField(verbose_name='İstehsalçı haqqında', blank=True, null=True)
@@ -39,7 +37,6 @@ class ManufacturerModel(BaseModel):
 #  ========================================================  #
 #                       Color Model                          #
 #  ========================================================  #
-
 class ColorModel(BaseModel):
     title = models.CharField(max_length=50, verbose_name='Rəngin adı')
     product_color = models.CharField(max_length=50, verbose_name='Məhsulun Rəngi')
@@ -50,10 +47,7 @@ class ColorModel(BaseModel):
         verbose_name_plural = 'Rənglər'
 
     def __str__(self):
-        return self.get_display_title()
-    
-    def get_display_title(self):
-        """Həmişə Azərbaycanca adı qaytar"""
+        # Əvvəlcə translation field-ları yoxla
         if hasattr(self, 'title_az') and self.title_az:
             return self.title_az
         return self.title
@@ -65,7 +59,6 @@ class ColorModel(BaseModel):
 #  ========================================================  #
 #                       Product Model                        #
 #  ========================================================  #
-
 class ProductModel(BaseModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, verbose_name='User')
     title = models.CharField(max_length=100, verbose_name='Məhsul adı')
@@ -96,7 +89,6 @@ class ProductModel(BaseModel):
     def __str__(self):
         return self.title
     
-
     @property
     def average_rating(self):
         reviews = self.reviews.all()

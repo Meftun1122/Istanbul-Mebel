@@ -69,6 +69,23 @@ class ProductsView(ListView):
 
 
 
+import json
+from datetime import timedelta
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views.generic import DetailView
+from django.contrib import messages
+from django.views.decorators.csrf import csrf_protect
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.db.models import Q, Avg
+from django.utils import timezone
+from django.utils.timesince import timesince
+from django.db.models import F
+
+from .models import ProductModel, ReviewModel
+from .forms import ReviewForm, ReplyForm, QuickReviewForm, ReviewFilterForm
+
 
 class ProductDetailsView(DetailView):
     model = ProductModel
@@ -125,6 +142,16 @@ class ProductDetailsView(DetailView):
         else:
             reviews = reviews.order_by('-created')
         
+        # Hər review üçün like/dislike statuslarını əlavə et
+        for review in reviews:
+            review.user_liked = self.request.session.get(f'liked_review_{review.id}', False)
+            review.user_disliked = self.request.session.get(f'disliked_review_{review.id}', False)
+            
+            # Reply-lər üçün də statusları əlavə et
+            for reply in review.replies.all():
+                reply.user_liked = self.request.session.get(f'liked_reply_{reply.id}', False)
+                reply.user_disliked = self.request.session.get(f'disliked_reply_{reply.id}', False)
+        
         context['reviews'] = reviews
         context['reviews_count'] = reviews.count()
         
@@ -164,6 +191,7 @@ class ProductDetailsView(DetailView):
         self.object = self.get_object()
         
         action = request.POST.get('action')
+        print(f"🔍 Action received: {action}")  # DEBUG üçün
         
         if action == 'add_review':
             return self.add_review(request)
@@ -175,11 +203,16 @@ class ProductDetailsView(DetailView):
             return self.like_review(request)
         elif action == 'dislike_review':
             return self.dislike_review(request)
-        # YENİ: reply like/dislike action-ları
         elif action == 'like_reply':
             return self.like_reply(request)
         elif action == 'dislike_reply':
             return self.dislike_reply(request)
+        # ========== YENİ: rate_comment ACTION-U ==========
+        elif action == 'rate_comment':
+            return self.rate_comment(request)
+        # ========== YENİ: load_more_comments ACTION-U ==========
+        elif action == 'load_more_comments':
+            return self.load_more_comments(request)
         
         return redirect('product_details', pk=self.object.pk)
     
@@ -204,10 +237,12 @@ class ProductDetailsView(DetailView):
                         'rating': review.rating,
                         'rating_stars': review.get_rating_display_stars(),
                         'created': review.created.strftime('%d.%m.%Y %H:%M'),
-                        'created_ago': self.timesince(review.created),
+                        'created_at': 'İndi',
                         'likes': review.likes,
                         'dislikes': review.dislikes,
-                        'is_reply': False,
+                        'user_liked': False,
+                        'user_disliked': False,
+                        'avatar': None,
                         'replies': []
                     }
                 })
@@ -224,7 +259,6 @@ class ProductDetailsView(DetailView):
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, f"{field}: {error}")
-        
         return redirect('product_details', pk=self.object.pk)
     
     def add_reply(self, request):
@@ -275,10 +309,14 @@ class ProductDetailsView(DetailView):
                         'text': reply.text,
                         'reply_to_name': reply.reply_to_name,
                         'created': reply.created.strftime('%d.%m.%Y %H:%M'),
-                        'created_ago': self.timesince(reply.created),
+                        'created_at': 'İndi',
                         'likes': reply.likes,
                         'dislikes': reply.dislikes,
-                        'parent_id': parent_review.id
+                        'user_liked': False,
+                        'user_disliked': False,
+                        'avatar': None,
+                        'parent_id': parent_review.id,
+                        'parent_user_name': parent_review.full_name
                     }
                 })
             
@@ -313,7 +351,7 @@ class ProductDetailsView(DetailView):
                     'name': review.full_name,
                     'text': review.text,
                     'rating': review.rating,
-                    'created_ago': self.timesince(review.created),
+                    'created_at': 'İndi',
                     'likes': 0,
                     'dislikes': 0
                 }
@@ -340,20 +378,16 @@ class ProductDetailsView(DetailView):
                 is_active=True
             )
             
-            # Session-based like tracking
             session_key = f"liked_review_{review_id}"
             if request.session.get(session_key):
-                # Unlike
                 review.likes = max(0, review.likes - 1)
                 del request.session[session_key]
                 liked = False
             else:
-                # Like
                 review.likes += 1
                 request.session[session_key] = True
                 liked = True
                 
-                # Əgər dislike varsa, onu sil
                 dislike_key = f"disliked_review_{review_id}"
                 if request.session.get(dislike_key):
                     del request.session[dislike_key]
@@ -364,7 +398,7 @@ class ProductDetailsView(DetailView):
                 'status': 'success',
                 'likes': review.likes,
                 'dislikes': review.dislikes,
-                'liked': liked,
+                'user_action': 'like' if liked else None,
                 'message': 'Rəy bəyənildi' if liked else 'Rəy bəyənmə geri alındı'
             })
             
@@ -389,20 +423,16 @@ class ProductDetailsView(DetailView):
                 is_active=True
             )
             
-            # Session-based dislike tracking
             session_key = f"disliked_review_{review_id}"
             if request.session.get(session_key):
-                # Undislike
                 review.dislikes = max(0, review.dislikes - 1)
                 del request.session[session_key]
                 disliked = False
             else:
-                # Dislike
                 review.dislikes += 1
                 request.session[session_key] = True
                 disliked = True
                 
-                # Əgər like varsa, onu sil
                 like_key = f"liked_review_{review_id}"
                 if request.session.get(like_key):
                     del request.session[like_key]
@@ -413,7 +443,7 @@ class ProductDetailsView(DetailView):
                 'status': 'success',
                 'likes': review.likes,
                 'dislikes': review.dislikes,
-                'disliked': disliked,
+                'user_action': 'dislike' if disliked else None,
                 'message': 'Rəy bəyənilmədi' if disliked else 'Rəy bəyənilmə geri alındı'
             })
             
@@ -422,8 +452,6 @@ class ProductDetailsView(DetailView):
                 'status': 'error',
                 'message': 'Rəy tapılmadı'
             }, status=404)
-    
-    # ========== YENİ METODLAR: REPLY LİKE/DİSLİKE ==========
     
     @method_decorator(login_required)
     def like_reply(self, request):
@@ -435,26 +463,22 @@ class ProductDetailsView(DetailView):
         
         try:
             reply = ReviewModel.objects.get(
-                id=reply_id, 
+                id=reply_id,
                 product=self.object,
-                parent__isnull=False,  # Reply olduğunu yoxla
+                parent__isnull=False,
                 is_active=True
             )
             
-            # Session-based like tracking
             session_key = f"liked_reply_{reply_id}"
             if request.session.get(session_key):
-                # Unlike
                 reply.likes = max(0, reply.likes - 1)
                 del request.session[session_key]
                 liked = False
             else:
-                # Like
                 reply.likes += 1
                 request.session[session_key] = True
                 liked = True
                 
-                # Əgər dislike varsa, onu sil
                 dislike_key = f"disliked_reply_{reply_id}"
                 if request.session.get(dislike_key):
                     del request.session[dislike_key]
@@ -465,7 +489,7 @@ class ProductDetailsView(DetailView):
                 'status': 'success',
                 'likes': reply.likes,
                 'dislikes': reply.dislikes,
-                'liked': liked,
+                'user_action': 'like' if liked else None,
                 'message': 'Cavab bəyənildi' if liked else 'Cavab bəyənmə geri alındı'
             })
             
@@ -485,26 +509,22 @@ class ProductDetailsView(DetailView):
         
         try:
             reply = ReviewModel.objects.get(
-                id=reply_id, 
+                id=reply_id,
                 product=self.object,
-                parent__isnull=False,  # Reply olduğunu yoxla
+                parent__isnull=False,
                 is_active=True
             )
             
-            # Session-based dislike tracking
             session_key = f"disliked_reply_{reply_id}"
             if request.session.get(session_key):
-                # Undislike
                 reply.dislikes = max(0, reply.dislikes - 1)
                 del request.session[session_key]
                 disliked = False
             else:
-                # Dislike
                 reply.dislikes += 1
                 request.session[session_key] = True
                 disliked = True
                 
-                # Əgər like varsa, onu sil
                 like_key = f"liked_reply_{reply_id}"
                 if request.session.get(like_key):
                     del request.session[like_key]
@@ -515,7 +535,7 @@ class ProductDetailsView(DetailView):
                 'status': 'success',
                 'likes': reply.likes,
                 'dislikes': reply.dislikes,
-                'disliked': disliked,
+                'user_action': 'dislike' if disliked else None,
                 'message': 'Cavab bəyənilmədi' if disliked else 'Cavab bəyənilmə geri alındı'
             })
             
@@ -524,6 +544,154 @@ class ProductDetailsView(DetailView):
                 'status': 'error',
                 'message': 'Cavab tapılmadı'
             }, status=404)
+    
+    # ========== YENİ METOD: rate_comment (Həm review, həm də reply üçün) ==========
+    def rate_comment(self, request):
+        """Ümumi like/dislike metodu - həm review, həm də reply üçün işləyir"""
+        if not request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'status': 'error', 'message': 'Yalnız AJAX sorğuları qəbul edilir'}, status=400)
+        
+        comment_id = request.POST.get('comment_id')
+        action = request.POST.get('action')  # 'like' və ya 'dislike'
+        
+        if not comment_id or not action:
+            return JsonResponse({'status': 'error', 'message': 'comment_id və action tələb olunur'}, status=400)
+        
+        try:
+            # Comment-i tap (həm review, həm də reply ola bilər)
+            comment = ReviewModel.objects.get(
+                id=comment_id,
+                product=self.object,
+                is_active=True
+            )
+            
+            is_reply = comment.parent is not None
+            prefix = "reply" if is_reply else "review"
+            
+            if action == 'like':
+                session_key = f"liked_{prefix}_{comment_id}"
+                
+                if request.session.get(session_key):
+                    # Unlike
+                    comment.likes = max(0, comment.likes - 1)
+                    del request.session[session_key]
+                    user_action = None
+                else:
+                    # Like
+                    comment.likes += 1
+                    request.session[session_key] = True
+                    user_action = 'like'
+                    
+                    # Əgər dislike varsa, onu sil
+                    dislike_key = f"disliked_{prefix}_{comment_id}"
+                    if request.session.get(dislike_key):
+                        del request.session[dislike_key]
+                
+                comment.save(update_fields=['likes'])
+                
+                return JsonResponse({
+                    'status': 'success',
+                    'likes': comment.likes,
+                    'dislikes': comment.dislikes,
+                    'user_action': user_action,
+                    'message': 'Bəyənildi' if user_action == 'like' else 'Bəyənmə geri alındı'
+                })
+                
+            elif action == 'dislike':
+                session_key = f"disliked_{prefix}_{comment_id}"
+                
+                if request.session.get(session_key):
+                    # Undislike
+                    comment.dislikes = max(0, comment.dislikes - 1)
+                    del request.session[session_key]
+                    user_action = None
+                else:
+                    # Dislike
+                    comment.dislikes += 1
+                    request.session[session_key] = True
+                    user_action = 'dislike'
+                    
+                    # Əgər like varsa, onu sil
+                    like_key = f"liked_{prefix}_{comment_id}"
+                    if request.session.get(like_key):
+                        del request.session[like_key]
+                
+                comment.save(update_fields=['dislikes'])
+                
+                return JsonResponse({
+                    'status': 'success',
+                    'likes': comment.likes,
+                    'dislikes': comment.dislikes,
+                    'user_action': user_action,
+                    'message': 'Bəyənilmədi' if user_action == 'dislike' else 'Bəyənilmə geri alındı'
+                })
+            
+            else:
+                return JsonResponse({'status': 'error', 'message': 'Yanlış action'}, status=400)
+                
+        except ReviewModel.DoesNotExist:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Rəy tapılmadı'
+            }, status=404)
+    
+    # ========== YENİ METOD: load_more_comments ==========
+    def load_more_comments(self, request):
+        """Daha çox şərh yüklə (AJAX)"""
+        if not request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'status': 'error', 'message': 'Yalnız AJAX sorğuları qəbul edilir'}, status=400)
+        
+        try:
+            offset = int(request.POST.get('offset', 0))
+            limit = int(request.POST.get('limit', 5))
+        except ValueError:
+            offset = 0
+            limit = 5
+        
+        # Yalnız aktiv və əsas review-ları gətir
+        reviews = ReviewModel.objects.filter(
+            product=self.object,
+            parent__isnull=True,
+            is_active=True
+        ).order_by('-created')
+        
+        total_count = reviews.count()
+        reviews = reviews[offset:offset + limit]
+        
+        # Hər review üçün like/dislike statuslarını əlavə et
+        for review in reviews:
+            review.user_liked = self.request.session.get(f'liked_review_{review.id}', False)
+            review.user_disliked = self.request.session.get(f'disliked_review_{review.id}', False)
+            
+            # Reply-lər üçün də statusları əlavə et
+            for reply in review.replies.all():
+                reply.user_liked = self.request.session.get(f'liked_reply_{reply.id}', False)
+                reply.user_disliked = self.request.session.get(f'disliked_reply_{reply.id}', False)
+        
+        reviews_data = []
+        for review in reviews:
+            reviews_data.append({
+                'id': review.id,
+                'name': review.full_name,
+                'text': review.text,
+                'rating': review.rating,
+                'created_at': timesince(review.created, timezone.now()) if review.created else 'İndi',
+                'likes': review.likes,
+                'dislikes': review.dislikes,
+                'user_liked': review.user_liked,
+                'user_disliked': review.user_disliked,
+                'avatar': None,
+                'replies': []
+            })
+        
+        has_more = (offset + limit) < total_count
+        
+        return JsonResponse({
+            'status': 'success',
+            'comments': reviews_data,
+            'has_more': has_more,
+            'total': total_count
+        })
     
     def timesince(self, date):
         """Neçə vaxt əvvəl yazıldığını hesabla"""

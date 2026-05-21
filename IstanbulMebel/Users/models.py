@@ -17,8 +17,6 @@ class User(AbstractUser):
         verbose_name_plural = 'Admin'
 
 
-
-
 class UserProfile(BaseModel):
     GENDER_CHOICES = (
         (1, 'Male'),

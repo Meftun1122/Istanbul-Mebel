@@ -87,54 +87,36 @@ class CheckoutForm(forms.ModelForm):
     ]
 
     # Ana ünvan üçün city field
-    city = forms.ChoiceField(
-        choices=CITY_CHOICES,
-        required=True,
-        widget=forms.Select(attrs={
-            'class': 'form-control',
-            'id': 'city_name'
-        })
-    )
-    
+    city = forms.ChoiceField(choices=CITY_CHOICES, required=True, widget=forms.Select(attrs={
+        'class': 'form-control',
+        'id': 'city_name'
+    }))
+
     # Fərqli ünvan üçün shipping_city field
-    shipping_city = forms.ChoiceField(
-        choices=CITY_CHOICES,
-        required=False,
-        widget=forms.Select(attrs={
-            'class': 'form-control',
-            'id': 'cit_name'
-        })
-    )
+    shipping_city = forms.ChoiceField(choices=CITY_CHOICES, required=False, widget=forms.Select(attrs={
+        'class': 'form-control',
+        'id': 'cit_name'
+    }))
 
     # Telefon nömrəsi üçün validasiya
-    tel_number = forms.CharField(
-        required=False,
-        widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': '+994 XX XXX XX XX',
-            'id': 'tel_number'
-        })
-    )
+    tel_number = forms.CharField(required=False, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': '+994 XX XXX XX XX',
+        'id': 'tel_number'
+    }))
 
     # 🔴 YENİ: Shipping telefon nömrəsi
-    shipping_phone_number = forms.CharField(
-        required=False,
-        widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': '+994 XX XXX XX XX',
-            'id': 'shipping_phone'
-        })
-    )
+    shipping_phone_number = forms.CharField(required=False, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': '+994 XX XXX XX XX',
+        'id': 'shipping_phone'
+    }))
 
     # Fərqli ünvan üçün checkbox (modeldə yoxdur, ancaq formda istifadə olunur)
-    different_shipping = forms.BooleanField(
-        required=False,
-        initial=False,
-        widget=forms.CheckboxInput(attrs={
-            'class': 'form-check-input',
-            'id': 'different_shipping'
-        })
-    )
+    different_shipping = forms.BooleanField(required=False, initial=False, widget=forms.CheckboxInput(attrs={
+        'class': 'form-check-input',
+        'id': 'different_shipping'
+    }))
 
     class Meta:
         model = CheckoutModel
@@ -278,7 +260,8 @@ class CheckoutForm(forms.ModelForm):
             shipping_phone_number = cleaned_data.get('shipping_phone_number') 
             shipping_address = cleaned_data.get('shipping_address')
             shipping_city = cleaned_data.get('shipping_city')
-            
+
+            # Əgər fərqli ünvan seçilibsə, shipping məlumatları mütləq doldurulmalıdır
             if not shipping_first_name:
                 self.add_error('shipping_first_name', 'Bu sahə tələb olunur')
             
@@ -289,7 +272,7 @@ class CheckoutForm(forms.ModelForm):
                 self.add_error('shipping_email', 'Bu sahə tələb olunur')
             
             if not shipping_phone_number:
-                ('shipping_phone_number', 'Bu sahə tələb olunur')
+                self.add_error('shipping_phone_number', 'Bu sahə tələb olunur')
             
             if not shipping_address:
                 self.add_error('shipping_address', 'Bu sahə tələb olunur')

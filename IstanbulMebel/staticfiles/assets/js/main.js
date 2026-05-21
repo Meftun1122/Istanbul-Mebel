@@ -8,6 +8,7 @@
  * 4. NAVBAR fixed offset düzəldilib
  * 5. AJAX ilə səbət və wishlist əməliyyatları (Profil hissəsi SİLİNDİ)
  * 6. GELİŞMİŞ AXTARIŞ SİSTEMİ - real vaxtda məhsul axtarışı
+ * 7. COMMENT SİSTEMİ TAMAMİLƏ SİLİNDİ
  */
 
 (function() {
@@ -1031,7 +1032,7 @@
       }
     }
 
-    // ========== KRİTİK: QİYMƏT TƏMİZLƏMƏ FUNKSİYASI - TL-ni MANAT-a ÇEVİRİR ==========
+    // ========== QİYMƏT TƏMİZLƏMƏ FUNKSİYASI - TL-ni MANAT-a ÇEVİRİR ==========
     function cleanPrice(priceText) {
       if (!priceText) return 0;
       if (typeof priceText === 'number') return priceText;
@@ -1200,7 +1201,7 @@
       }
     };
 
-    // ========== KRİTİK: MİQDAR YENİLƏMƏ - DÜZGÜN HESABLAMA ==========
+    // ========== MİQDAR YENİLƏMƏ - DÜZGÜN HESABLAMA ==========
     window.updateQuantity = async function(btn, change, productId) {
       const row = btn?.closest('tr.cart-item');
       if (!row) {
@@ -1216,7 +1217,7 @@
         return;
       }
       
-      // ========== VAHİD QİYMƏTİ TAP ==========
+      // VAHİD QİYMƏTİ TAP
       let unitPrice = 0;
       const priceSpan = row.querySelector('.price');
       
@@ -1269,7 +1270,7 @@
         // Miqdarı yenilə
         qtySpan.textContent = newQty;
         
-        // 🔥 KRİTİK: Vahid qiymət * yeni miqdar
+        // Vahid qiymət * yeni miqdar
         const newTotal = unitPrice * newQty;
         
         // Cəmi yenilə
@@ -1690,6 +1691,7 @@
     console.log('✅ BÜTÜN SİSTEM AKTİVDİR - TL avtomatik MANAT-a çevrilir!');
     console.log('✅ Profil hissəsi SİLİNDİ - yalnız səbət və wishlist işləyir!');
     console.log('✅ AXTARIŞ SİSTEMİ AKTİVDİR - Real vaxtda məhsul axtarışı!');
+    console.log('✅ COMMENT SİSTEMİ TAMAMİLƏ SİLİNDİ!');
   }
   
   if (document.readyState === 'loading') {
@@ -1700,4 +1702,4 @@
 
 })();
 
-console.log('✅ main.js - AXTARIŞ SİSTEMİ ƏLAVƏ EDİLDİ');
+console.log('✅ main.js - COMMENT SİSTEMİ SİLİNDİ, AXTARIŞ SİSTEMİ ƏLAVƏ EDİLDİ');

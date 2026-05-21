@@ -153,8 +153,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = '/static/'  # ✅ Dəyişdirildi (əvvəl 'static/' idi)
-STATIC_ROOT = '/app/staticfiles'  # ✅ Docker üçün dəyişdirildi
+STATIC_URL = '/static/'  
+STATIC_ROOT = '/app/staticfiles' 
 STATICFILES_DIRS = [
     BASE_DIR / 'staticfiles',
 ]
@@ -164,7 +164,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Media files
 MEDIA_URL = '/media/'
-MEDIA_ROOT = '/app/media'  # ✅ Docker üçün dəyişdirildi
+MEDIA_ROOT = '/app/media'  
 
 
 # Default primary key field type

@@ -96,17 +96,17 @@
             <!-- CARD 2: Categories -->
             <div class="filter-card categories-card">
               <div class="card-title">
-                  <i class="fas fa-tags"></i>
-                  {% if categories %}
-                      <span>{% translate 'Kateqoriyalar' %}</span>
-                      <!-- Categories kartı üçün RESET buttonu -->
-                      <a href="?{% if request.GET.manufacturer %}&manufacturer={{ request.GET.manufacturer }}{% endif %}{% if request.GET.color %}&color={{ request.GET.color }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}"
-                        class="card-reset-btn" title="Reset Category Filter">
-                        <i class="fas fa-undo-alt"></i>
-                      </a>
-                  {% else %}
-                      <span>{% trans 'Kataqoriyalar Yoxdur' %}</span>
-                  {% endif %}
+                <i class="fas fa-tags"></i>
+                {% if categories %}
+                <span>{% translate 'Kateqoriyalar' %}</span>
+                <!-- Categories kartı üçün RESET buttonu -->
+                <a href="?{% if request.GET.manufacturer %}&manufacturer={{ request.GET.manufacturer }}{% endif %}{% if request.GET.color %}&color={{ request.GET.color }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}"
+                  class="card-reset-btn" title="Reset Category Filter">
+                  <i class="fas fa-undo-alt"></i>
+                </a>
+                {% else %}
+                <span>{% trans 'Kataqoriyalar Yoxdur' %}</span>
+                {% endif %}
               </div>
               <div class="categories-list">
                 <a href="?{% if request.GET.manufacturer %}&manufacturer={{ request.GET.manufacturer }}{% endif %}{% if request.GET.color %}&color={{ request.GET.color }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}"
@@ -171,15 +171,30 @@
                 </a>
               </div>
               <div class="color-grid">
+                {% load i18n %}
                 {% for color in colors %}
                 <a href="?color={{ color.id }}{% if request.GET.manufacturer %}&manufacturer={{ request.GET.manufacturer }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}"
                   class="color-item {% if request.GET.color == color.id|stringformat:'i' %}active{% endif %}">
-                  <!-- ✅ Dəyişiklik: title_az istifadə edin -->
-                  <div class="color-circle {{ color.title_az|lower|cut:" "|cut:"-" }}"></div>
-                  <span class="color-name">{{ color.title_az }}</span>  <!-- ✅ ƏSAS DƏYİŞİKLİK -->
+
+                  {# ⚠️ CSS class - HƏMİŞƏ EYNİ QALMALIDIR (product_color istifadə et) #}
+                  <div class="color-circle {{ color.product_color|slugify|lower }}"></div>
+
+                  {# Rəng adı - DİLƏ GÖRƏ DƏYİŞƏ BİLƏR #}
+                  <span class="color-name">
+                    {% get_current_language as LANG %}
+                    {% if LANG == 'az' %}
+                    {{ color.title_az|default:color.title }}
+                    {% elif LANG == 'en' %}
+                    {{ color.title_en|default:color.title }}
+                    {% elif LANG == 'ru' %}
+                    {{ color.title_ru|default:color.title }}
+                    {% else %}
+                    {{ color.title }}
+                    {% endif %}
+                  </span>
                 </a>
                 {% empty %}
-                <p>Rənglər mövcud deyil!</p>
+                <p>{% translate 'Rənglər mövcud deyil!' %}</p>
                 {% endfor %}
               </div>
             </div>
@@ -188,24 +203,23 @@
         <br>
         <!-- ============================== FILTER AREA END ================================== -->
         <div class="container">
-        <hr>
-        <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
-            
+          <hr>
+          <div class="section-header"
+            style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+
             <!-- Product Search Box -->
-          <!-- Başlıq və axtarışın olduğu hissə -->
-          <div class="section-header premium-header">
+            <!-- Başlıq və axtarışın olduğu hissə -->
+            <div class="section-header premium-header">
               <h1>Premium Məhsullar</h1>
               <div class="product-search">
-                  <i class="fas fa-search"></i>
-                  <input type="text" 
-                      id="productSearch" 
-                      placeholder="Məhsulları axtarın...">
-                  <i class="fas fa-times clear-product-search" id="clearProductSearch"></i>
+                <i class="fas fa-search"></i>
+                <input type="text" id="productSearch" placeholder="Məhsulları axtarın...">
+                <i class="fas fa-times clear-product-search" id="clearProductSearch"></i>
               </div>
+            </div>
           </div>
-        </div>
-        <!-- Search Results Message -->
-        <div id="productSearchResult" class="container" style="margin-top: 15px; display: none;"></div>
+          <!-- Search Results Message -->
+          <div id="productSearchResult" class="container" style="margin-top: 15px; display: none;"></div>
           <hr>
           <!-- Kartlar Grid - Yan yana -->
           <div class="products-grid">
@@ -217,9 +231,11 @@
                 <div class="badge">-{{ product.discount }}%</div>
                 {% else %}
                 <!-- ENDIRIM YOXDURSA: premium badge göstər -->
-                <div class="badge premium-badge" style="background: linear-gradient(135deg, #FFD700, #FFA500); color: #000; border: 1px solid rgba(255,255,255,0.3);">PREMIUM</div>
+                <div class="badge premium-badge"
+                  style="background: linear-gradient(135deg, #FFD700, #FFA500); color: #000; border: 1px solid rgba(255,255,255,0.3);">
+                  PREMIUM</div>
                 {% endif %}
-                
+
                 <img src="{{ product.product_image.url }}" alt="{{ product.title }}">
                 <div class="image-overlay">
                   <button class="overlay-btn quick-view" title="Şəkli böyüt">
@@ -247,20 +263,21 @@
                   <div class="action-buttons">
                     <!-- ADD TO CART -->
                     <form method="POST" action="{% url 'ajax_add_to_cart' %}" class="add-to-cart-form">
-                        {% csrf_token %}
-                        <input type="hidden" name="product_id" value="{{ product.id }}">
-                        <input type="hidden" name="quantity" value="1">
-                        <button type="submit" class="btn-add-cart">
-                            <span>{% translate 'Səbətə at' %}</span>
-                            <div class="cart-icon-wrapper">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                                    <path d="M6 6h15l-1.5 8h-13L6 6z" />
-                                    <circle cx="9" cy="20" r="2" />
-                                    <circle cx="18" cy="20" r="2" />
-                                </svg>
-                                <span class="icon-cross"></span>
-                            </div>
-                        </button>
+                      {% csrf_token %}
+                      <input type="hidden" name="product_id" value="{{ product.id }}">
+                      <input type="hidden" name="quantity" value="1">
+                      <button type="submit" class="btn-add-cart">
+                        <span>{% translate 'Səbətə at' %}</span>
+                        <div class="cart-icon-wrapper">
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.8">
+                            <path d="M6 6h15l-1.5 8h-13L6 6z" />
+                            <circle cx="9" cy="20" r="2" />
+                            <circle cx="18" cy="20" r="2" />
+                          </svg>
+                          <span class="icon-cross"></span>
+                        </div>
+                      </button>
                     </form>
 
                     <!-- WISHLIST -->
@@ -269,7 +286,8 @@
                       <input type="hidden" name="product_id" value="{{ product.id }}">
                       <button class="btn-wishlist">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                          <path
+                            d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                         </svg>
                       </button>
                     </form>
@@ -278,65 +296,65 @@
               </div>
               <div class="stock-status">
                 {% if product.stock > 0 %}
-                  <i class="fas fa-check-circle"></i>
-                  <span>Stokda var</span>
+                <i class="fas fa-check-circle"></i>
+                <span>Stokda var</span>
                 {% else %}
-                  <i class="fas fa-check-circle"></i>
-                  <span>Sisariş verə bilərsiniz</span>
+                <i class="fas fa-check-circle"></i>
+                <span>Sisariş verə bilərsiniz</span>
                 {% endif %}
               </div>
             </div>
             {% endfor %}
-            </div>
-        <!-- Pagination -->
-        {% if is_paginated %}
-        <div class="pagination-container">
-          <div class="pagination">
-            <!-- Əvvəlki səhifə -->
-            {% if page_obj.has_previous %}
-            <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.manufacturer %}&manufacturer={{ request.GET.manufacturer }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.color %}&color={{ request.GET.color }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}"
-              class="page-link prev" title="Previous Page">
-              <i class="fas fa-chevron-left"></i>
-            </a>
-            {% else %}
-            <span class="page-link prev disabled">
-              <i class="fas fa-chevron-left"></i>
-            </span>
-            {% endif %}
-
-            <!-- Nömrələnmiş səhifələr -->
-            {% for i in paginator.page_range %}
-            {% if page_obj.number == i %}
-            <span class="page-link active">{{ i }}</span>
-            {% elif i > page_obj.number|add:'-3' and i < page_obj.number|add:'3' %} <a
-              href="?page={{ i }}{% if request.GET.manufacturer %}&manufacturer={{ request.GET.manufacturer }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.color %}&color={{ request.GET.color }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}"
-              class="page-link">{{ i }}</a>
-              {% endif %}
-              {% endfor %}
-
-              <!-- Növbəti səhifə -->
-              {% if page_obj.has_next %}
-              <a href="?page={{ page_obj.next_page_number }}{% if request.GET.manufacturer %}&manufacturer={{ request.GET.manufacturer }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.color %}&color={{ request.GET.color }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}"
-                class="page-link next" title="Next Page">
-                <i class="fas fa-chevron-right"></i>
+          </div>
+          <!-- Pagination -->
+          {% if is_paginated %}
+          <div class="pagination-container">
+            <div class="pagination">
+              <!-- Əvvəlki səhifə -->
+              {% if page_obj.has_previous %}
+              <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.manufacturer %}&manufacturer={{ request.GET.manufacturer }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.color %}&color={{ request.GET.color }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}"
+                class="page-link prev" title="Previous Page">
+                <i class="fas fa-chevron-left"></i>
               </a>
               {% else %}
-              <span class="page-link next disabled">
-                <i class="fas fa-chevron-right"></i>
+              <span class="page-link prev disabled">
+                <i class="fas fa-chevron-left"></i>
               </span>
               {% endif %}
-          </div>
 
-          <!-- Məlumat paneli -->
-          <div class="pagination-info">
-            {% translate 'Gosterilir' %} <span class="highlight">{{ page_obj.start_index }}</span> -
-            <span class="highlight">{{ page_obj.end_index }}</span> 
-            <span class="highlight">{{ paginator.count }}</span> {% translate 'Məhsullar' %}
+              <!-- Nömrələnmiş səhifələr -->
+              {% for i in paginator.page_range %}
+              {% if page_obj.number == i %}
+              <span class="page-link active">{{ i }}</span>
+              {% elif i > page_obj.number|add:'-3' and i < page_obj.number|add:'3' %} <a
+                href="?page={{ i }}{% if request.GET.manufacturer %}&manufacturer={{ request.GET.manufacturer }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.color %}&color={{ request.GET.color }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}"
+                class="page-link">{{ i }}</a>
+                {% endif %}
+                {% endfor %}
+
+                <!-- Növbəti səhifə -->
+                {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if request.GET.manufacturer %}&manufacturer={{ request.GET.manufacturer }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.color %}&color={{ request.GET.color }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}"
+                  class="page-link next" title="Next Page">
+                  <i class="fas fa-chevron-right"></i>
+                </a>
+                {% else %}
+                <span class="page-link next disabled">
+                  <i class="fas fa-chevron-right"></i>
+                </span>
+                {% endif %}
+            </div>
+
+            <!-- Məlumat paneli -->
+            <div class="pagination-info">
+              {% translate 'Gosterilir' %} <span class="highlight">{{ page_obj.start_index }}</span> -
+              <span class="highlight">{{ page_obj.end_index }}</span>
+              <span class="highlight">{{ paginator.count }}</span> {% translate 'Məhsullar' %}
+            </div>
           </div>
+          {% endif %}
         </div>
-        {% endif %}
       </div>
-    </div>
   </section>
 </main>
 

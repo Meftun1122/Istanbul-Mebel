@@ -54,7 +54,7 @@ class UserRegisterForm(forms.Form):
     
     # ✅ DÜZƏLDİLDİ - required=False, initial=True
     subscribe_newsletter = forms.BooleanField(required=False, initial=True, widget=forms.CheckboxInput(attrs={
-            'class': 'form-check-input'
+        'class': 'form-check-input'
     }))
 
     # 🔹 Email yoxlaması

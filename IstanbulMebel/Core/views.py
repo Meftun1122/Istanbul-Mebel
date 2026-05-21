@@ -19,6 +19,11 @@ class IndexView(ListView):
     context_object_name = 'core'
     paginate_by = 12
 
+    # Bu view, ana səhifədə məhsulları göstərmək üçün istifadə olunur. 
+    # Məhsullar ID-yə görə azalan sırada sıralanır və hər səhifədə 12 məhsul göstərilir. 
+    # Həmçinin, kontekstə xidmətlər və rəylər haqqında məlumatlar əlavə edilir, beləliklə ana səhifədə həm məhsullar, 
+    # həm də xidmətlər və rəylər dinamik olaraq göstərilə bilər. Məhsullar üçün ortalama reytinq və rəy sayı da hesablanır və 
+    # kontekstə əlavə edilir, beləliklə ön tərəfdə bu məlumatları göstərə bilərsiniz.
     def get_queryset(self):
         queryset = super().get_queryset()
         queryset = queryset.order_by('-id')
@@ -75,13 +80,9 @@ class ServiceDetailsView(DetailView):
 
 
 
-
-
-
 def change_language(request):
     lang = request.GET.get('lang')
     next_url = request.META.get('HTTP_REFERER', '/')
-    
     parsed_url = urlparse(next_url)
     path = parsed_url.path
     

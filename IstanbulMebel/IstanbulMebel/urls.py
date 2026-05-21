@@ -25,14 +25,14 @@ from django.views.i18n import set_language
 from Core.views import change_language
 
 
-
+# Dil prefiksli URL-lər
 urlpatterns = [
     path('i18n/', include('django.conf.urls.i18n')),
     path('set-language/', set_language, name='set_language'),
     path('change_language/', change_language, name='change_language'),
 ]
 
-# Dil prefiksli URL-lər
+
 urlpatterns += i18n_patterns(
     path('admin/', admin.site.urls),
     path('', IndexView.as_view(), name='index'),

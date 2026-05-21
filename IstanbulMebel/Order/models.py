@@ -18,7 +18,7 @@ class CartItem(BaseModel):
         verbose_name = 'Səbət Əşyası'
         verbose_name_plural = 'Səbət Əşyaları'
         unique_together = ('user', 'product')
-        ordering = ['created']  # Ən son əlavə edilən ilk sırada
+        ordering = ['created']  
 
     def __str__(self):
         return f"{self.user.email} - {self.product.title} x {self.quantity}"
@@ -47,7 +47,7 @@ class WishlistModel(BaseModel):
         verbose_name = 'İstək Listəsi'
         verbose_name_plural = 'İstək Listəsi'
         unique_together = ('user', 'product')
-        ordering = ['created']  # Ən son əlavə edilən ilk sırada
+        ordering = ['created']  
 
     def __str__(self):
         return f"{self.user.email} - {self.product.title}"

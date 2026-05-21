@@ -2,13 +2,13 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-05 16:04+0400\n"
+"POT-Creation-Date: 2026-05-16 00:12+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,18 +20,18 @@ msgstr ""
 "n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
 "(n%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: .\Core\templates\index.html:10
+#: Core/templates/index.html:10
 msgid "Dizayın və Xoşbəxtliyin birləşdiyi nöqtə..)"
 msgstr "Точка, где встречаются дизайн и счастье..)"
 
-#: .\Core\templates\index.html:11
+#: Core/templates/index.html:11
 msgid ""
 "Daimi Xoşbəxtliyiniz üçün :), Yataq-Qonaq-Mətbəx, Ofis və Yumşaq Mebeller"
 msgstr ""
 "Для вашего постоянного счастья :), Спальня-Гостиная-Кухня, Офис и Мягкая "
 "мебель"
 
-#: .\Core\templates\index.html:23 .\Core\templates\index.html:143
+#: Core/templates/index.html:23 Core/templates/index.html:148
 msgid ""
 "Araşdırmalara görə dolablar və vitrinlər o dövrün ən vacib mebel parçası "
 "hesab edilir, çünki onlar Neolit cəmiyyətində evlərdə simvolik əşyaların "
@@ -59,884 +59,886 @@ msgstr ""
 "показывает эволюцию нашего общества от простого образа жизни к роскошной и "
 "привилегированной жизни."
 
-#: .\Core\templates\index.html:33
+#: Core/templates/index.html:33
 msgid "Premium"
 msgstr "Премиум"
 
-#: .\Core\templates\index.html:83
+#: Core/templates/index.html:85
 msgid "Hələ heç bir məhsul əlavə edilməyib."
 msgstr "Товары еще не добавлены."
 
-#: .\Core\templates\index.html:127
+#: Core/templates/index.html:129
 msgid "Göstərilir"
 msgstr "Показывается"
 
-#: .\Core\templates\index.html:129 .\Core\templates\parts\navbar.html:199
-#: .\Order\templates\carts.html:11 .\Order\templates\wishlist.html:11
-#: .\Products\templates\products.html:11 .\Products\templates\products.html:360
+#: Core/templates/index.html:131 Core/templates/parts/navbar.html:200
+#: Order/templates/carts.html:11 Order/templates/wishlist.html:11
+#: Products/templates/products.html:11 Products/templates/products.html:352
 msgid "Məhsullar"
 msgstr "Товары"
 
-#: .\Core\templates\index.html:178
+#: Core/templates/index.html:146
+#, fuzzy
+#| msgid "Qiymətləndirmə"
+msgid "Xidmətlər"
+msgstr "Оценка"
+
+#: Core/templates/index.html:180
 msgid "Müştərilərimizin fikirləri"
 msgstr "Мнения наших клиентов"
 
-#: .\Core\templates\index.html:195
+#: Core/templates/index.html:197
 msgid "Məhsul:"
 msgstr "Товар:"
 
-#: .\Core\templates\index.html:220
+#: Core/templates/index.html:222
 msgid "Hələ heç bir rəy yoxdur. İlk rəy yazan siz olun!"
 msgstr "Пока нет отзывов. Будьте первым, кто оставит отзыв!"
 
-#: .\Core\templates\index.html:223
+#: Core/templates/index.html:225
 msgid "Rəy yoxdur"
 msgstr "Нет отзывов"
 
-#: .\Core\templates\index.html:224
+#: Core/templates/index.html:226
 msgid "İlk rəyi siz yazın"
 msgstr "Напишите первый отзыв"
 
-#: .\Core\templates\parts\navbar.html:95 .\Products\forms.py:188
+#: Core/templates/parts/navbar.html:96 Products/forms.py:156
 msgid "Axtar"
 msgstr "Поиск"
 
-#: .\Core\templates\parts\navbar.html:108
+#: Core/templates/parts/navbar.html:109
 msgid "İstək Siyahısı"
 msgstr "Список желаний"
 
-#: .\Core\templates\parts\navbar.html:109
-#: .\Core\templates\parts\navbar.html:155
+#: Core/templates/parts/navbar.html:110 Core/templates/parts/navbar.html:156
 msgid "məhsul"
 msgstr "товар"
 
-#: .\Core\templates\parts\navbar.html:134 .\Order\templates\wishlist.html:108
+#: Core/templates/parts/navbar.html:135 Order/templates/wishlist.html:108
 msgid "Wishlist boşdur"
 msgstr "Список желаний пуст"
 
-#: .\Core\templates\parts\navbar.html:140
+#: Core/templates/parts/navbar.html:141
 msgid "Hamısına bax"
 msgstr "Посмотреть все"
 
-#: .\Core\templates\parts\navbar.html:181
+#: Core/templates/parts/navbar.html:182
 msgid "Səbət boşdur"
 msgstr "Корзина пуста"
 
-#: .\Core\templates\parts\navbar.html:188 .\Order\templates\carts.html:55
-#: .\Order\templates\carts.html:137 .\Users\templates\my-account.html:223
+#: Core/templates/parts/navbar.html:189 Order/templates/carts.html:55
+#: Order/templates/carts.html:137 Users/templates/my-account.html:223
 msgid "Cəmi"
 msgstr "Итого"
 
-#: .\Core\templates\parts\navbar.html:191
+#: Core/templates/parts/navbar.html:192
 msgid "Səbətə keç"
 msgstr "Перейти в корзину"
 
-#: .\Core\templates\parts\navbar.html:198
-#: .\Products\templates\portfolio-details.html:12
-#: .\Products\templates\products.html:10 .\Users\templates\login.html:9
+#: Core/templates/parts/navbar.html:199
+#: Products/templates/portfolio-details.html:12
+#: Products/templates/products.html:10 Users/templates/login.html:9
 msgid "Ana səhifə"
 msgstr "Главная"
 
-#: .\Core\templates\parts\navbar.html:201
+#: Core/templates/parts/navbar.html:202
 msgid "Bütün Məhsullar"
 msgstr "Все товары"
 
-#: .\Core\templates\parts\navbar.html:207
-#, fuzzy
-#| msgid "Sifariş Qeydləri"
-msgid "Sifarişlər"
-msgstr "Примечания к заказу"
-
-#: .\Core\templates\parts\navbar.html:209 .\Order\templates\carts.html:12
-#: .\Users\templates\my-account.html:83
-msgid "Sevimlilər"
-msgstr "Избранное"
-
-#: .\Core\templates\parts\navbar.html:211
-msgid "Səbətim"
-msgstr "Моя корзина"
-
-#: .\Core\templates\parts\navbar.html:213
-msgid "Sifariş vermək"
-msgstr "Оформить заказ"
-
-#: .\Core\templates\parts\navbar.html:217
+#: Core/templates/parts/navbar.html:239
 msgid "Servislər"
 msgstr "Услуги"
 
-#: .\Core\templates\parts\navbar.html:219
+#: Core/templates/parts/navbar.html:241
 msgid "Əlaqə saxla"
 msgstr "Свяжитесь с нами"
 
-#: .\Core\templates\parts\navbar.html:222 .\Users\templates\my-account.html:12
-#: .\Users\templates\register.html:13
+#: Core/templates/parts/navbar.html:244 Users/templates/my-account.html:12
+#: Users/templates/register.html:13
 msgid "Qeydiyyat"
 msgstr "Регистрация"
 
-#: .\Core\templates\parts\navbar.html:224
+#: Core/templates/parts/navbar.html:246
 msgid "Qeydiyyatdan Keçin"
 msgstr "Зарегистрироваться"
 
-#: .\Core\templates\parts\navbar.html:227
+#: Core/templates/parts/navbar.html:249
 msgid "Daxil olun"
 msgstr "Войти"
 
-#: .\Core\templates\parts\navbar.html:230 .\Users\templates\login.html:10
-#: .\Users\templates\my-account.html:13 .\Users\templates\register.html:11
+#: Core/templates/parts/navbar.html:252 Users/templates/login.html:10
+#: Users/templates/my-account.html:13 Users/templates/register.html:11
 msgid "Hesabım"
 msgstr "Мой аккаунт"
 
-#: .\Core\templates\parts\navbar.html:233
+#: Core/templates/parts/navbar.html:255
 msgid "Çıxış et"
 msgstr "Выйти"
 
-#: .\IstanbulMebel\settings.py:133
+#: IstanbulMebel/settings.py:135
 msgid "English"
 msgstr "Английский"
 
-#: .\IstanbulMebel\settings.py:134
+#: IstanbulMebel/settings.py:136
 msgid "Azerbaijani"
 msgstr "Азербайджанский"
 
-#: .\IstanbulMebel\settings.py:135
+#: IstanbulMebel/settings.py:137
 msgid "Russian"
 msgstr "Русский"
 
-#: .\Order\templates\carts.html:7
+#: Order/templates/carts.html:7
 msgid "Məhsul Səbətiniz"
 msgstr "Ваша корзина товаров"
 
-#: .\Order\templates\carts.html:10 .\Order\templates\wishlist.html:10
+#: Order/templates/carts.html:10 Order/templates/wishlist.html:10
 msgid "Ana Səhifə"
 msgstr "Главная страница"
 
-#: .\Order\templates\carts.html:13
+#: Order/templates/carts.html:12 Users/templates/my-account.html:83
+msgid "Sevimlilər"
+msgstr "Избранное"
+
+#: Order/templates/carts.html:13
 msgid "Məsul səbətiniz"
 msgstr "Ваша корзина"
 
-#: .\Order\templates\carts.html:24
+#: Order/templates/carts.html:24
 msgid "Alış-veriş səbəti"
 msgstr "Корзина покупок"
 
-#: .\Order\templates\carts.html:42 .\Order\templates\wishlist.html:25
+#: Order/templates/carts.html:42 Order/templates/wishlist.html:25
 msgid "Əşyalar"
 msgstr "Предметы"
 
-#: .\Order\templates\carts.html:51 .\Order\templates\wishlist.html:50
-#: .\Users\templates\my-account.html:129 .\Users\templates\my-account.html:220
+#: Order/templates/carts.html:51 Order/templates/wishlist.html:50
+#: Users/templates/my-account.html:129 Users/templates/my-account.html:220
 msgid "Məhsul"
 msgstr "Товар"
 
-#: .\Order\templates\carts.html:52
-#: .\Products\templates\portfolio-details.html:108
-#: .\Products\templates\products.html:142
+#: Order/templates/carts.html:52 Products/templates/portfolio-details.html:113
+#: Products/templates/products.html:142
 msgid "İstehsalçı"
 msgstr "Производитель"
 
-#: .\Order\templates\carts.html:53 .\Order\templates\checkout.html:329
-#: .\Products\templates\portfolio-details.html:121
-#: .\Users\templates\my-account.html:222
+#: Order/templates/carts.html:53 Order/templates/checkout.html:329
+#: Products/templates/portfolio-details.html:126
+#: Users/templates/my-account.html:222
 msgid "Miqdar"
 msgstr "Количество"
 
-#: .\Order\templates\carts.html:54
+#: Order/templates/carts.html:54
 msgid "Vahid qiymet"
 msgstr "Цена за единицу"
 
-#: .\Order\templates\carts.html:109
+#: Order/templates/carts.html:109
 msgid "Çıxarın"
 msgstr "Удалить"
 
-#: .\Order\templates\carts.html:118 .\Users\templates\my-account.html:284
+#: Order/templates/carts.html:118 Users/templates/my-account.html:284
 msgid "Səbətiniz boşdur"
 msgstr "Ваша корзина пуста"
 
-#: .\Order\templates\carts.html:119
+#: Order/templates/carts.html:119
 msgid "Məhsul əlavə etmək üçün"
 msgstr "Чтобы добавить товары"
 
-#: .\Order\templates\carts.html:119 .\Order\templates\wishlist.html:109
+#: Order/templates/carts.html:119 Order/templates/wishlist.html:109
 msgid "məhsullara"
 msgstr "к товарам"
 
-#: .\Order\templates\carts.html:119
+#: Order/templates/carts.html:119
 msgid "keçin."
 msgstr "перейдите."
 
-#: .\Order\templates\carts.html:129
+#: Order/templates/carts.html:129
 msgid "Cəm:"
 msgstr "Итого:"
 
-#: .\Order\templates\carts.html:134
+#: Order/templates/carts.html:134
 msgid "Pulsuz"
 msgstr "Бесплатно"
 
-#: .\Order\templates\carts.html:147
+#: Order/templates/carts.html:147
 msgid "Səbəti Güncəllə"
 msgstr "Обновить корзину"
 
-#: .\Order\templates\carts.html:151 .\Users\templates\my-account.html:304
+#: Order/templates/carts.html:151 Users/templates/my-account.html:304
 msgid "Sifariş verin"
 msgstr "Оформить заказ"
 
-#: .\Order\templates\checkout.html:49 .\Order\templates\checkout.html:178
-#: .\Products\forms.py:15 .\Products\forms.py:32 .\Products\forms.py:97
-#: .\Products\forms.py:212 .\Users\templates\my-account.html:354
-#: .\Users\templates\register.html:37
+#: Order/templates/checkout.html:49 Order/templates/checkout.html:178
+#: Products/forms.py:15 Products/forms.py:32 Products/forms.py:93
+#: Products/forms.py:174 Users/templates/my-account.html:354
+#: Users/templates/register.html:37
 msgid "Ad"
 msgstr "Имя"
 
-#: .\Order\templates\checkout.html:62 .\Order\templates\checkout.html:192
-#: .\Products\forms.py:20 .\Products\forms.py:33 .\Products\forms.py:107
-#: .\Products\forms.py:217 .\Users\templates\my-account.html:358
-#: .\Users\templates\register.html:44
+#: Order/templates/checkout.html:62 Order/templates/checkout.html:192
+#: Products/forms.py:20 Products/forms.py:33 Products/forms.py:99
+#: Products/forms.py:179 Users/templates/my-account.html:358
+#: Users/templates/register.html:44
 msgid "Soyad"
 msgstr "Фамилия"
 
-#: .\Order\templates\checkout.html:79 .\Order\templates\checkout.html:210
-#: .\Users\templates\contact-us.html:39 .\Users\templates\contact-us.html:111
+#: Order/templates/checkout.html:79 Order/templates/checkout.html:210
+#: Users/templates/contact-us.html:39 Users/templates/contact-us.html:111
 msgid "E-poçt"
 msgstr "Эл. почта"
 
-#: .\Order\templates\checkout.html:96 .\Order\templates\checkout.html:260
-#: .\Users\templates\contact-us.html:21
+#: Order/templates/checkout.html:96 Order/templates/checkout.html:260
+#: Users/templates/contact-us.html:21
 msgid "Ünvan"
 msgstr "Адрес"
 
-#: .\Order\templates\checkout.html:113 .\Order\templates\checkout.html:243
+#: Order/templates/checkout.html:113 Order/templates/checkout.html:243
 msgid "Şəhər"
 msgstr "Город"
 
-#: .\Order\templates\checkout.html:143 .\Order\templates\checkout.html:226
-#: .\Users\templates\contact-us.html:30 .\Users\templates\my-account.html:371
-#: .\Users\templates\register.html:84
+#: Order/templates/checkout.html:143 Order/templates/checkout.html:226
+#: Users/templates/contact-us.html:30 Users/templates/my-account.html:371
+#: Users/templates/register.html:84
 msgid "Telefon"
 msgstr "Телефон"
 
-#: .\Order\templates\checkout.html:161
+#: Order/templates/checkout.html:161
 msgid "Fərqli ünvana göndər?"
 msgstr "Отправить на другой адрес?"
 
-#: .\Order\templates\checkout.html:171
+#: Order/templates/checkout.html:171
 msgid "Göndəriləcək Ünvan"
 msgstr "Адрес доставки"
 
-#: .\Order\templates\checkout.html:279
+#: Order/templates/checkout.html:279
 msgid "Sifariş Qeydləri"
 msgstr "Примечания к заказу"
 
-#: .\Order\templates\checkout.html:290
+#: Order/templates/checkout.html:290
 msgid "Sifarişi Təsdiq Et"
 msgstr "Подтвердить заказ"
 
-#: .\Order\templates\checkout.html:298
+#: Order/templates/checkout.html:298
 msgid "Sifariş Uğurla Tamamlandı!"
 msgstr "Заказ успешно завершен!"
 
-#: .\Order\templates\checkout.html:299
+#: Order/templates/checkout.html:299
 msgid "Sifarişiniz qəbul edildi. Təşəkkür edirik!"
 msgstr "Ваш заказ получен. Спасибо!"
 
-#: .\Order\templates\checkout.html:304
+#: Order/templates/checkout.html:304
 msgid "Yeni Sifariş"
 msgstr "Новый заказ"
 
-#: .\Order\templates\checkout.html:312
+#: Order/templates/checkout.html:312
 msgid "Sifarişiniz"
 msgstr "Ваш заказ"
 
-#: .\Order\templates\checkout.html:333 .\Users\templates\my-account.html:164
+#: Order/templates/checkout.html:333 Users/templates/my-account.html:164
 msgid "Stokda var"
 msgstr "В наличии"
 
-#: .\Order\templates\checkout.html:333
+#: Order/templates/checkout.html:333
 msgid "Stokda yox"
 msgstr "Нет в наличии"
 
-#: .\Order\templates\checkout.html:347
+#: Order/templates/checkout.html:347
 msgid "Məhsullara keç"
 msgstr "Перейти к товарам"
 
-#: .\Order\templates\checkout.html:353
+#: Order/templates/checkout.html:353
 msgid "Çatdırılma:"
 msgstr "Доставка:"
 
-#: .\Order\templates\checkout.html:363
+#: Order/templates/checkout.html:363
 msgid "Ümumi:"
 msgstr "Итого:"
 
-#: .\Order\templates\wishlist.html:7
+#: Order/templates/wishlist.html:7
 msgid "Sevimli Məhsullar"
 msgstr "Избранные товары"
 
-#: .\Order\templates\wishlist.html:12 .\Users\templates\my-account.html:88
+#: Order/templates/wishlist.html:12 Users/templates/my-account.html:88
 msgid "Səbət"
 msgstr "Корзина"
 
-#: .\Order\templates\wishlist.html:13
+#: Order/templates/wishlist.html:13
 msgid "Sifariş"
 msgstr "Заказ"
 
-#: .\Order\templates\wishlist.html:51
+#: Order/templates/wishlist.html:51
 msgid "Stock"
 msgstr "Сток"
 
-#: .\Order\templates\wishlist.html:52 .\Users\templates\my-account.html:130
-#: .\Users\templates\my-account.html:221
+#: Order/templates/wishlist.html:52 Users/templates/my-account.html:130
+#: Users/templates/my-account.html:221
 msgid "Qiymət"
 msgstr "Цена"
 
-#: .\Order\templates\wishlist.html:109
+#: Order/templates/wishlist.html:109
 msgid "Bəyəndiyiniz məhsulları əlavə etmək üçün"
 msgstr "Чтобы добавить понравившиеся товары"
 
-#: .\Order\templates\wishlist.html:109
+#: Order/templates/wishlist.html:109
 msgid "keçin"
 msgstr "перейдите в"
 
-#: .\Products\forms.py:25
+#: Products/forms.py:25
 msgid "Rəyinizi burada yazın..."
 msgstr "Напишите ваш отзыв здесь..."
 
-#: .\Products\forms.py:34
+#: Products/forms.py:34
 msgid "Rəyiniz"
 msgstr "Ваш отзыв"
 
-#: .\Products\forms.py:35
+#: Products/forms.py:35
 msgid "Qiymətləndirmə"
 msgstr "Оценка"
 
-#: .\Products\forms.py:39
+#: Products/forms.py:39
 msgid "Ad daxil edilməlidir"
 msgstr "Имя должно быть введено"
 
-#: .\Products\forms.py:40
+#: Products/forms.py:40
 msgid "Ad çox uzundur (maksimum 100 simvol)"
 msgstr "Имя слишком длинное (максимум 100 символов)"
 
-#: .\Products\forms.py:43
+#: Products/forms.py:43
 msgid "Soyad daxil edilməlidir"
 msgstr "Фамилия должна быть введена"
 
-#: .\Products\forms.py:44
+#: Products/forms.py:44
 msgid "Soyad çox uzundur (maksimum 100 simvol)"
 msgstr "Фамилия слишком длинная (максимум 100 символов)"
 
-#: .\Products\forms.py:47
+#: Products/forms.py:47
 msgid "Rəy mətni daxil edilməlidir"
 msgstr "Текст отзыва должен быть введен"
 
-#: .\Products\forms.py:50
+#: Products/forms.py:50
 msgid "Qiymətləndirmə seçilməlidir"
 msgstr "Оценка должна быть выбрана"
 
-#: .\Products\forms.py:62
+#: Products/forms.py:62
 msgid "Adınızı daxil edin"
 msgstr "Введите ваше имя"
 
-#: .\Products\forms.py:63
+#: Products/forms.py:63
 msgid "Soyadınızı daxil edin"
 msgstr "Введите вашу фамилию"
 
-#: .\Products\forms.py:64
+#: Products/forms.py:64
 msgid "Rəyinizi yazın..."
 msgstr "Напишите ваш отзыв..."
 
-#: .\Products\forms.py:69
+#: Products/forms.py:69
 msgid "Qiymətləndirmə 1-5 arasında olmalıdır!"
 msgstr "Оценка должна быть от 1 до 5!"
 
-#: .\Products\forms.py:75
+#: Products/forms.py:75
 msgid "Ad çox qısadır (minimum 2 simvol)"
 msgstr "Имя слишком короткое (минимум 2 символа)"
 
-#: .\Products\forms.py:81
+#: Products/forms.py:81
 msgid "Soyad çox qısadır (minimum 2 simvol)"
 msgstr "Фамилия слишком короткая (минимум 2 символа)"
 
-#: .\Products\forms.py:94
+#: Products/forms.py:91
 msgid "Adınız (istəyə bağlı)"
 msgstr "Ваше имя (необязательно)"
 
-#: .\Products\forms.py:104
+#: Products/forms.py:97
 msgid "Soyadınız (istəyə bağlı)"
 msgstr "Ваша фамилия (необязательно)"
 
-#: .\Products\forms.py:112
+#: Products/forms.py:103
 msgid "Cavabınızı yazın..."
 msgstr "Напишите ваш ответ..."
 
-#: .\Products\forms.py:116
+#: Products/forms.py:106
 msgid "Cavab Mətni"
 msgstr "Текст ответа"
 
-#: .\Products\forms.py:118
+#: Products/forms.py:106
 msgid "Cavab mətni daxil edilməlidir"
 msgstr "Текст ответа должен быть введен"
 
-#: .\Products\forms.py:137
+#: Products/forms.py:120
 msgid "Cavab çox qısadır (minimum 2 simvol)"
 msgstr "Ответ слишком короткий (минимум 2 символа)"
 
-#: .\Products\forms.py:143
+#: Products/forms.py:126
 msgid "İstifadəçi"
 msgstr "Пользователь"
 
-#: .\Products\forms.py:152
+#: Products/forms.py:135
 msgid "Ən Yenilər"
 msgstr "Самые новые"
 
-#: .\Products\forms.py:153
+#: Products/forms.py:136
 msgid "Ən Köhnələr"
 msgstr "Самые старые"
 
-#: .\Products\forms.py:154
+#: Products/forms.py:137
 msgid "Ən Yüksək Reytinq"
 msgstr "Самые высокие оценки"
 
-#: .\Products\forms.py:155
+#: Products/forms.py:138
 msgid "Ən Aşağı Reytinq"
 msgstr "Самые низкие оценки"
 
-#: .\Products\forms.py:158
+#: Products/forms.py:141
 msgid "Bütün Reytinqlər"
 msgstr "Все оценки"
 
-#: .\Products\forms.py:168
+#: Products/forms.py:145
 msgid "Sırala"
 msgstr "Сортировать"
 
-#: .\Products\forms.py:178
+#: Products/forms.py:150
 msgid "Reytinqə görə filtrele"
 msgstr "Фильтровать по оценке"
 
-#: .\Products\forms.py:185
+#: Products/forms.py:154
 msgid "Rəylərdə axtar..."
 msgstr "Поиск в отзывах..."
 
-#: .\Products\forms.py:198
+#: Products/forms.py:161
 msgid "Yalnız aktivləri göstər"
 msgstr "Показывать только активные"
 
-#: .\Products\forms.py:222
+#: Products/forms.py:184
 msgid "Rəyiniz..."
 msgstr "Ваш отзыв..."
 
-#: .\Products\forms.py:237
+#: Products/forms.py:199
 msgid "Ad tələb olunur"
 msgstr "Имя обязательно"
 
-#: .\Products\forms.py:239
+#: Products/forms.py:201
 msgid "Soyad tələb olunur"
 msgstr "Фамилия обязательна"
 
-#: .\Products\forms.py:241
+#: Products/forms.py:203
 msgid "Rəy mətni tələb olunur"
 msgstr "Текст отзыва обязателен"
 
-#: .\Products\forms.py:243
+#: Products/forms.py:205
 msgid "Qiymətləndirmə tələb olunur"
 msgstr "Оценка обязательна"
 
-#: .\Products\forms.py:256
+#: Products/forms.py:218
 msgid "Seçilənləri aktiv et"
 msgstr "Активировать выбранные"
 
-#: .\Products\forms.py:257
+#: Products/forms.py:219
 msgid "Seçilənləri deaktiv et"
 msgstr "Деактивировать выбранные"
 
-#: .\Products\forms.py:258
+#: Products/forms.py:220
 msgid "Seçilənləri sil"
 msgstr "Удалить выбранные"
 
-#: .\Products\forms.py:283
+#: Products/forms.py:233
 msgid "Başlanğıc Tarix"
 msgstr "Дата начала"
 
-#: .\Products\forms.py:292
+#: Products/forms.py:238
 msgid "Bitiş Tarix"
 msgstr "Дата окончания"
 
-#: .\Products\forms.py:299
+#: Products/forms.py:240
 msgid "Məhsula görə filtrele"
 msgstr "Фильтровать по товару"
 
-#: .\Products\templates\portfolio-details.html:9
+#: Products/templates/portfolio-details.html:9
 msgid "Məhsul detayları"
 msgstr "Детали товара"
 
-#: .\Products\templates\portfolio-details.html:13
+#: Products/templates/portfolio-details.html:13
 msgid "Məhsulun detallı səhifəsi"
 msgstr "Детальная страница товара"
 
-#: .\Products\templates\portfolio-details.html:84
+#: Products/templates/portfolio-details.html:84
 msgid "Məhsul haqqinda Məlumat"
 msgstr "Информация о товаре"
 
-#: .\Products\templates\portfolio-details.html:89
+#: Products/templates/portfolio-details.html:89
 msgid "Kateqoriya"
 msgstr "Категория"
 
-#: .\Products\templates\portfolio-details.html:93
+#: Products/templates/portfolio-details.html:93
 msgid "Rəng"
 msgstr "Цвет"
 
-#: .\Products\templates\portfolio-details.html:101
+#: Products/templates/portfolio-details.html:105
 msgid "Rəng yoxdur!"
 msgstr "Нет цвета!"
 
-#: .\Products\templates\portfolio-details.html:116
+#: Products/templates/portfolio-details.html:121
 msgid "Göstərilməyib"
 msgstr "Не указано"
 
-#: .\Products\templates\portfolio-details.html:134
+#: Products/templates/portfolio-details.html:139
 msgid "Xüsusi qiymət"
 msgstr "Особая цена"
 
-#: .\Products\templates\portfolio-details.html:140
+#: Products/templates/portfolio-details.html:145
 msgid "PREMIUM"
 msgstr "ПРЕМИУМ"
 
-#: .\Products\templates\portfolio-details.html:147
+#: Products/templates/portfolio-details.html:152
 msgid "Köhnə qiymət:"
 msgstr "Старая цена:"
 
-#: .\Products\templates\portfolio-details.html:158
-#: .\Products\templates\products.html:280
+#: Products/templates/portfolio-details.html:163
+#: Products/templates/products.html:270
 msgid "Səbətə at"
 msgstr "В корзину"
 
-#: .\Products\templates\portfolio-details.html:184
+#: Products/templates/portfolio-details.html:189
 msgid "Exercitationem repudiandae officiis neque suscipit"
 msgstr "Exercitationem repudiandae officiis neque suscipit"
 
-#: .\Products\templates\portfolio-details.html:201
+#: Products/templates/portfolio-details.html:206
 msgid "Kommentariya"
 msgstr "Комментарий"
 
-#: .\Products\templates\portfolio-details.html:203
+#: Products/templates/portfolio-details.html:208
 msgid "Fikirlərinizi paylaşın"
 msgstr "Поделитесь своими мыслями"
 
-#: .\Products\templates\portfolio-details.html:210
-#: .\Products\templates\portfolio-details.html:323
+#: Products/templates/portfolio-details.html:215
+#: Products/templates/portfolio-details.html:328
 msgid "Rəylər"
 msgstr "Отзывы"
 
-#: .\Products\templates\portfolio-details.html:223
+#: Products/templates/portfolio-details.html:228
 msgid "Müzakirə əlavə edin"
 msgstr "Добавить обсуждение"
 
-#: .\Products\templates\portfolio-details.html:224
+#: Products/templates/portfolio-details.html:229
 msgid "Fikirlərinizi paylaşın :)"
 msgstr "Поделитесь своими мыслями :)"
 
-#: .\Products\templates\portfolio-details.html:260
+#: Products/templates/portfolio-details.html:265
 msgid "Reytinqiniz:"
 msgstr "Ваша оценка:"
 
-#: .\Products\templates\portfolio-details.html:298
+#: Products/templates/portfolio-details.html:303
 msgid "Cavab yazırsınız"
 msgstr "Вы пишете ответ"
 
-#: .\Products\templates\portfolio-details.html:300
-#: .\Users\templates\my-account.html:414
+#: Products/templates/portfolio-details.html:305
+#: Users/templates/my-account.html:414
 msgid "Ləğv et"
 msgstr "Отмена"
 
-#: .\Products\templates\portfolio-details.html:313
+#: Products/templates/portfolio-details.html:318
 msgid "Tətbiq et"
 msgstr "Применить"
 
-#: .\Products\templates\portfolio-details.html:328
+#: Products/templates/portfolio-details.html:333
 msgid "Ən yeni"
 msgstr "Самые новые"
 
-#: .\Products\templates\portfolio-details.html:340
+#: Products/templates/portfolio-details.html:345
 msgid "Hələ şərh yoxdur"
 msgstr "Пока нет комментариев"
 
-#: .\Products\templates\portfolio-details.html:341
+#: Products/templates/portfolio-details.html:346
 msgid "İlk şərh yazan siz olun!"
 msgstr "Будьте первым, кто оставит комментарий!"
 
-#: .\Products\templates\portfolio-details.html:350
+#: Products/templates/portfolio-details.html:355
 msgid "Daha çox şərh yükləyin"
 msgstr "Загрузить больше комментариев"
 
-#: .\Products\templates\products.html:7
+#: Products/templates/products.html:7
 msgid "Bütün Mebellər"
 msgstr "Вся мебель"
 
-#: .\Products\templates\products.html:29
+#: Products/templates/products.html:29
 msgid "Mebelləri filterlə"
 msgstr "Фильтровать мебель"
 
-#: .\Products\templates\products.html:37
+#: Products/templates/products.html:37
 msgid "Qiymət Filteri"
 msgstr "Фильтр по цене"
 
-#: .\Products\templates\products.html:88
+#: Products/templates/products.html:88
 msgid "Tətbiq"
 msgstr "Применить"
 
-#: .\Products\templates\products.html:91
+#: Products/templates/products.html:91
 msgid "Sıfırla"
 msgstr "Сбросить"
 
-#: .\Products\templates\products.html:101
+#: Products/templates/products.html:101
 msgid "Kateqoriyalar"
 msgstr "Категории"
 
-#: .\Products\templates\products.html:108
+#: Products/templates/products.html:108
 msgid "Kataqoriyalar Yoxdur"
 msgstr "Нет категорий"
 
-#: .\Products\templates\products.html:167
+#: Products/templates/products.html:167
 msgid "Rənglər"
 msgstr "Цвета"
 
-#: .\Products\templates\products.html:193
-msgid "Premium Məhsullar"
-msgstr "Премиум товары"
+#: Products/templates/products.html:197
+msgid "Rənglər mövcud deyil!"
+msgstr ""
 
-#: .\Products\templates\products.html:208
-msgid "Məhsulları axtarın..."
-msgstr "Искать товары..."
-
-#: .\Products\templates\products.html:358
+#: Products/templates/products.html:350
 msgid "Gosterilir"
 msgstr "Показывается"
 
-#: .\Users\templates\contact-us.html:10
+#: Users/templates/contact-us.html:10
 msgid "Bizimlə"
 msgstr "Свяжитесь с нами"
 
-#: .\Users\templates\contact-us.html:10
+#: Users/templates/contact-us.html:10
 msgid "Əlaqə"
 msgstr "Контакты"
 
-#: .\Users\templates\contact-us.html:11
+#: Users/templates/contact-us.html:11
 msgid ""
 "Sual və ya təklifiniz varsa, bizə yazın. Ən qısa zamanda cavablandıracağıq."
 msgstr ""
 "Если у вас есть вопросы или предложения, напишите нам. Мы ответим в "
 "кратчайшие сроки."
 
-#: .\Users\templates\contact-us.html:54
+#: Users/templates/contact-us.html:54
 msgid "Xəritəni böyütmək üçün ctrl + scroll düyməsindən istifadə edin"
 msgstr "Используйте ctrl + прокрутку для увеличения карты"
 
-#: .\Users\templates\contact-us.html:63
+#: Users/templates/contact-us.html:63
 msgid "Bizə yazın"
 msgstr "Напишите нам"
 
-#: .\Users\templates\contact-us.html:77
+#: Users/templates/contact-us.html:77
 msgid "Adınız"
 msgstr "Ваше имя"
 
-#: .\Users\templates\contact-us.html:93
+#: Users/templates/contact-us.html:93
 msgid "Soyadınız"
 msgstr "Ваша фамилия"
 
-#: .\Users\templates\contact-us.html:128
+#: Users/templates/contact-us.html:128
 msgid "Mövzu"
 msgstr "Тема"
 
-#: .\Users\templates\contact-us.html:145
+#: Users/templates/contact-us.html:145
 msgid "Mesajınız"
 msgstr "Ваше сообщение"
 
-#: .\Users\templates\contact-us.html:169
+#: Users/templates/contact-us.html:169
 msgid "Mesajı Göndər"
 msgstr "Отправить сообщение"
 
-#: .\Users\templates\contact-us.html:177
+#: Users/templates/contact-us.html:177
 msgid "Məlumatlarınız təhlükəsizdir"
 msgstr "Ваши данные в безопасности"
 
-#: .\Users\templates\contact-us.html:192
+#: Users/templates/contact-us.html:192
 msgid "Mesajınız Göndərildi!"
 msgstr "Ваше сообщение отправлено!"
 
-#: .\Users\templates\contact-us.html:193
+#: Users/templates/contact-us.html:193
 msgid "Bağla"
 msgstr "Закрыть"
 
-#: .\Users\templates\login.html:22
+#: Users/templates/login.html:22
 msgid "Hesabənızı daxil edin"
 msgstr "Войдите в свой аккаунт"
 
-#: .\Users\templates\login.html:37
+#: Users/templates/login.html:37
 msgid "E-mail addresiniz"
 msgstr "Ваш адрес электронной почты"
 
-#: .\Users\templates\login.html:47 .\Users\templates\register.html:66
+#: Users/templates/login.html:47 Users/templates/register.html:66
 msgid "Parol"
 msgstr "Пароль"
 
-#: .\Users\templates\my-account.html:7
+#: Users/templates/my-account.html:7
 msgid "Hesab Məlumatları"
 msgstr "Информация об аккаунте"
 
-#: .\Users\templates\my-account.html:10 .\Users\templates\register.html:10
+#: Users/templates/my-account.html:10 Users/templates/register.html:10
 msgid "Ana sehifə"
 msgstr "Главная"
 
-#: .\Users\templates\my-account.html:11 .\Users\templates\register.html:12
-#: .\Users\templates\register.html:119
+#: Users/templates/my-account.html:11 Users/templates/register.html:12
+#: Users/templates/register.html:119
 msgid "Daxil ol"
 msgstr "Войти"
 
-#: .\Users\templates\my-account.html:93
+#: Users/templates/my-account.html:93
 msgid "Profil"
 msgstr "Профиль"
 
-#: .\Users\templates\my-account.html:96
+#: Users/templates/my-account.html:96
 msgid "Cıxış"
 msgstr "Выйти"
 
-#: .\Users\templates\my-account.html:116
+#: Users/templates/my-account.html:116
 msgid "Sevimli məhsullar"
 msgstr "Избранные товары"
 
-#: .\Users\templates\my-account.html:131
+#: Users/templates/my-account.html:131
 msgid "Stok"
 msgstr "Сток"
 
-#: .\Users\templates\my-account.html:132
+#: Users/templates/my-account.html:132
 msgid "Tarix"
 msgstr "Дата"
 
-#: .\Users\templates\my-account.html:133 .\Users\templates\my-account.html:224
+#: Users/templates/my-account.html:133 Users/templates/my-account.html:224
 msgid "Hərəkət"
 msgstr "Действие"
 
-#: .\Users\templates\my-account.html:166
+#: Users/templates/my-account.html:166
 msgid "Stokda yoxdur"
 msgstr "Нет в наличии"
 
-#: .\Users\templates\my-account.html:193
+#: Users/templates/my-account.html:193
 msgid "Sevimlilər siyahınız boşdur"
 msgstr "Ваш список избранного пуст"
 
-#: .\Users\templates\my-account.html:194 .\Users\templates\my-account.html:285
+#: Users/templates/my-account.html:194 Users/templates/my-account.html:285
 msgid "Alış-verişə dəvam edin"
 msgstr "Продолжить покупки"
 
-#: .\Users\templates\my-account.html:207
+#: Users/templates/my-account.html:207
 msgid "Məhsul səbəti"
 msgstr "Корзина товаров"
 
-#: .\Users\templates\my-account.html:294
+#: Users/templates/my-account.html:294
 msgid "Cəmi:"
 msgstr "Итого:"
 
-#: .\Users\templates\my-account.html:305
+#: Users/templates/my-account.html:305
 msgid "Alış-verişə davam edin"
 msgstr "Продолжить покупки"
 
-#: .\Users\templates\my-account.html:313
+#: Users/templates/my-account.html:313
 msgid "Profili Redakde et"
 msgstr "Редактировать профиль"
 
-#: .\Users\templates\my-account.html:314
+#: Users/templates/my-account.html:314
 msgid "İstifadəçi məlumatlarınızı güncəlləyin"
 msgstr "Обновите свои пользовательские данные"
 
-#: .\Users\templates\my-account.html:335
+#: Users/templates/my-account.html:335
 msgid "Profil şəkili"
 msgstr "Фото профиля"
 
-#: .\Users\templates\my-account.html:339
+#: Users/templates/my-account.html:339
 msgid "Yeni Şəkili yüklə"
 msgstr "Загрузить новое фото"
 
-#: .\Users\templates\my-account.html:344
+#: Users/templates/my-account.html:344
 msgid "Şəkili sil"
 msgstr "Удалить фото"
 
-#: .\Users\templates\my-account.html:365
+#: Users/templates/my-account.html:365
 msgid "E-mail"
 msgstr "Эл. почта"
 
-#: .\Users\templates\my-account.html:367
+#: Users/templates/my-account.html:367
 msgid "E-poçt dəyişdirilə bilməz"
 msgstr "Эл. почту нельзя изменить"
 
-#: .\Users\templates\my-account.html:378
+#: Users/templates/my-account.html:378
 msgid "Doğum tarixi"
 msgstr "Дата рождения"
 
-#: .\Users\templates\my-account.html:383
+#: Users/templates/my-account.html:383
 msgid "Cinsiyyəy"
 msgstr "Пол"
 
-#: .\Users\templates\my-account.html:385
+#: Users/templates/my-account.html:385
 msgid "Male"
 msgstr "Мужской"
 
-#: .\Users\templates\my-account.html:386
+#: Users/templates/my-account.html:386
 msgid "Female"
 msgstr "Женский"
 
-#: .\Users\templates\my-account.html:387
+#: Users/templates/my-account.html:387
 msgid "Other"
 msgstr "Другой"
 
-#: .\Users\templates\my-account.html:397
+#: Users/templates/my-account.html:397
 msgid "Xəbər büllentinə abonə olun"
 msgstr "Подписаться на рассылку новостей"
 
-#: .\Users\templates\my-account.html:399
+#: Users/templates/my-account.html:399
 msgid "Yeni məhsullar və kampaniyalar haqqında yeniləmələr alın"
 msgstr "Получайте обновления о новых товарах и кампаниях"
 
-#: .\Users\templates\my-account.html:406
+#: Users/templates/my-account.html:406
 msgid "Təkliflər və promosyonlar almaq"
 msgstr "Получать предложения и промоакции"
 
-#: .\Users\templates\my-account.html:408
+#: Users/templates/my-account.html:408
 msgid "E-poçt vasitəsilə xüsusi təkliflər və endirimlər əldə edin"
 msgstr "Получайте специальные предложения и скидки по электронной почте"
 
-#: .\Users\templates\my-account.html:417
+#: Users/templates/my-account.html:417
 msgid "Profil məlumatlarını yenilə"
 msgstr "Обновить информацию профиля"
 
-#: .\Users\templates\register.html:7
+#: Users/templates/register.html:7
 msgid "Qeydiyyatdan keçin"
 msgstr "Зарегистрироваться"
 
-#: .\Users\templates\register.html:22
+#: Users/templates/register.html:22
 msgid "Hesab yaradın"
 msgstr "Создать аккаунт"
 
-#: .\Users\templates\register.html:23
+#: Users/templates/register.html:23
 msgid "Bu gün bizə qoşulun! Yalnız bir dəqiqə çəkir."
 msgstr "Присоединяйтесь к нам сегодня! Это займет всего минуту."
 
-#: .\Users\templates\register.html:55
+#: Users/templates/register.html:55
 msgid "Email Ünvaniniz"
 msgstr "Ваш адрес электронной почты"
 
-#: .\Users\templates\register.html:73
+#: Users/templates/register.html:73
 msgid "Parolu Testiqlə"
 msgstr "Подтвердите пароль"
 
-#: .\Users\templates\register.html:91
+#: Users/templates/register.html:91
 msgid "Doğum Tarixi"
 msgstr "Дата рождения"
 
-#: .\Users\templates\register.html:102
+#: Users/templates/register.html:102
 msgid "Cinsiyyət"
 msgstr "Пол"
 
-#: .\Users\templates\register.html:117
+#: Users/templates/register.html:117
 msgid "Hesabı yarat"
 msgstr "Создать аккаунт"
 
-#: .\Users\templates\register.html:119
+#: Users/templates/register.html:119
 msgid "Hesabınız mövcuddur?"
 msgstr "Уже есть аккаунт?"
+
+#, fuzzy
+#~| msgid "Sifariş Qeydləri"
+#~ msgid "Sifarişlər"
+#~ msgstr "Примечания к заказу"
+
+#~ msgid "Səbətim"
+#~ msgstr "Моя корзина"
+
+#~ msgid "Sifariş vermək"
+#~ msgstr "Оформить заказ"
+
+#~ msgid "Premium Məhsullar"
+#~ msgstr "Премиум товары"
+
+#~ msgid "Məhsulları axtarın..."
+#~ msgstr "Искать товары..."

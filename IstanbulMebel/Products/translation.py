@@ -11,8 +11,8 @@ class ManufacturerTranslation(TranslationOptions):
 
 @register(ColorModel)
 class ColorTranslation(TranslationOptions):
-    fields = ('title',)
+    fields = ('title',)  # BU VACİBDİR!
 
 @register(ProductModel)
 class ProductTranslation(TranslationOptions):
-    fields = ('title', 'description', 'text',)
+    fields = ('title', 'description', 'text')

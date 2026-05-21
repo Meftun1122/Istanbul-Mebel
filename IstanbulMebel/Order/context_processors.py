@@ -46,9 +46,9 @@ def mini_cart(request):
                 'id': item.id,
                 'product': item.product,
                 'product_id': item.product.id,
-                'title': item.product.title,  # 🔴 DÜZƏLDİ: title əlavə edildi
+                'title': item.product.title, 
                 'product_title': item.product.title,
-                'image': image_url,  # 🔴 DÜZƏLDİ: image əlavə edildi
+                'image': image_url,  
                 'product_image': image_url,
                 'price': price,
                 'quantity': item.quantity,
@@ -70,9 +70,9 @@ def mini_cart(request):
                 'id': item.id,
                 'product': item.product,
                 'product_id': item.product.id,
-                'title': item.product.title,  # 🔴 DÜZƏLDİ: title əlavə edildi
+                'title': item.product.title,  
                 'product_title': item.product.title,
-                'image': image_url,  # 🔴 DÜZƏLDİ: image əlavə edildi
+                'image': image_url,  
                 'product_image': image_url,
                 'price': price,
             })

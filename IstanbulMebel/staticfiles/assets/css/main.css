@@ -1643,43 +1643,131 @@ button[type="submit"]:focus:not(:active)::after {
 
 
 
+/* ===== COLOR WRAPPER ===== */
+.color-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 
-/* Bütün rənglər */
-.color-box.qirmizi { background-color: #ff0000; }      /* Qırmızı */
-.color-box.goy { background-color: #0000ff; }     /* Göy */
-.color-box.yashil { background-color: #00ff00; }    /* Yaşıl */
-.color-box.sari { background-color: #ffff00; }   /* Sarı */
-.color-box.narinci { background-color: #ffa500; }   /* Narıncı */
-.color-box.benovsheyi { background-color: #800080; }   /* Bənövşəyi */
-.color-box.chehrayi { background-color: #ffc0cb; }     /* Çəhrayı */
-.color-box.qara { background-color: #000000; }    /* Qara */
-.color-box.ag { background-color: #ffffff; 
-  border: 1px solid #cccccc; 
-}                                                   /* Ağ */
-.color-box.boz { background-color: #808080; }     /* Boz */
-.color-box.tundgoy { background-color: #00008b; } /* Tünd göy */
-.color-box.tundyashil { background-color: #006400; } /* Tünd yaşıl */
-.color-box.tundqirmizi { background-color: #8b0000; }  /* Tünd qırmızı */
-.color-box.qehveyi { background-color: #a52a2a; }    /* Qəhvəyi */
-.color-box.bej { background-color: #f5f5dc; }    /* Bej */
-.color-box.qizili { background-color: #ffd700; }     /* Qızılı */
-.color-box.gumushu { background-color: #c0c0c0; }   /* Gümüşü */
-.color-box.firuzeyi { background-color: #40e0d0; } /* Firuzəyi */
-.color-box.magenta { background-color: #ff00ff; }  /* Magenta */
-.color-box.aciqyashil { background-color: #00ff00; }     /* Açıq yaşıl */
-.color-box.maviyashil { background-color: #00ffff; }     /* Mavi-yaşıl */
-.color-box.benovsheyi { background-color: #ee82ee; }   /* Bənövşəyi */
-.color-box.indiqo { background-color: #4b0082; }   /* İndiqo */
-.color-box.mercan { background-color: #ff7f50; }    /* Mərcan */
-.color-box.somon { background-color: #fa8072; }   /* Somon */
-.color-box.xaki { background-color: #f0e68c; }    /* Xaki */
-.color-box.gavali { background-color: #dda0dd; }     /* Gavalı */
-.color-box.bugdayi { background-color: #f5deb3; }    /* Buğdayı */
-.color-box.lavanda { background-color: #e6e6fa; } /* Lavanda */
+.color-text {
+  font-weight: 600;
+  color: #0f172a;
+  font-size: 16px;
+}
 
+/* ===== DÜZBUCAQLI RENG QUTUSU ===== */
+.color-box {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: inline-block;
+  border: 2px solid #e2e8f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+}
 
+/* SADƏCƏ color-circle üçün rənglər */
+.color-circle.qirmizi { background-color: #ff0000; }
+.color-circle.goy { background-color: #0000ff; }
+.color-circle.yashil { background-color: #00ff00; }
+.color-circle.sari { background-color: #ffff00; }
+.color-circle.narinci { background-color: #ffa500; }
+.color-circle.benovsheyi { background-color: #800080; }
+.color-circle.chehrayi { background-color: #ffc0cb; }
+.color-circle.qara { background-color: #000000; }
+.color-circle.ag { background-color: #ffffff; border: 1px solid #cccccc; }
+.color-circle.boz { background-color: #808080; }
+.color-circle.tundgoy { background-color: #00008b; }
+.color-circle.tundyashil { background-color: #006400; }
+.color-circle.tundqirmizi { background-color: #8b0000; }
+.color-circle.qehveyi { background-color: #a52a2a; }
+.color-circle.bej { background-color: #f5f5dc; }
+.color-circle.qizili { background-color: #ffd700; }
+.color-circle.gumushu { background-color: #c0c0c0; }
+.color-circle.firuzeyi { background-color: #40e0d0; }
+.color-circle.magenta { background-color: #ff00ff; }
+.color-circle.aciqyashil { background-color: #90ee90; }
+.color-circle.maviyashil { background-color: #00ffff; }
+.color-circle.indiqo { background-color: #4b0082; }
+.color-circle.mercan { background-color: #ff7f50; }
+.color-circle.somon { background-color: #fa8072; }
+.color-circle.xaki { background-color: #bdb76b; }
+.color-circle.gavali { background-color: #dda0dd; }
+.color-circle.bugdayi { background-color: #f5deb3; }
+.color-circle.lavanda { background-color: #e6e6fa; }
+.color-circle.xiyar { background-color: #2e8b57; }
 
+/* ===== İNGİLİS DİLİ ÜÇÜN ƏLAVƏ RƏNGLƏR ===== */
+.color-circle.red { background-color: #ff0000; }
+.color-circle.blue { background-color: #0000ff; }
+.color-circle.green { background-color: #00ff00; }
+.color-circle.yellow { background-color: #ffff00; }
+.color-circle.orange { background-color: #ffa500; }
+.color-circle.purple { background-color: #800080; }
+.color-circle.pink { background-color: #ffc0cb; }
+.color-circle.black { background-color: #000000; }
+.color-circle.white { background-color: #ffffff; border: 1px solid #cccccc; }
+.color-circle.gray, .color-circle.grey { background-color: #808080; }
+.color-circle.darkblue { background-color: #00008b; }
+.color-circle.darkgreen { background-color: #006400; }
+.color-circle.darkred { background-color: #8b0000; }
+.color-circle.brown { background-color: #a52a2a; }
+.color-circle.beige { background-color: #f5f5dc; }
+.color-circle.gold { background-color: #ffd700; }
+.color-circle.silver { background-color: #c0c0c0; }
+.color-circle.turquoise { background-color: #40e0d0; }
+.color-circle.lightgreen { background-color: #90ee90; }
+.color-circle.cyan { background-color: #00ffff; }
+.color-circle.coral { background-color: #ff7f50; }
+.color-circle.salmon { background-color: #fa8072; }
+.color-circle.khaki { background-color: #bdb76b; }
+.color-circle.plum { background-color: #dda0dd; }
+.color-circle.wheat { background-color: #f5deb3; }
+.color-circle.lavender { background-color: #e6e6fa; }
+.color-circle.cucumber { background-color: #2e8b57; }
 
+/* ===== РУССКИЙ ЯЗЫК ===== */
+.color-circle.красный { background-color: #ff0000; }
+.color-circle.синий { background-color: #0000ff; }
+.color-circle.зеленый { background-color: #00ff00; }
+.color-circle.желтый { background-color: #ffff00; }
+.color-circle.оранжевый { background-color: #ffa500; }
+.color-circle.фиолетовый { background-color: #800080; }
+.color-circle.розовый { background-color: #ffc0cb; }
+.color-circle.черный { background-color: #000000; }
+.color-circle.белый { background-color: #ffffff; border: 1px solid #cccccc; }
+.color-circle.серый { background-color: #808080; }
+.color-circle.темно-синий { background-color: #00008b; }
+.color-circle.темно-зеленый { background-color: #006400; }
+.color-circle.темно-красный { background-color: #8b0000; }
+.color-circle.коричневый { background-color: #a52a2a; }
+.color-circle.бежевый { background-color: #f5f5dc; }
+.color-circle.золотой { background-color: #ffd700; }
+.color-circle.серебряный { background-color: #c0c0c0; }
+.color-circle.бирюзовый { background-color: #40e0d0; }
+.color-circle.светло-зеленый { background-color: #90ee90; }
+.color-circle.голубой { background-color: #00ffff; }
+.color-circle.коралловый { background-color: #ff7f50; }
+.color-circle.лососевый { background-color: #fa8072; }
+.color-circle.хаки { background-color: #bdb76b; }
+.color-circle.сливовый { background-color: #dda0dd; }
+.color-circle.пшеничный { background-color: #f5deb3; }
+.color-circle.лавандовый { background-color: #e6e6fa; }
+.color-circle.огуречный { background-color: #2e8b57; }
+
+.color-circle:hover {
+  transform: scale(1.1);
+  border-color: #149ddd;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 576px) {
+  .color-box {
+    width: 28px;
+    height: 28px;
+  }
+}
 
 
 .product-title {

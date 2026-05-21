@@ -94,7 +94,11 @@
                   <span class="info-value">
                       {% if product_details.color %}
                       <div class="color-wrapper">
-                          <span class="color-box color-circle {{ product_details.color.title|slugify|lower }}"></span>
+                          {# Orijinal title həmişə eyni qalsın deyə current_language dəyişdir #}
+                          {% get_current_language as CURRENT_LANG %}
+                          {% language 'az' %}
+                              <span class="color-box color-circle {{ product_details.color.title|slugify|lower }}"></span>
+                          {% endlanguage %}
                       </div>
                       {% else %}
                       <div class="color-wrapper">
@@ -104,6 +108,7 @@
                       {% endif %}
                   </span>
               </li>
+
               <li>
                 <span class="info-label">{% translate 'İstehsalçı' %}</span>
                 <span class="info-value">

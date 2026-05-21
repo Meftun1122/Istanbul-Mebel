@@ -15,6 +15,11 @@ from django.views.generic import TemplateView, FormView, View
 from django.conf import settings
 from django.db import transaction
 from datetime import datetime
+from IstanbulMebel.settings import EMAIL_HOST_USER
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import JsonResponse
 import os
 # APP related things
 from .models import *
@@ -22,11 +27,7 @@ from .tokens import account_activation_token
 from .forms import *
 from Order.models import CheckoutModel, CartItem, WishlistModel
 from Products.models import ProductModel
-from IstanbulMebel.settings import EMAIL_HOST_USER
-from django.contrib.auth import update_session_auth_hash
-from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import JsonResponse
+
 
 
 
@@ -68,7 +69,7 @@ class RegisterView(FormView):
 
         print(f"Creating user with email: {email}")
 
-        # ✅ USER YARAT - username üçün unikal dəyər yarat
+        #  USER YARAT - username üçün unikal dəyər yarat
         import uuid
         username = f"user_{uuid.uuid4().hex[:8]}"  # Unikal username yarat
         
@@ -84,7 +85,7 @@ class RegisterView(FormView):
         
         print(f"User created with ID: {user.id}")
 
-        # ✅ PROFILE YARAT
+        #  PROFILE YARAT
         UserProfile.objects.create(
             user=user,
             gender=gender,
@@ -96,7 +97,7 @@ class RegisterView(FormView):
         
         print("UserProfile created")
 
-        # ✅ EMAIL TƏSDİQ GÖNDƏR - EMAIL_HOST_USER ilə əlaqələndirildi
+        #  EMAIL TƏSDİQ GÖNDƏR - EMAIL_HOST_USER ilə əlaqələndirildi
         email_sent = False
         try:
             current_site = get_current_site(self.request)
@@ -129,14 +130,14 @@ class RegisterView(FormView):
                 message=plain_message,
                 from_email=settings.EMAIL_HOST_USER,  # EMAIL_HOST_USER istifadə olunur
                 recipient_list=[email],
-                html_message=html_message,  # HTML versiya
+                html_message=html_message,  
                 fail_silently=False,
             )
             
             print(f"✓ Confirmation email sent to {email} from {settings.EMAIL_HOST_USER}")
             email_sent = True
             
-            # ✅ UĞURLU MESAJ
+            #  UĞURLU MESAJ
             messages.success(
                 self.request, 
                 'Qeydiyyatınız uğurla tamamlandı! Email ünvanınızı təsdiqləyin.'

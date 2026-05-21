@@ -32,25 +32,24 @@ class CartView(LoginRequiredMixin, View):
             'product', 
             'product__manufacturer'
         )
-
         sub_total = sum(
             (item.product.special_price or item.product.old_price) * item.quantity 
             for item in cart_items
         )
-
         return render(request, 'carts.html', {
             'cart_items': cart_items,
             'sub_total': sub_total,
             'total': sub_total,
         })
-
+    
+    # POST metodu həm səbətə əlavə etmək, həm də wishlist-dən silmək üçün istifadə olunur, 
+    # beləliklə istifadəçi məhsulu həm səbətə əlavə edə, həm də wishlist-dən çıxara bilər. 
+    # AJAX tələbləri üçün JSON cavabları təmin edilir, beləliklə ön tərəfdə dinamik olaraq məlumatları yeniləyə bilərsiniz.
     @method_decorator(csrf_protect)
     def post(self, request):
         product_id = request.POST.get('product_id')
         quantity = request.POST.get('quantity', 1)
-
         print(f"📝 CartView POST - product_id: {product_id}, quantity: {quantity}")
-
         if not product_id:
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return JsonResponse({
@@ -59,23 +58,19 @@ class CartView(LoginRequiredMixin, View):
                 }, status=400)
             messages.error(request, "Product ID is missing!")
             return redirect('all_carts')
-
         try:
             quantity = int(quantity)
             if quantity < 1:
                 quantity = 1
         except ValueError:
             quantity = 1
-
         try:
             product = get_object_or_404(ProductModel, id=product_id)
-
             cart_item, created = CartItem.objects.get_or_create(
                 user=request.user,
                 product=product,
                 defaults={'quantity': quantity}
             )
-
             if not created:
                 CartItem.objects.filter(id=cart_item.id).update(
                     quantity=F('quantity') + quantity
@@ -84,18 +79,14 @@ class CartView(LoginRequiredMixin, View):
                 message = f'"{product.title}" quantity updated to {cart_item.quantity}!'
             else:
                 message = f'"{product.title}" added to cart!'
-
             deleted_count = WishlistModel.objects.filter(
                 user=request.user, 
                 product=product
             ).delete()
-            
             if deleted_count[0] > 0:
                 message += ' (Removed from wishlist)'
-
             cart_count = CartItem.objects.filter(user=request.user).count()
             wishlist_count = WishlistModel.objects.filter(user=request.user).count()
-
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return JsonResponse({
                     'success': True,
@@ -104,20 +95,15 @@ class CartView(LoginRequiredMixin, View):
                     'wishlist_count': wishlist_count,
                     'product_id': product_id
                 })
-
             messages.success(request, message)
-
         except Exception as e:
             print(f"❌ CartView POST Error: {e}")
-
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return JsonResponse({
                     'success': False,
                     'message': f"An error occurred: {str(e)}"
                 }, status=500)
-
             messages.error(request, f"An error occurred: {str(e)}")
-
         referer = request.META.get('HTTP_REFERER')
         if referer and 'wishlist' in referer:
             return redirect('all_list')
@@ -130,6 +116,7 @@ class CartView(LoginRequiredMixin, View):
 class UpdateCartView(LoginRequiredMixin, View):
     login_url = 'login'
 
+    # Bu view, istifadəçinin səbətindəki məhsulların miqdarını yeniləmək üçün istifadə olunur.
     def post(self, request):
         updated = False
         updated_items = []
@@ -138,18 +125,15 @@ class UpdateCartView(LoginRequiredMixin, View):
             if key.startswith('quantity_'):
                 try:
                     cart_item_id = key.replace('quantity_', '')
-                    
                     cart_item = get_object_or_404(
                         CartItem, 
                         id=cart_item_id, 
                         user=request.user
                     )
-                    
                     try:
                         quantity = int(value)
                     except (ValueError, TypeError):
                         continue
-                    
                     if quantity > 0 and cart_item.quantity != quantity:
                         cart_item.quantity = quantity
                         cart_item.save(update_fields=['quantity'])
@@ -158,7 +142,6 @@ class UpdateCartView(LoginRequiredMixin, View):
                             'id': cart_item_id,
                             'quantity': quantity
                         })
-
                 except CartItem.DoesNotExist:
                     continue
                 except Exception as e:
@@ -191,7 +174,6 @@ class UpdateCartView(LoginRequiredMixin, View):
                     'success': False,
                     'message': "No changes were made to your cart"
                 })
-
         if updated:
             messages.success(request, "Cart updated successfully ✅")
         else:
@@ -206,20 +188,21 @@ class UpdateCartView(LoginRequiredMixin, View):
 class RemoveFromCartView(LoginRequiredMixin, View):
     login_url = 'login'
 
+    # Bu view, istifadəçinin səbətindəki məhsulları silmək üçün istifadə olunur. 
+    # AJAX tələbləri üçün JSON cavabları təmin edilir, beləliklə ön tərəfdə dinamik olaraq məlumatları yeniləyə bilərsiniz. 
+    # Əgər tələbin AJAX olmadığı aşkar edilərsə, istifadəçi ənənəvi olaraq yönləndirilir və mesaj göstərilir.
     def post(self, request, item_id):
         cart_item = get_object_or_404(
             CartItem.objects.select_related('product'),
             id=item_id,
             user=request.user
         )
-
+        # Səbətdən silinən məhsulun adını və ID-sini əldə edin ki, AJAX cavabında istifadə edə bilək
         product_name = cart_item.product.title
         product_id = cart_item.product.id
         cart_item.delete()
-        
         cart_count = CartItem.objects.filter(user=request.user).count()
         wishlist_count = WishlistModel.objects.filter(user=request.user).count()
-
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
             return JsonResponse({
                 'success': True,
@@ -228,7 +211,6 @@ class RemoveFromCartView(LoginRequiredMixin, View):
                 'wishlist_count': wishlist_count,
                 'product_id': product_id
             })
-
         messages.success(request, f"“{product_name}” səbətdən silindi 🗑️")
         return redirect('all_carts')
 
@@ -252,6 +234,7 @@ class WishlistView(LoginRequiredMixin, View):
 class AddToWishlistView(LoginRequiredMixin, View):
     login_url = 'login'
 
+    # Bu view, istifadəçinin məhsulu wishlist-ə əlavə etmək üçün istifadə olunur.
     def post(self, request, product_id):
         product = get_object_or_404(ProductModel, id=product_id)
 
@@ -259,10 +242,10 @@ class AddToWishlistView(LoginRequiredMixin, View):
             user=request.user,
             product=product
         )
-
+        # Əgər məhsul artıq wishlist-dədirsə, onu silmək və mesajı buna uyğun olaraq dəyişdirmək üçün əlavə kod əlavə edildi.
         wishlist_count = WishlistModel.objects.filter(user=request.user).count()
         cart_count = CartItem.objects.filter(user=request.user).count()
-
+        # AJAX tələbləri üçün JSON cavabları təmin edilir, beləliklə ön tərəfdə dinamik olaraq məlumatları yeniləyə bilərsiniz.
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
             if created:
                 return JsonResponse({
@@ -280,7 +263,6 @@ class AddToWishlistView(LoginRequiredMixin, View):
                     'cart_count': cart_count,
                     'action': 'exists'
                 })
-
         if created:
             messages.success(request, f"“{product.title}” wishlist-ə əlavə edildi ❤️")
         else:
@@ -295,6 +277,9 @@ class AddToWishlistView(LoginRequiredMixin, View):
 class RemoveFromWishlistView(LoginRequiredMixin, View):
     login_url = 'login'
 
+    # Bu view, istifadəçinin wishlist-dəki məhsulları silmək üçün istifadə olunur. 
+    # AJAX tələbləri üçün JSON cavabları təmin edilir, beləliklə ön tərəfdə dinamik olaraq məlumatları yeniləyə bilərsiniz. 
+    # Əgər tələbin AJAX olmadığı aşkar edilərsə, istifadəçi ənənəvi olaraq yönləndirilir və mesaj göstərilir.
     def post(self, request, item_id):
         wishlist_item = get_object_or_404(
             WishlistModel.objects.select_related('product'),
@@ -328,7 +313,7 @@ class RemoveFromWishlistView(LoginRequiredMixin, View):
 # ============================================= #
 class MoveToCartView(LoginRequiredMixin, View):
     login_url = 'login'
-
+    # Bu view, istifadəçinin wishlist-dəki məhsulu səbətə əlavə etmək və eyni zamanda wishlist-dən silmək üçün istifadə olunur.
     def post(self, request, product_id):
         product = get_object_or_404(ProductModel, id=product_id)
         
@@ -371,6 +356,10 @@ class MoveToCartView(LoginRequiredMixin, View):
 class AjaxAddToCartView(LoginRequiredMixin, View):
     login_url = 'login'
 
+    # Bu view, istifadəçinin məhsulu AJAX vasitəsilə səbətə əlavə etmək üçün istifadə olunur. 
+    # Eyni zamanda, məhsul wishlist-dədirsə, onu silmək üçün də istifadə olunur. 
+    # AJAX tələbləri üçün JSON cavabları təmin edilir, beləliklə ön tərəfdə dinamik olaraq məlumatları yeniləyə bilərsiniz. 
+    # Əgər tələbin AJAX olmadığı aşkar edilərsə, istifadəçi ənənəvi olaraq yönləndirilir və mesaj göstərilir.
     def post(self, request):
         product_id = request.POST.get('product_id')
         quantity = request.POST.get('quantity', 1)
@@ -440,6 +429,8 @@ class AjaxAddToCartView(LoginRequiredMixin, View):
 class AjaxAddToWishlistView(LoginRequiredMixin, View):
     login_url = 'login'
 
+    # Bu view, istifadəçinin məhsulu AJAX vasitəsilə wishlist-ə əlavə etmək üçün istifadə olunur. 
+    # Eyni zamanda, məhsul səbətdədirsə, onu silmək üçün də istifadə olunur.
     def post(self, request):
         product_id = request.POST.get('product_id')
 
@@ -492,6 +483,8 @@ class AjaxAddToWishlistView(LoginRequiredMixin, View):
 # ============================================= #
 
 class AjaxGetCartDataView(LoginRequiredMixin, View):
+
+    # Bu view, istifadəçinin səbətindəki məhsulları AJAX vasitəsilə əldə etmək üçün istifadə olunur.
     def get(self, request):
         cart_items = CartItem.objects.filter(
             user=request.user,
@@ -536,6 +529,8 @@ class AjaxGetCartDataView(LoginRequiredMixin, View):
 # ============================================= #
 
 class AjaxGetWishlistDataView(LoginRequiredMixin, View):
+
+    # Bu view, istifadəçinin wishlist-dəki məhsulları AJAX vasitəsilə əldə etmək üçün istifadə olunur.
     def get(self, request):
         wishlist_items = WishlistModel.objects.filter(
             user=request.user,
@@ -583,6 +578,7 @@ class CheckoutView(LoginRequiredMixin, FormView):
     form_class = CheckoutForm
     success_url = reverse_lazy('order_success')
 
+    # Bu view, istifadəçinin checkout prosesini idarə etmək üçün istifadə olunur.
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         
