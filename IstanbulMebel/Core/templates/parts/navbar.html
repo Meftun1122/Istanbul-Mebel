@@ -44,7 +44,7 @@
     <i class="header-toggle d-xl-none bi bi-list"></i>
     <!-- Index Phopto Start -->
     <div class="profile-img">
-      <img src="{% static 'assets/img/my-profile-img.jpg' %}" alt="" class="img-fluid rounded-circle">
+      <img src="{% static 'assets/img/metleb-mebel.jpeg' %}" alt="Metleb Mebel" class="img-fluid rounded-circle">
     </div>
     <!-- Index Phopto End -->
     <a href="{% url 'index' %}" class="logo d-flex align-items-center justify-content-center">
@@ -56,11 +56,11 @@
     <div class="social-links text-center">
       <!-- TikTok -->
       <a href="https://www.tiktok.com/@metlebpiriyev" class="social-icon">
-        <img style="width: 20px; height: 20px;" src="{% static 'assets/img/icons/tik-tok.jpg' %}" alt="">
+        <i class="fab fa-tiktok"></i>
       </a>
       <!-- Instagram -->
       <a href="https://www.instagram.com/samaxi_istanbul_mebel_" class="social-icon">
-        <img style="width: 18px; height: 18px;" src="{% static 'assets/img/icons/instagram.png' %}" alt="">
+        <i class="fab fa-instagram"></i>
       </a>
       <div class="lang-dropdown">
         <button class="lang-toggle" id="langToggle">
@@ -216,45 +216,45 @@
                 {% endif %}
               </span></span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
           <ul>
-            <li><a href="{% url 'all_list' %}">
+            <li>
+              <a href="{% url 'all_list' %}">
                 {% if LANGUAGE_CODE == 'az' %}Sevimlilər
                 {% elif LANGUAGE_CODE == 'en' %}Wishlist
                 {% elif LANGUAGE_CODE == 'ru' %}Избранное
                 {% endif %}
-                <img style="margin-left: 5px;" src="{% static 'assets/img/icons/wishlist.png' %}" alt=""></a></li>
-            <li><a href="{% url 'all_carts' %}">
+                <i class="fas fa-heart"></i>
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'all_carts' %}">
                 {% if LANGUAGE_CODE == 'az' %}Səbətim
                 {% elif LANGUAGE_CODE == 'en' %}My Cart
                 {% elif LANGUAGE_CODE == 'ru' %}Моя корзина
                 {% endif %}
-                <img style="margin-left: 5px;" src="{% static 'assets/img/icons/shopping-cart.png' %}" alt=""></a></li>
-            <li><a href="{% url 'checkout' %}">
+                <i class="fas fa-shopping-cart"></i>
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'checkout' %}">
                 {% if LANGUAGE_CODE == 'az' %}Sifariş vermək
                 {% elif LANGUAGE_CODE == 'en' %}Checkout
                 {% elif LANGUAGE_CODE == 'ru' %}Оформить заказ
                 {% endif %}
-                <img style="margin-left: 5px;" src="{% static 'assets/img/icons/checklist.png' %}" alt=""></a></li>
+                <i class="fas fa-credit-card"></i>
+              </a>
+            </li>
           </ul>
         </li>
         <li><a href="{% url 'index' %}#services"><i class="bi bi-hdd-stack navicon"></i> {% translate 'Servislər' %}</a>
         </li>
         <li><a href="{% url 'contact' %}"><i class="bi bi-envelope navicon"></i> {% translate 'Əlaqə saxla' %}</a></li>
-        <li class="dropdown"><a><span style="margin-left: 3px;"><img
-                style="width: 15px; height: 15px; position: relative; top: -2px;"
-                src="{% static 'assets/img/icons/my-account.jpg' %}" alt=""><span style="margin-left: 7px;">{% translate 'Qeydiyyat' %}</span></span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+        <li class="dropdown"><a><span style="margin-left: 3px;">
+          <span><i style="margin-right: 5px;" class="fas fa-user-plus"></i></span> {% translate 'Qeydiyyat' %}</span></span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
           <ul>
-            <li><a href="{% url 'register' %}">{% translate 'Qeydiyyatdan Keçin' %} <img
-                  style="margin-left: 7px; height: 15px; width: 15px;"
-                  src="{% static 'assets/img/icons/register.png' %}" alt=""></a></li>
-            <li><a href="{% url 'login' %}">{% translate 'Daxil olun' %} <img
-                  style="margin-left: 7px; height: 15px; width: 15px;" src="{% static 'assets/img/icons/login.png' %}"
-                  alt=""></a></li>
-            <li><a href="{% url 'account' %}">{% translate 'Hesabım' %} <img
-                  style="margin-left: 7px; height: 15px; width: 15px;"
-                  src="{% static 'assets/img/icons/my-account.jpg' %}" alt=""></a></li>
-            <li><a href="{% url 'account' %}">{% translate 'Çıxış et' %} <img
-                  style="width: 15px; height: 15px; margin-left: 10px;"
-                  src="{% static 'assets/img/icons/user-logout.jpg' %}" alt=""></a></li>
+            <li><a style="margin-right: 5px;" href="{% url 'register' %}">{% translate 'Qeydiyyatdan Keçin' %} <i class="fas fa-user-plus"></i></a></li>
+            <li><a style="margin-right: 5px;" href="{% url 'login' %}">{% translate 'Daxil olun' %} <i class="fas fa-sign-in-alt"></i></a></li>
+            <li><a style="margin-right: 5px;" href="{% url 'account' %}">{% translate 'Hesabım' %} <i class="fas fa-user-circle"></i></a></li>
+            <li><a style="margin-right: 5px;" href="{% url 'logout' %}">{% translate 'Çıxış et' %} <i class="fas fa-sign-out-alt"></i></a></li>
           </ul>
         </li>
       </ul>

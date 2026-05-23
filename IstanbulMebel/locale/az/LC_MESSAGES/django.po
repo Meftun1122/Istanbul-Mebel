@@ -2,13 +2,13 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-16 00:12+0400\n"
+"POT-Creation-Date: 2026-05-23 15:54+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,20 +27,24 @@ msgid ""
 "Daimi Xoşbəxtliyiniz üçün :), Yataq-Qonaq-Mətbəx, Ofis və Yumşaq Mebeller"
 msgstr ""
 
-#: Core/templates/index.html:23 Core/templates/index.html:148
+#: Core/templates/index.html:20
+msgid "Mebellər"
+msgstr "Mebeller"
+
+#: Core/templates/index.html:23
 msgid ""
-"Araşdırmalara görə dolablar və vitrinlər o dövrün ən vacib mebel parçası "
-"hesab edilir, çünki onlar Neolit cəmiyyətində evlərdə simvolik əşyaların "
-"oyma sənət əsərlərinin nümayiş etdirilməsi üçün istifadə edilirdi. İllər "
-"ötdükcə insanlar Neolit dövründə olduğu kimi daha müasir mebelləri həm "
-"gündəlik həyatımız üçün funksional, həm də zövq oxşamaq üçün bir sənət əsəri "
-"kimi istifadə etməyə başladılar. Müasir həyatımızda daha çox rahatlığa və "
-"dəbdəbəyə diqqət yetirməklə, material və dayanıqlıq daha güclü və uzun "
-"ömürlü olsa da, əksər mebellərin əsas dizaynı eyni qaldı. Kreslolar sadəcə "
-"oturmaq üçün deyil, yellənmə funksiyaları əlavə olunaraq istirahət etmək "
-"üçün də bir vasitə kimi dizayn edilməyə başlanıldı. Mebeldəki dizayn "
-"dəyişikliyi bir növ cəmiyyətimizin sadə yaşam tərzindən lüks və imtiyazlı "
-"həyatlara doğru təkamülünü göstərir."
+"Müasir mebel istehsalı əl əməyindən tamamilə avtomatlaşdırılmış proseslərə "
+"keçib. Bu sahədə ən mühüm texnologiyalardan biri CNC (kompüter ədədi "
+"idarəetmə) dəzgahlarıdır. CNC dəzgahları ağac, MDF, DSP və digər "
+"materialları millimetr dəqiqliyi ilə kəsir, frezeləyir və deşir. Bu sayədə "
+"hər bir detal eyni ölçüdə olur və insan səhvi minimuma enir. 3D "
+"modelləşdirmə proqramları (AutoCAD, SolidWorks, 3ds Max) sayəsində "
+"dizaynerlər mebeli real görüntü ilə kompüterdə yarada, rəng və material "
+"variantlarını sınaya bilirlər.Lazer kəsim texnologiyası metal, pleksiqlas və "
+"şüşə mebel hissələrinin çox dəqiq kəsilməsi üçün istifadə olunur. Kəsim "
+"zamanı materialın kənarları ərimir və əlavə cilalama tələb olunmur. Toz "
+"boyalama texnologiyası metal mebellərin korroziyadan qorunması üçün tətbiq "
+"edilir."
 msgstr ""
 
 #: Core/templates/index.html:33
@@ -57,31 +61,46 @@ msgstr ""
 
 #: Core/templates/index.html:131 Core/templates/parts/navbar.html:200
 #: Order/templates/carts.html:11 Order/templates/wishlist.html:11
-#: Products/templates/products.html:11 Products/templates/products.html:352
+#: Products/templates/products.html:11 Products/templates/products.html:351
 msgid "Məhsullar"
 msgstr ""
 
-#: Core/templates/index.html:146
+#: Core/templates/index.html:155
 msgid "Xidmətlər"
 msgstr "Services"
 
-#: Core/templates/index.html:180
+#: Core/templates/index.html:159
+msgid ""
+"Mebel istehsalının tarixi insanlıq tarixi qədər qədimdir. Qədim Misirdə "
+"(e.ə. 3000-1000-ci illər) ağacdan sadə stullar, taxtlar, sandıqlar və "
+"yataqlar düzəldilirdi. O dövrdə mebel əsasən fironlar və zadəganlar üçün "
+"hazırlanırdı. Qədim Yunanıstanda mebel formaları daha zərif və estetik oldu. "
+"Klismos stulu bu dövrün ən tanınmış nümunəsidir. Qədim Romada isə mebel daha "
+"təntənəli, bəzəkli və rahat oldu. Romalılar yastıqlar, döşəmə döşəkləri və "
+"qatlanan stullardan istifadə edirdilər.Orta əsrlərdə Avropada qotik üslub "
+"mebel sənayesində hakim oldu. Bu dövrün mebelləri hündür, oyma detallarla "
+"zəngin, tünd ağacdan hazırlanırdı. İntibah dövrü (15-16-cı əsrlər) mebel "
+"istehsalında inqilab etdi. İtalyan ustalar mebeli sadəcə əşya deyil, sənət "
+"əsəri kimi düzəldirdilər. "
+msgstr ""
+
+#: Core/templates/index.html:191
 msgid "Müştərilərimizin fikirləri"
 msgstr ""
 
-#: Core/templates/index.html:197
+#: Core/templates/index.html:208
 msgid "Məhsul:"
 msgstr ""
 
-#: Core/templates/index.html:222
+#: Core/templates/index.html:233
 msgid "Hələ heç bir rəy yoxdur. İlk rəy yazan siz olun!"
 msgstr ""
 
-#: Core/templates/index.html:225
+#: Core/templates/index.html:236
 msgid "Rəy yoxdur"
 msgstr ""
 
-#: Core/templates/index.html:226
+#: Core/templates/index.html:237
 msgid "İlk rəyi siz yazın"
 msgstr ""
 
@@ -118,7 +137,7 @@ msgstr ""
 msgid "Səbətə keç"
 msgstr ""
 
-#: Core/templates/parts/navbar.html:199
+#: Core/templates/parts/navbar.html:199 Core/templates/service-details.html:12
 #: Products/templates/portfolio-details.html:12
 #: Products/templates/products.html:10 Users/templates/login.html:9
 msgid "Ana səhifə"
@@ -128,35 +147,39 @@ msgstr ""
 msgid "Bütün Məhsullar"
 msgstr ""
 
-#: Core/templates/parts/navbar.html:239
+#: Core/templates/parts/navbar.html:248
 msgid "Servislər"
 msgstr ""
 
-#: Core/templates/parts/navbar.html:241
+#: Core/templates/parts/navbar.html:250
 msgid "Əlaqə saxla"
 msgstr ""
 
-#: Core/templates/parts/navbar.html:244 Users/templates/my-account.html:12
+#: Core/templates/parts/navbar.html:252 Users/templates/my-account.html:12
 #: Users/templates/register.html:13
 msgid "Qeydiyyat"
 msgstr ""
 
-#: Core/templates/parts/navbar.html:246
+#: Core/templates/parts/navbar.html:254
 msgid "Qeydiyyatdan Keçin"
 msgstr ""
 
-#: Core/templates/parts/navbar.html:249
+#: Core/templates/parts/navbar.html:255
 msgid "Daxil olun"
 msgstr ""
 
-#: Core/templates/parts/navbar.html:252 Users/templates/login.html:10
+#: Core/templates/parts/navbar.html:256 Users/templates/login.html:10
 #: Users/templates/my-account.html:13 Users/templates/register.html:11
 msgid "Hesabım"
 msgstr ""
 
-#: Core/templates/parts/navbar.html:255
+#: Core/templates/parts/navbar.html:257
 msgid "Çıxış et"
 msgstr ""
+
+#: Core/templates/service-details.html:9 Core/templates/service-details.html:13
+msgid "Xidmət təfərrüatları"
+msgstr "Xidmət təfərrüatları"
 
 #: IstanbulMebel/settings.py:135
 msgid "English"
@@ -574,7 +597,7 @@ msgid "Köhnə qiymət:"
 msgstr ""
 
 #: Products/templates/portfolio-details.html:163
-#: Products/templates/products.html:270
+#: Products/templates/products.html:269
 msgid "Səbətə at"
 msgstr ""
 
@@ -672,7 +695,7 @@ msgstr ""
 msgid "Rənglər mövcud deyil!"
 msgstr ""
 
-#: Products/templates/products.html:350
+#: Products/templates/products.html:349
 msgid "Gosterilir"
 msgstr ""
 

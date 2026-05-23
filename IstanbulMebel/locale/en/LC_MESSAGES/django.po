@@ -2,13 +2,13 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-16 00:12+0400\n"
+"POT-Creation-Date: 2026-05-23 15:54+0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,32 +29,38 @@ msgstr ""
 "For your constant happiness :), Bedroom-Living-Kitchen, Office and Soft "
 "Furniture"
 
-#: Core/templates/index.html:23 Core/templates/index.html:148
+#: Core/templates/index.html:20
+#, fuzzy
+#| msgid "Bütün Mebellər"
+msgid "Mebellər"
+msgstr "All Furniture"
+
+#: Core/templates/index.html:23
 msgid ""
-"Araşdırmalara görə dolablar və vitrinlər o dövrün ən vacib mebel parçası "
-"hesab edilir, çünki onlar Neolit cəmiyyətində evlərdə simvolik əşyaların "
-"oyma sənət əsərlərinin nümayiş etdirilməsi üçün istifadə edilirdi. İllər "
-"ötdükcə insanlar Neolit dövründə olduğu kimi daha müasir mebelləri həm "
-"gündəlik həyatımız üçün funksional, həm də zövq oxşamaq üçün bir sənət əsəri "
-"kimi istifadə etməyə başladılar. Müasir həyatımızda daha çox rahatlığa və "
-"dəbdəbəyə diqqət yetirməklə, material və dayanıqlıq daha güclü və uzun "
-"ömürlü olsa da, əksər mebellərin əsas dizaynı eyni qaldı. Kreslolar sadəcə "
-"oturmaq üçün deyil, yellənmə funksiyaları əlavə olunaraq istirahət etmək "
-"üçün də bir vasitə kimi dizayn edilməyə başlanıldı. Mebeldəki dizayn "
-"dəyişikliyi bir növ cəmiyyətimizin sadə yaşam tərzindən lüks və imtiyazlı "
-"həyatlara doğru təkamülünü göstərir."
+"Müasir mebel istehsalı əl əməyindən tamamilə avtomatlaşdırılmış proseslərə "
+"keçib. Bu sahədə ən mühüm texnologiyalardan biri CNC (kompüter ədədi "
+"idarəetmə) dəzgahlarıdır. CNC dəzgahları ağac, MDF, DSP və digər "
+"materialları millimetr dəqiqliyi ilə kəsir, frezeləyir və deşir. Bu sayədə "
+"hər bir detal eyni ölçüdə olur və insan səhvi minimuma enir. 3D "
+"modelləşdirmə proqramları (AutoCAD, SolidWorks, 3ds Max) sayəsində "
+"dizaynerlər mebeli real görüntü ilə kompüterdə yarada, rəng və material "
+"variantlarını sınaya bilirlər.Lazer kəsim texnologiyası metal, pleksiqlas və "
+"şüşə mebel hissələrinin çox dəqiq kəsilməsi üçün istifadə olunur. Kəsim "
+"zamanı materialın kənarları ərimir və əlavə cilalama tələb olunmur. Toz "
+"boyalama texnologiyası metal mebellərin korroziyadan qorunması üçün tətbiq "
+"edilir."
 msgstr ""
-"According to research, cabinets and display cases were considered the most "
-"important piece of furniture of that period, as they were used in Neolithic "
-"society to display symbolic objects and carved works of art in homes. Over "
-"the years, people began to use more modern furniture, as in the Neolithic "
-"period, both as functional for our daily lives and as a work of art to "
-"please the taste. By focusing more on comfort and luxury in our modern "
-"lives, although materials and durability are stronger and longer-lasting, "
-"the basic design of most furniture has remained the same. Chairs began to be "
-"designed not only for sitting, but also as a means of relaxation by adding "
-"rocking functions. The change in furniture design shows the evolution of our "
-"society from a simple lifestyle to luxurious and privileged lives."
+"Modern furniture production has moved from manual labor to fully automated "
+"processes. One of the most important technologies in this field is CNC "
+"(computer numerical control) machines. CNC machines cut, mill and drill "
+"wood, MDF, DSP and other materials with millimeter accuracy. Thanks to this, "
+"each detail is the same size and human error is minimized. Thanks to 3D "
+"modeling programs (AutoCAD, SolidWorks, 3ds Max), designers can create "
+"furniture on a computer with a real image, test color and material options. "
+"Laser cutting technology is used for very precise cutting of metal, "
+"plexiglass and glass furniture parts. The edges of the material do not melt "
+"during cutting and additional polishing is not required. Powder coating "
+"technology is used to protect metal furniture from corrosion."
 
 #: Core/templates/index.html:33
 msgid "Premium"
@@ -70,33 +76,59 @@ msgstr "Showing"
 
 #: Core/templates/index.html:131 Core/templates/parts/navbar.html:200
 #: Order/templates/carts.html:11 Order/templates/wishlist.html:11
-#: Products/templates/products.html:11 Products/templates/products.html:352
+#: Products/templates/products.html:11 Products/templates/products.html:351
 msgid "Məhsullar"
 msgstr "Products"
 
-#: Core/templates/index.html:146
+#: Core/templates/index.html:155
 #, fuzzy
 #| msgid "Qiymətləndirmə"
 msgid "Xidmətlər"
 msgstr "Rating"
 
-#: Core/templates/index.html:180
+#: Core/templates/index.html:159
+msgid ""
+"Mebel istehsalının tarixi insanlıq tarixi qədər qədimdir. Qədim Misirdə "
+"(e.ə. 3000-1000-ci illər) ağacdan sadə stullar, taxtlar, sandıqlar və "
+"yataqlar düzəldilirdi. O dövrdə mebel əsasən fironlar və zadəganlar üçün "
+"hazırlanırdı. Qədim Yunanıstanda mebel formaları daha zərif və estetik oldu. "
+"Klismos stulu bu dövrün ən tanınmış nümunəsidir. Qədim Romada isə mebel daha "
+"təntənəli, bəzəkli və rahat oldu. Romalılar yastıqlar, döşəmə döşəkləri və "
+"qatlanan stullardan istifadə edirdilər.Orta əsrlərdə Avropada qotik üslub "
+"mebel sənayesində hakim oldu. Bu dövrün mebelləri hündür, oyma detallarla "
+"zəngin, tünd ağacdan hazırlanırdı. İntibah dövrü (15-16-cı əsrlər) mebel "
+"istehsalında inqilab etdi. İtalyan ustalar mebeli sadəcə əşya deyil, sənət "
+"əsəri kimi düzəldirdilər. "
+msgstr ""
+"The history of furniture making is as old as human history. In ancient Egypt "
+"(3000-1000 BC), simple chairs, thrones, chests and beds were made of wood. "
+"At that time, furniture was mainly made for pharaohs and nobles. In ancient "
+"Greece, furniture forms became more elegant and aesthetic. The Klismos chair "
+"is the most famous example of this period. In ancient Rome, furniture became "
+"more solemn, ornate and comfortable. The Romans used pillows, floor "
+"mattresses and folding chairs. In the Middle Ages, the Gothic style "
+"dominated the furniture industry in Europe. The furniture of this period was "
+"tall, rich in carved details, and made of dark wood. The Renaissance "
+"(15th-16th centuries) revolutionized furniture making. Italian craftsmen "
+"made furniture not just as objects, but as works of art."
+
+#: Core/templates/index.html:191
 msgid "Müştərilərimizin fikirləri"
 msgstr "Our customers' opinions"
 
-#: Core/templates/index.html:197
+#: Core/templates/index.html:208
 msgid "Məhsul:"
 msgstr "Product:"
 
-#: Core/templates/index.html:222
+#: Core/templates/index.html:233
 msgid "Hələ heç bir rəy yoxdur. İlk rəy yazan siz olun!"
 msgstr "There are no reviews yet. Be the first to leave a review!"
 
-#: Core/templates/index.html:225
+#: Core/templates/index.html:236
 msgid "Rəy yoxdur"
 msgstr "No reviews"
 
-#: Core/templates/index.html:226
+#: Core/templates/index.html:237
 msgid "İlk rəyi siz yazın"
 msgstr "Write the first review"
 
@@ -133,7 +165,7 @@ msgstr "Total"
 msgid "Səbətə keç"
 msgstr "Go to cart"
 
-#: Core/templates/parts/navbar.html:199
+#: Core/templates/parts/navbar.html:199 Core/templates/service-details.html:12
 #: Products/templates/portfolio-details.html:12
 #: Products/templates/products.html:10 Users/templates/login.html:9
 msgid "Ana səhifə"
@@ -143,35 +175,39 @@ msgstr "Home"
 msgid "Bütün Məhsullar"
 msgstr "All Products"
 
-#: Core/templates/parts/navbar.html:239
+#: Core/templates/parts/navbar.html:248
 msgid "Servislər"
 msgstr "Services"
 
-#: Core/templates/parts/navbar.html:241
+#: Core/templates/parts/navbar.html:250
 msgid "Əlaqə saxla"
 msgstr "Contact us"
 
-#: Core/templates/parts/navbar.html:244 Users/templates/my-account.html:12
+#: Core/templates/parts/navbar.html:252 Users/templates/my-account.html:12
 #: Users/templates/register.html:13
 msgid "Qeydiyyat"
 msgstr "Register"
 
-#: Core/templates/parts/navbar.html:246
+#: Core/templates/parts/navbar.html:254
 msgid "Qeydiyyatdan Keçin"
 msgstr "Register"
 
-#: Core/templates/parts/navbar.html:249
+#: Core/templates/parts/navbar.html:255
 msgid "Daxil olun"
 msgstr "Login"
 
-#: Core/templates/parts/navbar.html:252 Users/templates/login.html:10
+#: Core/templates/parts/navbar.html:256 Users/templates/login.html:10
 #: Users/templates/my-account.html:13 Users/templates/register.html:11
 msgid "Hesabım"
 msgstr "My Account"
 
-#: Core/templates/parts/navbar.html:255
+#: Core/templates/parts/navbar.html:257
 msgid "Çıxış et"
 msgstr "Logout"
+
+#: Core/templates/service-details.html:9 Core/templates/service-details.html:13
+msgid "Xidmət təfərrüatları"
+msgstr "Service details"
 
 #: IstanbulMebel/settings.py:135
 msgid "English"
@@ -589,7 +625,7 @@ msgid "Köhnə qiymət:"
 msgstr "Old price:"
 
 #: Products/templates/portfolio-details.html:163
-#: Products/templates/products.html:270
+#: Products/templates/products.html:269
 msgid "Səbətə at"
 msgstr "Add to cart"
 
@@ -687,7 +723,7 @@ msgstr "Colors"
 msgid "Rənglər mövcud deyil!"
 msgstr ""
 
-#: Products/templates/products.html:350
+#: Products/templates/products.html:349
 msgid "Gosterilir"
 msgstr "Showing"
 
@@ -922,6 +958,33 @@ msgstr "Create account"
 #: Users/templates/register.html:119
 msgid "Hesabınız mövcuddur?"
 msgstr "Already have an account?"
+
+#~ msgid ""
+#~ "Araşdırmalara görə dolablar və vitrinlər o dövrün ən vacib mebel parçası "
+#~ "hesab edilir, çünki onlar Neolit cəmiyyətində evlərdə simvolik əşyaların "
+#~ "oyma sənət əsərlərinin nümayiş etdirilməsi üçün istifadə edilirdi. İllər "
+#~ "ötdükcə insanlar Neolit dövründə olduğu kimi daha müasir mebelləri həm "
+#~ "gündəlik həyatımız üçün funksional, həm də zövq oxşamaq üçün bir sənət "
+#~ "əsəri kimi istifadə etməyə başladılar. Müasir həyatımızda daha çox "
+#~ "rahatlığa və dəbdəbəyə diqqət yetirməklə, material və dayanıqlıq daha "
+#~ "güclü və uzun ömürlü olsa da, əksər mebellərin əsas dizaynı eyni qaldı. "
+#~ "Kreslolar sadəcə oturmaq üçün deyil, yellənmə funksiyaları əlavə olunaraq "
+#~ "istirahət etmək üçün də bir vasitə kimi dizayn edilməyə başlanıldı. "
+#~ "Mebeldəki dizayn dəyişikliyi bir növ cəmiyyətimizin sadə yaşam tərzindən "
+#~ "lüks və imtiyazlı həyatlara doğru təkamülünü göstərir."
+#~ msgstr ""
+#~ "According to research, cabinets and display cases were considered the "
+#~ "most important piece of furniture of that period, as they were used in "
+#~ "Neolithic society to display symbolic objects and carved works of art in "
+#~ "homes. Over the years, people began to use more modern furniture, as in "
+#~ "the Neolithic period, both as functional for our daily lives and as a "
+#~ "work of art to please the taste. By focusing more on comfort and luxury "
+#~ "in our modern lives, although materials and durability are stronger and "
+#~ "longer-lasting, the basic design of most furniture has remained the same. "
+#~ "Chairs began to be designed not only for sitting, but also as a means of "
+#~ "relaxation by adding rocking functions. The change in furniture design "
+#~ "shows the evolution of our society from a simple lifestyle to luxurious "
+#~ "and privileged lives."
 
 #, fuzzy
 #~| msgid "Sifariş Qeydləri"

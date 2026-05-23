@@ -17,10 +17,21 @@
   <section id="portfolio" class="portfolio section light-background">
     <!-- Section Title -->
     <div class="container section-title" data-aos="fade-up">
-      <h2>Mebellər</h2>
+        <h2>
+            {% get_current_language as LANGUAGE_CODE %}
+            {% if LANGUAGE_CODE == 'az' %}
+              Mebellər
+            {% elif LANGUAGE_CODE == 'en' %}
+              Furniture
+            {% elif LANGUAGE_CODE == 'ru' %}
+              Мебель
+            {% else %}
+              Mebellər
+            {% endif %}
+        </h2>
     </div>
     <p class="container">
-      {% trans 'Araşdırmalara görə dolablar və vitrinlər o dövrün ən vacib mebel parçası hesab edilir, çünki onlar Neolit cəmiyyətində evlərdə simvolik əşyaların oyma sənət əsərlərinin nümayiş etdirilməsi üçün istifadə edilirdi. İllər ötdükcə insanlar Neolit dövründə olduğu kimi daha müasir mebelləri həm gündəlik həyatımız üçün funksional, həm də zövq oxşamaq üçün bir sənət əsəri kimi istifadə etməyə başladılar. Müasir həyatımızda daha çox rahatlığa və dəbdəbəyə diqqət yetirməklə, material və dayanıqlıq daha güclü və uzun ömürlü olsa da, əksər mebellərin əsas dizaynı eyni qaldı. Kreslolar sadəcə oturmaq üçün deyil, yellənmə funksiyaları əlavə olunaraq istirahət etmək üçün də bir vasitə kimi dizayn edilməyə başlanıldı. Mebeldəki dizayn dəyişikliyi bir növ cəmiyyətimizin sadə yaşam tərzindən lüks və imtiyazlı həyatlara doğru təkamülünü göstərir.' %}
+      {% trans 'Müasir mebel istehsalı əl əməyindən tamamilə avtomatlaşdırılmış proseslərə keçib. Bu sahədə ən mühüm texnologiyalardan biri CNC (kompüter ədədi idarəetmə) dəzgahlarıdır. CNC dəzgahları ağac, MDF, DSP və digər materialları millimetr dəqiqliyi ilə kəsir, frezeləyir və deşir. Bu sayədə hər bir detal eyni ölçüdə olur və insan səhvi minimuma enir. 3D modelləşdirmə proqramları (AutoCAD, SolidWorks, 3ds Max) sayəsində dizaynerlər mebeli real görüntü ilə kompüterdə yarada, rəng və material variantlarını sınaya bilirlər.Lazer kəsim texnologiyası metal, pleksiqlas və şüşə mebel hissələrinin çox dəqiq kəsilməsi üçün istifadə olunur. Kəsim zamanı materialın kənarları ərimir və əlavə cilalama tələb olunmur. Toz boyalama texnologiyası metal mebellərin korroziyadan qorunması üçün tətbiq edilir.' %}
     </p>
     <!-- End Section Title -->
     <div class="showcase-container">
@@ -156,7 +167,7 @@
                 {% endif %}
             </h2>
         </div>
-          {% translate 'Araşdırmalara görə dolablar və vitrinlər o dövrün ən vacib mebel parçası hesab edilir, çünki onlar Neolit cəmiyyətində evlərdə simvolik əşyaların oyma sənət əsərlərinin nümayiş etdirilməsi üçün istifadə edilirdi. İllər ötdükcə insanlar Neolit dövründə olduğu kimi daha müasir mebelləri həm gündəlik həyatımız üçün funksional, həm də zövq oxşamaq üçün bir sənət əsəri kimi istifadə etməyə başladılar. Müasir həyatımızda daha çox rahatlığa və dəbdəbəyə diqqət yetirməklə, material və dayanıqlıq daha güclü və uzun ömürlü olsa da, əksər mebellərin əsas dizaynı eyni qaldı. Kreslolar sadəcə oturmaq üçün deyil, yellənmə funksiyaları əlavə olunaraq istirahət etmək üçün də bir vasitə kimi dizayn edilməyə başlanıldı. Mebeldəki dizayn dəyişikliyi bir növ cəmiyyətimizin sadə yaşam tərzindən lüks və imtiyazlı həyatlara doğru təkamülünü göstərir.' %}
+          {% translate 'Mebel istehsalının tarixi insanlıq tarixi qədər qədimdir. Qədim Misirdə (e.ə. 3000-1000-ci illər) ağacdan sadə stullar, taxtlar, sandıqlar və yataqlar düzəldilirdi. O dövrdə mebel əsasən fironlar və zadəganlar üçün hazırlanırdı. Qədim Yunanıstanda mebel formaları daha zərif və estetik oldu. Klismos stulu bu dövrün ən tanınmış nümunəsidir. Qədim Romada isə mebel daha təntənəli, bəzəkli və rahat oldu. Romalılar yastıqlar, döşəmə döşəkləri və qatlanan stullardan istifadə edirdilər.Orta əsrlərdə Avropada qotik üslub mebel sənayesində hakim oldu. Bu dövrün mebelləri hündür, oyma detallarla zəngin, tünd ağacdan hazırlanırdı. İntibah dövrü (15-16-cı əsrlər) mebel istehsalında inqilab etdi. İtalyan ustalar mebeli sadəcə əşya deyil, sənət əsəri kimi düzəldirdilər. ' %}
         </p>
         {% for service in services %}
         <div class="col-lg-4 col-md-6 service-item d-flex" data-aos="fade-up" data-aos-delay="100">
