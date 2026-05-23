@@ -27,7 +27,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-s6kr@3kt02(s7v=mxasx)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '178.105.165.177', 'cratos.ddns.net']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '178.105.165.177', 'istanbulmebel.ddns.net']
 
 
 # Application definition
